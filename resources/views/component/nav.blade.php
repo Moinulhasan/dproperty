@@ -4,9 +4,15 @@
             <img src="{{asset('images/logo_main.png')}}" alt="DProperty Logo" height="40" class="me-2 headerLogo">
         </a>
 
-        <button class="navbar-toggler d-lg-none navbar-light" type="button" id="mobileNavToggle">
-            <span class="navbar-toggler-icon text-white" style="color: white !important;"></span>
-        </button>
+        <div class="d-flex align-items-center">
+            <a href="https://wa.me/your-number" target="_blank" class="whatsapp-icon me-4 d-lg-none">
+{{--                <i class="bi bi-whatsapp" style="font-size: 1.7rem; color: #25D366;"></i>--}}
+                <i class="bi bi-whatsapp" style="font-size: 1.7rem; color: #f5f9f9;"></i>
+            </a>
+            <button class="navbar-toggler d-lg-none navbar-light" type="button" id="mobileNavToggle">
+                <span class="navbar-toggler-icon text-white" style="color: white !important;"></span>
+            </button>
+        </div>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-lg-auto">
@@ -31,14 +37,17 @@
 </header>
 <div class="mobile-nav-overlay" id="mobileNavOverlay">
     <div class="mobile-nav-content">
-        <div class="mobile-nav-header">
-            <a href="{{url('/')}}">
-                <img src="{{asset('images/logo_main.png')}}" alt="DProperty" height="25" class="headerLogo">
-            </a>
-            <button class="mobile-nav-close" id="mobileNavClose">
-                <i class="bi bi-x"></i>
-            </button>
-        </div>
+       <div>
+           <div class="mobile-nav-header">
+               <a href="{{url('/')}}">
+                   <img src="{{asset('images/logo_main.png')}}" alt="DProperty" height="25" class="headerLogo">
+               </a>
+               <button class="mobile-nav-close" id="mobileNavClose">
+                   <i class="bi bi-x"></i>
+               </button>
+           </div>
+
+       </div>
         <ul class="mobile-nav-menu">
             <li><a href="#home" class="mobile-nav-link">Home</a></li>
             <li><a href="#services" class="mobile-nav-link">Services</a></li>

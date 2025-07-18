@@ -1,7 +1,7 @@
-<section id="services" class="py-5 bg-light">
+<section id="services" class="pt-1 pb-3 bg-light">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 text-center mb-5">
+            <div class="col-lg-12 text-center mb-3">
                 <h2 class="display-5 fw-bold text-dark">Our Services</h2>
                 <p class="lead text-muted">There is no greater benchmark for success than customer satisfaction.
                     Over the years, we’ve built a culture of service.</p>

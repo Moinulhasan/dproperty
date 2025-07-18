@@ -1,7 +1,7 @@
 <section id="contact" class="py-5">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 text-center mb-5">
+            <div class="col-lg-12 text-center mb-3">
                 <h2 class="display-5 fw-bold text-primary">Our Location & Contact</h2>
                 <p class="lead text-muted">Get in touch with us today</p>
             </div>

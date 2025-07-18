@@ -1,0 +1,34 @@
+.slider-container {
+    position: relative;
+}
+
+.scrolling-wrapper {
+    overflow-x: auto;
+    display: flex;
+    gap: 1rem;
+    scroll-behavior: smooth;
+    padding: 1rem 0;
+}
+.scroll-btn {
+    position: absolute;
+    top: 40%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    z-index: 2;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.scroll-btn.left {
+    left: -15px;
+}
+
+.scroll-btn.right {
+    right: -15px;
+}
+
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none;
+}

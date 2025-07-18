@@ -29,6 +29,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <!-- Custom CSS -->
 <link href="{{asset('css/main.css')}}" rel="stylesheet">
+
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",

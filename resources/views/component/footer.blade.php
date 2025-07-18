@@ -8,23 +8,9 @@
                     </a>
                 </h5>
                 <p class="text-light mb-3">Leading property solutions company in Bangladesh providing comprehensive real estate services with professional expertise and customer satisfaction.</p>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-{{--                    <a href="#" class="btn btn-outline-light btn-sm">--}}
-{{--                        <i class="bi bi-linkedin"></i>--}}
-{{--                    </a>--}}
-                    <a href="#" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                    <a href="#" class="btn btn-outline-light btn-sm">
-                        <i class="bi bi-youtube"></i>
-                    </a>
-                </div>
             </div>
 
-            <div class="col-lg-2 col-md-6">
+            <div  id="footerRep"  class="col-lg-2 col-md-6 col-sm-3">
                 <h6 class="fw-bold mb-3">Quick Links</h6>
                 <ul class="list-unstyled">
                     <li class="mb-2"><a href="#home" class="text-light text-decoration-none">Home</a></li>
@@ -35,7 +21,7 @@
                 </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
+            <div  id="footerRep"  class="col-lg-3 col-md-6 col-sm-3">
                 <h6 class="fw-bold mb-3">Services</h6>
                 <ul class="list-unstyled">
                     <li class="mb-2"><a href="#services" class="text-light text-decoration-none">Buy Property</a></li>
@@ -44,7 +30,7 @@
                 </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-3 col-md-6 col-sm-6">
                 <h6 class="fw-bold mb-3">Contact Info</h6>
                 <ul class="list-unstyled">
                     <li class="mb-2">
@@ -63,6 +49,18 @@
             </div>
         </div>
 
+        <div class="col-md-6 text-md-end mt-4" id="footerCap">
+            <a href="#home" class="btn btn-outline-light mb-2">Home</a>
+            <a href="#services" class="btn btn-outline-light mb-2">Services</a>
+            <a href="#about" class="btn btn-outline-light mb-2">About</a>
+            <a href="#contact" class="btn btn-outline-light mb-2">Contact</a>
+            <a href="#reviews" class="btn btn-outline-light mb-2">Reviews</a>
+            <a href="#services" class="btn btn-outline-light mb-2">Buy Property</a>
+            <a href="#services" class="btn btn-outline-light mb-2">Sell Property</a>
+            <a href="#services" class="btn btn-outline-light mb-2">Rent Property</a>
+
+        </div>
+
         <hr class="my-4">
 
         <div class="row align-items-center">
@@ -74,6 +72,17 @@
                 <a href="{{route('terms-of-use')}}" class="text-light text-decoration-none me-3">Terms of Service</a>
                 <a href="{{route('site-map')}}" class="text-light text-decoration-none">Sitemap</a>
             </div>
+        </div>
+        <div class="d-flex gap-2" id="footerCap" >
+            <a href="#" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-instagram"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-youtube"></i>
+            </a>
         </div>
     </div>
 </footer>

@@ -15,3 +15,6 @@ Route::get('terms-of-use', function () {
 Route::get('site-map', function () {
     return view('pages.sitemap');
 })->name('site-map');
+Route::get('welcome', function () {
+    return view('welcome');
+})->name('welcome');

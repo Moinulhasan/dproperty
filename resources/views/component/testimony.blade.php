@@ -1,7 +1,7 @@
 <section id="reviews" class="py-5 bg-light">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 text-center mb-5">
+            <div class="col-lg-12 text-center mb-3">
                 <h2 class="display-5 fw-bold text-dark">What People Think About Our Services</h2>
             </div>
         </div>
