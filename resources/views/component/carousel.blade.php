@@ -9,7 +9,7 @@
                         <div class="row align-items-center min-vh-70">
 {{--                            <div class="col-lg-8">--}}
                                 <div class="hero-content animate-slide-up">
-                                    <p class="hero-subtitle">We provide comprehensive property services to help you find, buy, sell, and manage your real estate investments with confidence.</p>
+                                    <p class="hero-subtitle">We provide comprehensive property services to help you</p>
                                 </div>
 {{--                            </div>--}}
                         </div>
@@ -24,7 +24,7 @@
                         <div class="row align-items-center min-vh-70">
 {{--                            <div class="col-lg-8">--}}
                                 <div class="hero-content animate-slide-up">
-                                    <p class="hero-subtitle">Expert property management services with cutting-edge technology and personalized attention to maximize your investment returns.</p>
+                                    <p class="hero-subtitle">Expert property management services with cutting-edge technology</p>
                                 </div>
 {{--                            </div>--}}
                         </div>
@@ -39,7 +39,7 @@
                         <div class="row align-items-center min-vh-70">
 {{--                            <div class="col-lg-8">--}}
                                 <div class="hero-content animate-slide-up">
-                                    <p class="hero-subtitle">Partner with us for reliable, efficient, and innovative property solutions that deliver results and exceed expectations.</p>
+                                    <p class="hero-subtitle">Partner with us for reliable, efficient</p>
                                 </div>
 {{--                            </div>--}}
                         </div>
