@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\HomePageController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('homepage');
-});
+Route::get('/',[HomePageController::class,'index'])->name('home');
 Route::get('privacy-policy', function () {
     return view('pages.privacy_policy');
 })->name('privacy-policy');

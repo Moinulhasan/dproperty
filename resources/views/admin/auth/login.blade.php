@@ -42,7 +42,7 @@
                     <!-- /Logo -->
                     {{--                    <p class="mb-4">Please sign-in to your account</p>--}}
 
-                    <form id="formAuthentication" class="mb-3" action="#" method="POST">
+                    <form id="formAuthentication" class="mb-3" action="{{route('admin.postlogin')}}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="mb-3">

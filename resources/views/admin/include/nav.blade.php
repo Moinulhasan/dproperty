@@ -26,6 +26,18 @@
                 <div data-i18n="Users">Users</div>
             </a>
         </li>
+        <li class="menu-item {{request()->routeIs('admin.slider*')? 'active' : ''}}">
+            <a href="{{route('admin.slider.list')}}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-slideshow"></i>
+                <div data-i18n="Slider">Slider</div>
+            </a>
+        </li>
+        <li class="menu-item {{request()->routeIs('admin.service*')? 'active' : ''}}">
+            <a href="{{route('admin.service.list')}}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-servicemark"></i>
+                <div data-i18n="Services">Services</div>
+            </a>
+        </li>
     </ul>
 </aside>
 <!-- / Menu -->

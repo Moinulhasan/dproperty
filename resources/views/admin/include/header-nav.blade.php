@@ -39,20 +39,20 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-{{--                        <a class="dropdown-item" href="{{route('admin.profile')}}">--}}
-{{--                            <div class="d-flex">--}}
-{{--                                <div class="flex-shrink-0 me-3">--}}
-{{--                                    <div class="avatar avatar-online">--}}
-{{--                                        <img src="{{asset('assets/img/avatars/1.png')}}" alt--}}
-{{--                                             class="h-auto rounded-circle"/>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <div class="flex-grow-1">--}}
-{{--                                    <span class="fw-medium d-block">John Doe</span>--}}
-{{--                                    <small class="text-muted">Admin</small>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </a>--}}
+                        <a class="dropdown-item" href="#">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="{{asset('assets/img/avatars/1.png')}}" alt
+                                             class="h-auto rounded-circle"/>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <span class="fw-medium d-block">John Doe</span>
+                                    <small class="text-muted">Admin</small>
+                                </div>
+                            </div>
+                        </a>
                     </li>
                     <li>
                         <div class="dropdown-divider"></div>
@@ -63,12 +63,12 @@
 {{--                            <span class="align-middle">My Profile</span>--}}
 {{--                        </a>--}}
 {{--                    </li>--}}
-{{--                    <li>--}}
-{{--                        <a class="dropdown-item" href="{{route('admin.logout')}}">--}}
-{{--                            <i class="ti ti-logout me-2 ti-sm"></i>--}}
-{{--                            <span class="align-middle">Log Out</span>--}}
-{{--                        </a>--}}
-{{--                    </li>--}}
+                    <li>
+                        <a class="dropdown-item" href="{{route('admin.logout')}}">
+                            <i class="ti ti-logout me-2 ti-sm"></i>
+                            <span class="align-middle">Log Out</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <!--/ User -->

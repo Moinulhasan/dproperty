@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-xxl">
                     <div class="card-body">
-                        <form action="{{route('admin.user.add.post')}}" method="POST">
+                        <form action="{{route('admin.user.update',$user)}}" method="POST">
                             @csrf
                             @method('post')
                             <div class="row">
@@ -25,7 +25,8 @@
                                         <label class="col-sm-3 col-form-label"
                                                for="basic-default-name">User Name</label>
                                         <div class="col-sm-9 ">
-                                            <input type="text" class="form-control" name="name" placeholder="Enter user name" value="{{ old('name') }}" />
+                                            <input type="text" class="form-control" name="name"
+                                                   placeholder="Enter user name" value="{{ $user->name }}"/>
                                         </div>
                                         @if($errors->has('name'))
                                             <div class="error col-sm-10">{{ $errors->first('name') }}</div>
@@ -35,7 +36,8 @@
                                     <div class="row mb-3">
                                         <label for="" class="col-sm-3 col-form-label">Email</label>
                                         <div class="col-sm-9">
-                                            <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ old('email') }}" />
+                                            <input type="email" class="form-control" name="email"
+                                                   placeholder="Enter email" value="{{ $user->email }}"/>
                                         </div>
                                         @if($errors->has('email'))
                                             <div class="error col-sm-10">{{ $errors->first('email') }}</div>
@@ -44,7 +46,8 @@
                                     <div class="row mb-3">
                                         <label for="" class="col-sm-3 col-form-label">Password</label>
                                         <div class="col-sm-9">
-                                            <input type="password" class="form-control" name="password" placeholder="Enter Password" value="{{ old('password') }}" />
+                                            <input type="password" class="form-control" name="password"
+                                                   placeholder="Enter Password" value="{{ old('password') }}"/>
                                         </div>
                                         @if($errors->has('password'))
                                             <div class="error col-sm-10">{{ $errors->first('password') }}</div>

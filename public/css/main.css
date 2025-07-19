@@ -146,7 +146,7 @@ body {
 .service-card {
     background: white;
     border-radius: 15px;
-    padding: 30px 30px;
+    padding: 13px 13px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border: none;
@@ -163,13 +163,13 @@ body {
     text-align: center;
     overflow: hidden;
     border-radius: 8px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
+    max-height: 150px;
 }
 
 .service-image img {
     transition: transform 0.3s ease;
     width: 100%;
-    height: 200px;
     object-fit: cover;
 }
 

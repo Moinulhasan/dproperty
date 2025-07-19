@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-xxl">
                     <div class="card-body">
-                        <form action="{{route('admin.user.add.post')}}" method="POST">
+                        <form action="{{route('admin.slider.add.post')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('post')
                             <div class="row">
@@ -23,32 +23,34 @@
                                 <div class="col-8">
                                     <div class="row mb-3">
                                         <label class="col-sm-3 col-form-label"
-                                               for="basic-default-name">User Name</label>
+                                               for="basic-default-name">Slider Title</label>
                                         <div class="col-sm-9 ">
-                                            <input type="text" class="form-control" name="name" placeholder="Enter user name" value="{{ old('name') }}" />
+                                            <input type="text" class="form-control" name="title" placeholder="Enter slider title" value="{{ old('title') }}" />
                                         </div>
-                                        @if($errors->has('name'))
-                                            <div class="error col-sm-10">{{ $errors->first('name') }}</div>
+                                        @if($errors->has('title'))
+                                            <div class="error col-sm-10">{{ $errors->first('title') }}</div>
                                         @endif
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="" class="col-sm-3 col-form-label">Email</label>
+                                        <label for="" class="col-sm-3 col-form-label">Slider Image <span class="text-gray">(3360×2240 px)</span></label>
                                         <div class="col-sm-9">
-                                            <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ old('email') }}" />
+                                            <input type="file" class="form-control" name="image" />
                                         </div>
-                                        @if($errors->has('email'))
-                                            <div class="error col-sm-10">{{ $errors->first('email') }}</div>
+                                        @if($errors->has('file'))
+                                            <div class="error col-sm-10">{{ $errors->first('file') }}</div>
                                         @endif
                                     </div>
                                     <div class="row mb-3">
-                                        <label for="" class="col-sm-3 col-form-label">Password</label>
+                                        <label class="col-sm-3 col-form-label" for="multicol-country">Status</label>
                                         <div class="col-sm-9">
-                                            <input type="password" class="form-control" name="password" placeholder="Enter Password" value="{{ old('password') }}" />
+                                            <select id="multicol-country" name="status" class="select form-select"
+                                                    data-allow-clear="true">
+                                                <option value="">Select</option>
+                                                <option value="active">Active</option>
+                                                <option value="inactive">InActive</option>
+                                            </select>
                                         </div>
-                                        @if($errors->has('password'))
-                                            <div class="error col-sm-10">{{ $errors->first('password') }}</div>
-                                        @endif
                                     </div>
                                     <div class="w-100 text-center">
                                         <button type="submit" class="btn btn-primary w-100">Save</button>
