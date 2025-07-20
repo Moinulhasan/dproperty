@@ -2,9 +2,12 @@
 
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\DashboardController;
+use \Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -39,5 +42,23 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{service}', [ServiceController::class, 'edit'])->name('service.edit');
         Route::post('edit/{service}', [ServiceController::class, 'editPost'])->name('service.edit.post');
         Route::get('delete/{service}', [ServiceController::class, 'delete'])->name('service.delete');
+    });
+
+    Route::group(['prefix' => 'testimonials'], function () {
+        Route::get('list', [TestimonialController::class, 'index'])->name('testimonial.list');
+        Route::get('add', [TestimonialController::class, 'add'])->name('testimonial.add');
+        Route::post('add', [TestimonialController::class, 'addPost'])->name('testimonial.add.post');
+        Route::get('edit/{testimonial}', [TestimonialController::class, 'edit'])->name('testimonial.edit');
+        Route::post('edit/{testimonial}', [TestimonialController::class, 'editPost'])->name('testimonial.edit.post');
+        Route::get('delete/{testimonial}', [TestimonialController::class, 'delete'])->name('testimonial.delete');
+    });
+
+    Route::group(['prefix' => 'properties'], function () {
+        Route::get('list', [PropertyController::class, 'index'])->name('property.list');
+        Route::get('add', [PropertyController::class, 'add'])->name('property.add');
+        Route::post('add', [PropertyController::class, 'addPost'])->name('property.add.post');
+        Route::get('edit/{property}', [PropertyController::class, 'edit'])->name('property.edit');
+        Route::post('edit/{property}', [PropertyController::class, 'editPost'])->name('property.edit.post');
+        Route::get('delete/{property}', [PropertyController::class, 'delete'])->name('property.delete');
     });
 });

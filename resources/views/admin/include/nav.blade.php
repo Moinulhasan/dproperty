@@ -38,6 +38,18 @@
                 <div data-i18n="Services">Services</div>
             </a>
         </li>
+        <li class="menu-item {{request()->routeIs('admin.testimonial*')? 'active' : ''}}">
+            <a href="{{route('admin.testimonial.list')}}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-message"></i>
+                <div data-i18n="Client Review">Client Review</div>
+            </a>
+        </li>
+        <li class="menu-item {{request()->routeIs('admin.property*')? 'active' : ''}}">
+            <a href="{{route('admin.property.list')}}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                <div data-i18n="Property">Property</div>
+            </a>
+        </li>
     </ul>
 </aside>
 <!-- / Menu -->

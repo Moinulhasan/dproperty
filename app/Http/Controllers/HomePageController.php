@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HomeSlider;
 use App\Models\Services;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class HomePageController extends Controller
@@ -17,6 +18,9 @@ class HomePageController extends Controller
         $services = Services::orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
-        return view('homepage',compact('sliders','services'));
+        $testimonials = Testimonial::orderBy('created_at', 'desc')
+            ->where('status', 1)
+            ->get();
+        return view('homepage',compact('sliders','services','testimonials'));
     }
 }
