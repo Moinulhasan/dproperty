@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Admin\AppSettingsController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -60,5 +61,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{property}', [PropertyController::class, 'edit'])->name('property.edit');
         Route::post('edit/{property}', [PropertyController::class, 'editPost'])->name('property.edit.post');
         Route::get('delete/{property}', [PropertyController::class, 'delete'])->name('property.delete');
+    });
+
+    Route::group(['prefix' => 'app-settings'], function () {
+        Route::get('list', [AppSettingsController::class, 'appSettings'])->name('app.settings');
+        Route::post('update', [AppSettingsController::class, 'updateAppSettings'])->name('app.settings.update');
     });
 });
