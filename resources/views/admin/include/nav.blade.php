@@ -50,6 +50,12 @@
                 <div data-i18n="Property">Property</div>
             </a>
         </li>
+        <li class="menu-item {{request()->routeIs('admin.tag*')? 'active' : ''}}">
+            <a href="{{route('admin.tag.list')}}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-tags"></i>
+                <div data-i18n="Tag Line">Tag Line</div>
+            </a>
+        </li>
         <li class="menu-item {{request()->routeIs('admin.app*')? 'active' : ''}}">
             <a href="{{route('admin.app.settings')}}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-settings"></i>

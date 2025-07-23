@@ -2,12 +2,13 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <img src="{{asset('images/whys_us.svg')}}" class="img-fluid rounded shadow mb-2" alt="Why Choose Us">
+                <img src="{{$settings->contact_image}}" class="img-fluid rounded shadow mb-2" alt="Why Choose Us">
             </div>
             <div class="col-lg-6">
                 <div class="ps-lg-4">
                     <h2 class="display-5 fw-bold text-primary mb-4">Why Choose Us?</h2>
-                    <p class="lead text-muted mb-4">We are committed to delivering exceptional results that exceed your expectations.</p>
+                    <p class="lead text-muted mb-4">{{$tags->where('service_type','why_us')->first()->tag_line ??'We are committed to delivering exceptional results that exceed your expectations.'}}
+                        </p>
 
                     <div class="row g-3">
                         <div class="col-12">

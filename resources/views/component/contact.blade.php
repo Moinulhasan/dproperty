@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-lg-12 text-center mb-3">
                 <h2 class="display-5 fw-bold text-primary">Our Location & Contact</h2>
-                <p class="lead text-muted">Get in touch with us today</p>
+                <p class="lead text-muted">{{$tags->where('service_type','contact_us')->first()->tag_line ??'Get in touch with us today'}}</p>
             </div>
         </div>
 
@@ -12,7 +12,7 @@
                 <div class="card shadow-sm border-0 h-100">
                     <div class="card-body p-0">
                         <div class="ratio ratio-21x9">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.0977!2d90.4125181!3d23.7808875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDQ2JzUxLjIiTiA5MMKwMjQnNDUuMSJF!5e0!3m2!1sen!2sbd!4v1234567890"
+                            <iframe src="{{$settings->map_link??'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.909999999999!2d90.4125243153595!3d23.810301184581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7b8b8b8b8b8%3A0x8b8b8b8b8b8b8b8b!2sDProperty%20Headquarters!5e0!3m2!1sen!2sbd!4v1616161616161'}}"
                                     style="border:0;"
                                     allowfullscreen=""
                                     loading="lazy"
@@ -33,7 +33,7 @@
                                 <i class="bi bi-geo-alt-fill text-primary me-3"></i>
                                 <strong>Address:</strong>
                             </div>
-                            <p class="text-muted ms-4 mb-0">123 Business Street, Suite 100<br>City, State 12345</p>
+                            <p class="text-muted ms-4 mb-0">{{$settings->address}}</p>
                         </div>
 
                         <div class="mb-3">
@@ -41,7 +41,7 @@
                                 <i class="bi bi-telephone-fill text-primary me-3"></i>
                                 <strong>Phone:</strong>
                             </div>
-                            <p class="text-muted ms-4 mb-0">+1 (555) 123-4567</p>
+                            <p class="text-muted ms-4 mb-0">{{$settings->phone}}</p>
                         </div>
 
                         <div class="mb-3">
@@ -49,7 +49,7 @@
                                 <i class="bi bi-envelope-fill text-primary me-3"></i>
                                 <strong>Email:</strong>
                             </div>
-                            <p class="text-muted ms-4 mb-0">info@yourbusiness.com</p>
+                            <p class="text-muted ms-4 mb-0">{{$settings->email}}</p>
                         </div>
                     </div>
                 </div>

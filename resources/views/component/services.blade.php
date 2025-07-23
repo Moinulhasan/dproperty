@@ -3,8 +3,7 @@
         <div class="row">
             <div class="col-lg-12 text-center mb-3">
                 <h2 class="display-5 fw-bold text-dark">Our Services</h2>
-                <p class="lead text-muted">There is no greater benchmark for success than customer satisfaction.
-                    Over the years, we’ve built a culture of service.</p>
+                <p class="lead text-muted">{{$tags->where('service_type','services')->first()->tag_line ??''}}</p>
             </div>
         </div>
 

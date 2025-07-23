@@ -1,11 +1,11 @@
 <header class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
     <div class="container">
         <a class="navbar-brand fw-bold text-white" href="{{url('/')}}">
-            <img src="{{asset('images/logo_main.png')}}" alt="DProperty Logo" height="40" class="me-2 headerLogo">
+            <img src="{{$settings->logo??asset('images/logo_main.png')}}" alt="DProperty Logo" height="40" class="me-2 headerLogo">
         </a>
 
         <div class="d-flex align-items-center">
-            <a href="https://wa.me/your-number" target="_blank" class="whatsapp-icon me-4 d-lg-none">
+            <a href="https://wa.me/{{$settings->phone}}" target="_blank" class="whatsapp-icon me-4 d-lg-none">
 {{--                <i class="bi bi-whatsapp" style="font-size: 1.7rem; color: #25D366;"></i>--}}
                 <i class="bi bi-whatsapp" style="font-size: 1.7rem; color: #f5f9f9;"></i>
             </a>

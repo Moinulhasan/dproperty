@@ -67,4 +67,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('list', [AppSettingsController::class, 'appSettings'])->name('app.settings');
         Route::post('update', [AppSettingsController::class, 'updateAppSettings'])->name('app.settings.update');
     });
+
+    Route::group(['prefix'=>'tags'],function (){
+        Route::get('list',[ServiceController::class,'tagList'])->name('tag.list');
+        Route::get('add',[ServiceController::class,'tagAdd'])->name('tag.add');
+        Route::post('add',[ServiceController::class,'tagAddPost'])->name('tag.add.post');
+        Route::get('edit/{tag}',[ServiceController::class,'tagEdit'])->name('tag.edit');
+        Route::post('edit/{tag}',[ServiceController::class,'tagEditPost'])->name('tag.edit.post');
+        Route::get('delete/{tag}',[ServiceController::class,'tagDelete'])->name('tag.delete');
+    });
 });

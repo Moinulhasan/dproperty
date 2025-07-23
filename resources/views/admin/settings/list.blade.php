@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <div class="bs-stepper-content">
-                            <form  action="{{route('admin.app.settings.update')}}"
+                            <form action="{{route('admin.app.settings.update')}}"
                                   method="post" enctype="multipart/form-data">
                                 @csrf
                                 @method('post')
@@ -67,29 +67,50 @@
                                         <h6 class="mb-0">Basic Details</h6>
                                     </div>
                                     <div class="row g-3">
-{{--                                        <div class="col-sm-6">--}}
-{{--                                            <label class="form-label" for="username1">Site Name</label>--}}
-{{--                                            <input type="text" id="web_name" name="site_name" class="form-control"--}}
-{{--                                                   placeholder="dproperty" value="{{$settings?->name?:''}}"/>--}}
-{{--                                        </div>--}}
                                         <div class="col-sm-6">
                                             <label class="form-label" for="email1">Logo</label>
                                             <input
-                                                    type="file"
-                                                    id="email1"
-                                                    class="form-control"
-                                                    name="site_logo"
-                                                    aria-label="john.doe"/>
+                                                type="file"
+                                                id="email1"
+                                                class="form-control"
+                                                name="site_logo"
+                                                aria-label="john.doe"/>
+                                            <div class="mt-2">
+                                                @if($settings->logo)
+                                                    <img src="{{$settings->logo}}" alt="dproperty" srcset=""
+                                                         style="height: 50px;width: 100px;">
+                                                @endif
+                                            </div>
                                         </div>
-
                                         <div class="col-sm-6 form-password-toggle">
                                             <label class="form-label" for="confirm-password61">Favicon</label>
                                             <input
-                                                    type="file"
-                                                    id="email1"
-                                                    class="form-control"
-                                                    name="favicon"
-                                                    aria-label="john.doe"/>
+                                                type="file"
+                                                id="email1"
+                                                class="form-control"
+                                                name="favicon"
+                                                aria-label="john.doe"/>
+                                            <div class="mt-2">
+                                                @if($settings->favicon)
+                                                    <img src="{{$settings->favicon}}" alt="dproperty" srcset=""
+                                                         style="height: 50px;width: 100px;">
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 form-password-toggle">
+                                            <label class="form-label" for="confirm-password61">Contact Us</label>
+                                            <input
+                                                type="file"
+                                                id="email1"
+                                                class="form-control"
+                                                name="contact_image"
+                                                aria-label="john.doe"/>
+                                            <div class="mt-2">
+                                                @if($settings->contact_image)
+                                                    <img src="{{$settings->contact_image}}" alt="dproperty" srcset=""
+                                                         style="height: 50px;width: 100px;">
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="col-sm-6 form-password-toggle">
                                             <label class="form-label" for="password60">Short Description</label>
@@ -118,11 +139,13 @@
                                         <div class="col-sm-6">
                                             <label class="form-label" for="first-name1">Address</label>
                                             <input type="text" id="first-name1" class="form-control"
-                                                   placeholder="John" name="site_address" value="{{$settings?->address?:''}}"/>
+                                                   placeholder="John" name="site_address"
+                                                   value="{{$settings?->address?:''}}"/>
                                         </div>
                                         <div class="col-sm-6">
                                             <label class="form-label" for="last-name1">Google Map Link</label>
-                                            <input type="text" name="site_google_map" id="last-name1" class="form-control"
+                                            <input type="text" name="site_google_map" id="last-name1"
+                                                   class="form-control"
                                                    placeholder="Doe" value="{{$settings?->google_map?:''}}"/>
                                         </div>
                                         <div class="col-sm-6">
@@ -135,32 +158,7 @@
                                             <input type="email" name="site_email" id="last-name1" class="form-control"
                                                    placeholder="Doe" value="{{$settings?->email?:''}}"/>
                                         </div>
-                                        {{--                                        <div class="col-sm-6">--}}
-                                        {{--                                            <label class="form-label" for="country1">Country</label>--}}
-                                        {{--                                            <select class="select2" id="country1">--}}
-                                        {{--                                                <option label=" "></option>--}}
-                                        {{--                                                <option>UK</option>--}}
-                                        {{--                                                <option>USA</option>--}}
-                                        {{--                                                <option>Spain</option>--}}
-                                        {{--                                                <option>France</option>--}}
-                                        {{--                                                <option>Italy</option>--}}
-                                        {{--                                                <option>Australia</option>--}}
-                                        {{--                                            </select>--}}
-                                        {{--                                        </div>--}}
-                                        {{--                                        <div class="col-sm-6">--}}
-                                        {{--                                            <label class="form-label" for="language1">Language</label>--}}
-                                        {{--                                            <select--}}
-                                        {{--                                                class="selectpicker w-auto"--}}
-                                        {{--                                                id="language1"--}}
-                                        {{--                                                data-style="btn-default"--}}
-                                        {{--                                                data-icon-base="ti"--}}
-                                        {{--                                                data-tick-icon="ti-check text-white"--}}
-                                        {{--                                                multiple>--}}
-                                        {{--                                                <option>English</option>--}}
-                                        {{--                                                <option>French</option>--}}
-                                        {{--                                                <option>Spanish</option>--}}
-                                        {{--                                            </select>--}}
-                                        {{--                                        </div>--}}
+                                        '
                                         <div class="col-12 d-flex justify-content-between">
                                             <a class="btn btn-label-secondary btn-prev">
                                                 <i class="ti ti-arrow-left me-sm-1"></i>
@@ -183,29 +181,58 @@
                                         <div class="col-sm-6">
                                             <label class="form-label" for="facebook1">Facebook</label>
                                             <input
-                                                    type="text"
-                                                    id="facebook1"
-                                                    class="form-control"
-                                                    name="facebook_link"
-                                                    placeholder="https://facebook.com/abc" value="{{$settings?->facebook}}"/>
+                                                type="text"
+                                                id="facebook1"
+                                                class="form-control"
+                                                name="facebook_link"
+                                                placeholder="https://facebook.com/abc"
+                                                value="{{$settings?->facebook}}"/>
                                         </div>
                                         <div class="col-sm-6">
                                             <label class="form-label" for="google1">Instagram</label>
                                             <input
-                                                    type="text"
-                                                    id="google1"
-                                                    class="form-control"
-                                                    name="instagram_link"
-                                                    placeholder="https://instagram.com/abc" value="{{$settings?->instagram}}"/>
+                                                type="text"
+                                                id="google1"
+                                                class="form-control"
+                                                name="instagram_link"
+                                                placeholder="https://instagram.com/abc"
+                                                value="{{$settings?->instagram}}"/>
                                         </div>
                                         <div class="col-sm-6">
                                             <label class="form-label" for="linkedin1">Youtube</label>
                                             <input
-                                                    type="text"
-                                                    id="linkedin1"
-                                                    class="form-control"
-                                                    placeholder="https://youtube.com/abc"
-                                                    name="youtube_link" value="{{$settings?->youtube}}"/>
+                                                type="text"
+                                                id="linkedin1"
+                                                class="form-control"
+                                                placeholder="https://youtube.com/abc"
+                                                name="youtube_link" value="{{$settings?->youtube}}"/>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="linkedin1">Twitter</label>
+                                            <input
+                                                type="text"
+                                                id="twitter"
+                                                class="form-control"
+                                                placeholder="https://youtube.com/abc"
+                                                name="twitter_link" value="{{$settings?->twitter}}"/>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="linkedin1">LinkedIn</label>
+                                            <input
+                                                type="text"
+                                                id="linkedin1"
+                                                class="form-control"
+                                                placeholder="https://youtube.com/abc"
+                                                name="linkedin_link" value="{{$settings?->linkedin}}"/>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="linkedin1">Pinterest</label>
+                                            <input
+                                                type="text"
+                                                id="twitter"
+                                                class="form-control"
+                                                placeholder="https://youtube.com/abc"
+                                                name="pinterest_link" value="{{$settings?->pinterest}}"/>
                                         </div>
                                         <div class="col-12 d-flex justify-content-between">
                                             <a class="btn btn-label-secondary btn-prev">

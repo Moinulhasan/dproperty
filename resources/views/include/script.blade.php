@@ -1,7 +1,12 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.js"></script>
 
+<!-- JavaScript -->
+<!--Uncomment this line-->
+<script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/script.js"></script>
+<script src="{{asset('custom/custom_js.js')}}"></script>
 <!-- Custom JavaScript -->
 <script>
     // Smooth scrolling for navigation links
