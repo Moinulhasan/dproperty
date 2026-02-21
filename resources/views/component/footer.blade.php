@@ -36,7 +36,7 @@
                 <ul class="list-unstyled">
                     <li class="mb-2">
                         <i class="bi bi-geo-alt me-2"></i>
-                        {{$settings->address ?? '123 Business Street, Suite 100, Dhaka, Bangladesh'}}
+                        <p class="just">{{$settings->address ?? '123 Business Street, Suite 100, Dhaka, Bangladesh'}}</p>
                     </li>
                     <li class="mb-2">
                         <i class="bi bi-telephone me-2"></i>
@@ -69,39 +69,41 @@
                 <p class="mb-0">&copy; 2024 Your Business. All rights reserved.</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a href="{{route('privacy-policy')}}" class="text-light text-decoration-none me-3">Privacy Policy</a>
-                <a href="{{route('terms-of-use')}}" class="text-light text-decoration-none me-3">Terms of Service</a>
-                <a href="{{route('site-map')}}" class="text-light text-decoration-none">Sitemap</a>
+                <a href="{{route('privacy-policy')}}" class="text-light text-decoration-none me-3" target="_blank">Privacy Policy</a>
+                <a href="{{route('terms-of-use')}}" class="text-light text-decoration-none me-3" target="_blank">Terms of Service</a>
+                <a href="{{route('site-map')}}" class="text-light text-decoration-none" target="_blank">Sitemap</a>
             </div>
         </div>
         <div class="d-flex gap-2" id="footerCap">
             @if($settings->facebook)
-                <a href="{{$settings->facebook}}" class="btn btn-outline-light btn-sm">
+                <a href="{{$settings->facebook}}" class="btn btn-outline-light btn-sm" target="_blank">
                     <i class="bi bi-facebook"></i>
                 </a>
             @endif
             @if($settings->instagram)
-                <a href="{{$settings->instagram}}" class="btn btn-outline-light btn-sm">
+                <a href="{{$settings->instagram}}" class="btn btn-outline-light btn-sm" target="_blank">
                     <i class="bi bi-instagram"></i>
                 </a>
             @endif
             @if($settings->youtube)
-                <a href="{{$settings->youtube}}" class="btn btn-outline-light btn-sm">
+                <a href="{{$settings->youtube}}" class="btn btn-outline-light btn-sm" target="_blank">
                     <i class="bi bi-youtube"></i>
                 </a>
             @endif
             @if($settings->twitter)
-                <a href="{{$settings->twitter}}" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-twitter"></i>
-                </a>
+                    <a href="{{$settings->twitter}}" class="btn btn-outline-light btn-sm" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
+                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+                        </svg>
+                    </a>
             @endif
             @if($settings->linkedin)
-                <a href="{{$settings->linkedin}}" class="btn btn-outline-light btn-sm">
+                <a href="{{$settings->linkedin}}" class="btn btn-outline-light btn-sm" target="_blank">
                     <i class="bi bi-linkedin"></i>
                 </a>
             @endif
             @if($settings->pinterest)
-                <a href="{{$settings->pinterest}}" class="btn btn-outline-light btn-sm">
+                <a href="{{$settings->pinterest}}" class="btn btn-outline-light btn-sm" target="_blank">
                     <i class="bi bi-pinterest"></i>
                 </a>
             @endif

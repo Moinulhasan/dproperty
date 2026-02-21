@@ -16,7 +16,7 @@
                                 <img src="{{$service->image}}" class="img-fluid" alt="Buy Propert">
                             </div>
                             <h5 class="service-title fw-bold mb-3">{{$service->title}}</h5>
-                            <p class="service-description text-muted">{{$service->description}}</p>
+                            <p class="service-description text-muted" style="text-align:justify;">{{$service->description}}</p>
                         </div>
                     </div>
                 @endforeach

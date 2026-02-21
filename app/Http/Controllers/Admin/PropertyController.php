@@ -25,7 +25,7 @@ class PropertyController extends Controller
         $validator = \Validator::make($request->all(), [
             'type' => 'required|string|in:fb,yu',
             'description' => 'required|string|max:1000',
-            'link' => 'required|url|active_url',
+            'link' => 'required|string',
             'status' => 'required|in:active,inactive',
         ]);
         if ($validator->fails()) {
@@ -58,7 +58,7 @@ class PropertyController extends Controller
         $validator = \Validator::make($request->all(), [
             'type' => 'required|string|in:fb,yu',
             'description' => 'required|string|max:1000',
-            'link' => 'required|url|active_url',
+            'link' => 'required|string',
             'status' => 'required|in:active,inactive',
         ]);
         if ($validator->fails()) {

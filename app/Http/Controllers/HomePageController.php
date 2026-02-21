@@ -32,4 +32,20 @@ class HomePageController extends Controller
             ->get();
         return view('homepage', compact('sliders', 'services', 'testimonials', 'settings','properties','tags'));
     }
+
+    public function privacy()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        return view('pages.privacy_policy',compact('settings'));
+    }
+    public function sitemap()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        return view('pages.sitemap',compact('settings'));
+    }
+    public function terms()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        return view('pages.tc',compact('settings'));
+    }
 }
