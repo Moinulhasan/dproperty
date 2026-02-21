@@ -20,6 +20,15 @@
                     <a class="nav-link text-white" href="#home">Home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white" href="#home">Buy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#home">Sell</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#home">Rent</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white" href="#services">Services</a>
                 </li>
                 <li class="nav-item">

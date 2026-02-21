@@ -38,5 +38,6 @@
 @include('component.footer')
 @include('include.script')
 @yield('scripts')
+@stack('scripts')
 </body>
 <!-- endbuild -->
