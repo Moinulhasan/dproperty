@@ -31,6 +31,9 @@
 <link href="{{asset('css/main.css')}}" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.css">
 <link rel="stylesheet" href="{{asset('css/custom_slider.css')}}">
+<link rel="stylesheet" href="{{asset('css/neighborhoods.css')}}">
+<link rel="stylesheet" href="{{asset('css/articles.css')}}">
+<link rel="stylesheet" href="{{asset('css/property_cards.css')}}">
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <!-- Select2 CSS -->

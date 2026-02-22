@@ -1,0 +1,167 @@
+/* neighborhoods.css */
+.neighborhoods-section {
+    padding: 60px 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color, #006A50);
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.neighborhood-slider,
+.custom-card-slider {
+    padding: 20px 0 60px;
+    position: relative;
+}
+
+.neighborhood-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.neighborhood-card:hover {
+    transform: translateY(-10px);
+}
+
+.neighborhood-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.neighborhood-card .card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
+    z-index: 2;
+}
+
+.neighborhood-card .card-content {
+    position: relative;
+    z-index: 3;
+    padding: 25px;
+    color: #fff;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.neighborhood-card:hover .card-content {
+    background: #fff !important;
+    color: #000 !important;
+    border-radius: 10px;
+    margin: 20px;
+    width: calc(100% - 40px);
+    padding: 15px 20px;
+}
+
+.neighborhood-card .property-count {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    opacity: 0.9;
+}
+
+.neighborhood-card .neighborhood-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Swiper custom nav shared across sliders */
+.neighborhood-slider .swiper-button-next,
+.neighborhood-slider .swiper-button-prev,
+.custom-card-slider .swiper-button-next,
+.custom-card-slider .swiper-button-prev {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color, #006A50);
+    z-index: 10;
+}
+
+.neighborhood-slider .swiper-button-next::after,
+.neighborhood-slider .swiper-button-prev::after,
+.custom-card-slider .swiper-button-next::after,
+.custom-card-slider .swiper-button-prev::after {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Specific classes */
+.featured-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #FF385C;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .neighborhood-card {
+        height: 350px;
+    }
+
+    .neighborhoods-section .section-header h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Featured Properties Section specific tweaks */
+#projects.py-5 {
+    padding-top: 0 !important;
+}
+
+#featuredPropertiesSlider {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.swiper-navBtn {
+    top: 50% !important;
+    transform: translateY(-50%);
+    z-index: 100 !important;
+}
+
+.swiper-button-next {
+    right: 5px !important;
+}
+
+.swiper-button-prev {
+    left: 5px !important;
+}

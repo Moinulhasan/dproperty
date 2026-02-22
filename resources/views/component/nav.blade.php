@@ -17,28 +17,28 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-lg-auto">
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#home">Home</a>
+                    <a class="nav-link text-white {{ Request::is('/') ? 'active' : '' }}" href="{{url('/')}}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#home">Buy</a>
+                    <a class="nav-link text-white {{ Request::is('buy') ? 'active' : '' }}" href="{{ route('buy') }}">Buy</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#home">Sell</a>
+                    <a class="nav-link text-white {{ Request::is('sell') ? 'active' : '' }}" href="{{ route('sell') }}">Sell</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#home">Rent</a>
+                    <a class="nav-link text-white {{ Request::is('rent') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#services">Services</a>
+                    <a class="nav-link text-white {{ Request::is('services') ? 'active' : '' }}" href="#services">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#projects">Project</a>
+                    <a class="nav-link text-white {{ Request::is('projects') ? 'active' : '' }}" href="#projects">Project</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#about">About</a>
+                    <a class="nav-link text-white {{ Request::is('about') ? 'active' : '' }}" href="#about">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#contact">Contact Us</a>
+                    <a class="nav-link text-white {{ Request::is('contact') ? 'active' : '' }}" href="#contact">Contact Us</a>
                 </li>
             </ul>
         </div>

@@ -1,0 +1,144 @@
+/* Listing Pages Styles */
+
+.container-90 {
+    width: 90% !important;
+    max-width: none !important;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.listings-hero {
+    background-color: var(--primary-color, #006A50);
+    padding: 60px 0;
+    color: #fff;
+    margin-top: -20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.listings-hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+}
+
+.listings-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    z-index: 2;
+    position: relative;
+}
+
+.breadcrumb-listing {
+    z-index: 2;
+    position: relative;
+}
+
+.breadcrumb-listing .breadcrumb-item,
+.breadcrumb-listing .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+
+.breadcrumb-listing .breadcrumb-item.active {
+    color: #ffcc08;
+}
+
+/* Filter Section */
+.filter-wrapper {
+    margin-top: -40px;
+    margin-bottom: 50px;
+    z-index: 10;
+    position: relative;
+}
+
+.filter-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.filter-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-control {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    color: #444;
+    background-color: #fcfcfc;
+    width: 100%;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.filter-control:focus {
+    border-color: var(--primary-color, #006A50);
+    box-shadow: 0 0 0 3px rgba(0, 106, 80, 0.1);
+    outline: none;
+}
+
+.btn-filter-apply {
+    background-color: var(--primary-color, #006A50);
+    color: white;
+    font-weight: 700;
+    padding: 10px 25px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-filter-apply:hover {
+    background-color: var(--primary-dark, #157a47);
+    transform: translateY(-2px);
+}
+
+/* Pagination */
+.pagination-wrapper {
+    margin-top: 50px;
+}
+
+.page-link {
+    color: var(--primary-color, #006A50);
+    border: 1px solid #eee;
+    margin: 0 5px;
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color, #006A50);
+    border-color: var(--primary-color, #006A50);
+}
+
+.page-link:hover {
+    color: #fff;
+    background-color: var(--primary-color, #006A50);
+}
+
+@media (max-width: 991px) {
+    .filter-wrapper {
+        margin-top: 0;
+        padding: 0 15px;
+    }
+
+    .listings-hero {
+        padding: 40px 0;
+    }
+}

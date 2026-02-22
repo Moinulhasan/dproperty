@@ -48,4 +48,32 @@ class HomePageController extends Controller
         $settings = AppSettings::where('site_name', 'dproperty')->first();
         return view('pages.tc',compact('settings'));
     }
+
+    public function property_details($id)
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        // For now, we return a mock property view since dynamic data integration is a future step
+        return view('pages.property_details', compact('settings'));
+    }
+
+    public function buy()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $title = "Properties For Sale";
+        return view('pages.listings', compact('settings', 'title'));
+    }
+
+    public function sell()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $title = "Sell Your Property";
+        return view('pages.listings', compact('settings', 'title'));
+    }
+
+    public function rent()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $title = "Properties For Rent";
+        return view('pages.listings', compact('settings', 'title'));
+    }
 }
