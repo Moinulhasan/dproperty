@@ -84,13 +84,13 @@
                         </span>
                     </div>
                     <span class="type-badge">Residential</span>
-                    
+
                     <!-- Inner Card Slider -->
                     <div class="swiper card-inner-slider">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600607687940-477a4a6b4737?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
+                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
+                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
+                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
                         </div>
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="card-body-global">
                     <h3 class="card-title-global">Premium Property {{ $i+1 }}</h3>
-                    
+
                     <div class="info-row">
                         <div class="price-text">{{ $title == 'Properties For Rent' ? '৳ 45,000 / mo' : '৳ 45,000,000.00' }}</div>
                         <div class="detail-item"><span class="info-label">Project ID:</span> DP-{{ 7000 + $i }}</div>

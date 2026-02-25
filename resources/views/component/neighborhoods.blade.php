@@ -22,7 +22,7 @@
                 <!-- Neighborhood item 2 -->
                 <div class="swiper-slide">
                     <div class="neighborhood-card">
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=800&q=80" alt="Seoul">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Seoul">
                         <div class="card-overlay"></div>
                         <div class="card-content">
                             <div class="property-count">321 Properties</div>
@@ -34,7 +34,7 @@
                 <!-- Neighborhood item 3 -->
                 <div class="swiper-slide">
                     <div class="neighborhood-card">
-                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Seoul">
+                        <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80" alt="Seoul">
                         <div class="card-overlay"></div>
                         <div class="card-content">
                             <div class="property-count">212 Properties</div>
@@ -46,7 +46,7 @@
                 <!-- Neighborhood item 4 -->
                 <div class="swiper-slide">
                     <div class="neighborhood-card">
-                        <img src="https://images.unsplash.com/photo-1600607687940-477a4a6b4737?auto=format&fit=crop&w=800&q=80" alt="London">
+                        <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80" alt="London">
                         <div class="card-overlay"></div>
                         <div class="card-content">
                             <div class="property-count">432 Properties</div>
@@ -58,7 +58,7 @@
                 <!-- Neighborhood item 5 -->
                 <div class="swiper-slide">
                     <div class="neighborhood-card">
-                        <img src="https://images.unsplash.com/photo-1600566753190-17f0bb2a6c3e?auto=format&fit=crop&w=800&q=80" alt="New Jersey">
+                        <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80" alt="New Jersey">
                         <div class="card-overlay"></div>
                         <div class="featured-badge">
                             <i class="fas fa-bolt"></i>

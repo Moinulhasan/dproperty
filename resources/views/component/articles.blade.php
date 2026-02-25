@@ -19,9 +19,9 @@
                                 <span><i class="far fa-calendar-alt"></i> Oct 24, 2023</span>
                                 <span><i class="far fa-user"></i> Admin</span>
                             </div>
-                            <h3 class="article-title">10 Important Things to Know Before Buying a Home</h3>
+                            <h3 class="article-title"><a href="{{ route('article-details', 'buying-tips') }}" class="text-decoration-none text-dark">10 Important Things to Know Before Buying a Home</a></h3>
                             <p class="article-excerpt">Buying a home is one of the biggest investments you'll ever make. Here are the key factors you should consider...</p>
-                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                            <a href="{{ route('article-details', 'buying-tips') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -31,16 +31,16 @@
                     <div class="article-card">
                         <div class="article-image">
                             <span class="article-badge">Market Trends</span>
-                            <img src="https://images.unsplash.com/photo-1460472178825-e5240623abe5?auto=format&fit=crop&w=800&q=80" alt="Article 2">
+                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Article 2">
                         </div>
                         <div class="article-content">
                             <div class="article-meta">
                                 <span><i class="far fa-calendar-alt"></i> Oct 20, 2023</span>
                                 <span><i class="far fa-user"></i> Editor</span>
                             </div>
-                            <h3 class="article-title">The Future of Real Estate: Trends to Watch in 2024</h3>
+                            <h3 class="article-title"><a href="{{ route('article-details', 'market-trends') }}" class="text-decoration-none text-dark">The Future of Real Estate: Trends to Watch in 2024</a></h3>
                             <p class="article-excerpt">As we approach the new year, several emerging trends are set to reshape the property market landscape...</p>
-                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                            <a href="{{ route('article-details', 'market-trends') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -57,9 +57,9 @@
                                 <span><i class="far fa-calendar-alt"></i> Oct 15, 2023</span>
                                 <span><i class="far fa-user"></i> Admin</span>
                             </div>
-                            <h3 class="article-title">How to Maximize Your Space in a Small Apartment</h3>
+                            <h3 class="article-title"><a href="{{ route('article-details', 'interior-design') }}" class="text-decoration-none text-dark">How to Maximize Your Space in a Small Apartment</a></h3>
                             <p class="article-excerpt">Living in a compact space doesn't mean compromising on style or functionality. Discover our top tips for...</p>
-                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                            <a href="{{ route('article-details', 'interior-design') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -76,9 +76,9 @@
                                 <span><i class="far fa-calendar-alt"></i> Oct 10, 2023</span>
                                 <span><i class="far fa-user"></i> Editor</span>
                             </div>
-                            <h3 class="article-title">Why Real Estate is Still the Best Long-Term Investment</h3>
+                            <h3 class="article-title"><a href="{{ route('article-details', 'investment-strategy') }}" class="text-decoration-none text-dark">Why Real Estate is Still the Best Long-Term Investment</a></h3>
                             <p class="article-excerpt">Compared to other asset classes, real estate offers unique advantages for building long-term wealth...</p>
-                            <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                            <a href="{{ route('article-details', 'investment-strategy') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>

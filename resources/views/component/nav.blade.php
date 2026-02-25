@@ -20,13 +20,13 @@
                     <a class="nav-link text-white {{ Request::is('/') ? 'active' : '' }}" href="{{url('/')}}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('buy') ? 'active' : '' }}" href="{{ route('buy') }}">Buy</a>
+                    <a class="nav-link text-white {{ request()->routeIs('buy') ? 'active' : '' }}" href="{{ route('buy') }}">Buy</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('sell') ? 'active' : '' }}" href="{{ route('sell') }}">Sell</a>
+                    <a class="nav-link text-white {{ request()->routeIs('sell') ? 'active' : '' }}" href="{{ route('sell') }}">Sell</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('rent') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
+                    <a class="nav-link text-white {{ request()->routeIs('rent') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('services') ? 'active' : '' }}" href="#services">Services</a>

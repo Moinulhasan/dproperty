@@ -15,3 +15,6 @@ Route::get('property-details/{id}', [HomePageController::class, 'property_detail
 Route::get('buy', [HomePageController::class, 'buy'])->name('buy');
 Route::get('sell', [HomePageController::class, 'sell'])->name('sell');
 Route::get('rent', [HomePageController::class, 'rent'])->name('rent');
+
+Route::get('article/{slug}', [HomePageController::class, 'article_details'])->name('article-details');
+

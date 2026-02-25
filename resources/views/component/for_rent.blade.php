@@ -14,7 +14,7 @@
                             <span class="status-badge" style="background: #00A699;">For Rent</span>
                         </div>
                         <span class="type-badge">Residential</span>
-                        
+
                         <!-- Inner Card Slider -->
                         <div class="swiper card-inner-slider">
                             <div class="swiper-wrapper">
@@ -28,7 +28,7 @@
                     </div>
                     <div class="card-body-global">
                         <h3 class="card-title-global">Modern City Apartment</h3>
-                        
+
                         <div class="info-row">
                             <div class="price-text">$2,500 / mo</div>
                             <div class="detail-item"><span class="info-label">Project ID:</span> DP-4421</div>
@@ -60,13 +60,13 @@
                             <span class="status-badge" style="background: #00A699;">For Rent</span>
                         </div>
                         <span class="type-badge">Residential</span>
-                        
+
                         <!-- Inner Card Slider -->
                         <div class="swiper card-inner-slider">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
+                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
+                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
+                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600607687940-477a4a6b4737?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
                             </div>
                             <div class="swiper-button-next"></div>
                             <div class="swiper-button-prev"></div>
@@ -74,7 +74,7 @@
                     </div>
                     <div class="card-body-global">
                         <h3 class="card-title-global">Luxury Studio</h3>
-                        
+
                         <div class="info-row">
                             <div class="price-text">$1,800 / mo</div>
                             <div class="detail-item"><span class="info-label">Project ID:</span> DP-5510</div>
@@ -106,7 +106,7 @@
                             <span class="status-badge" style="background: #00A699;">For Rent</span>
                         </div>
                         <span class="type-badge">Commercial</span>
-                        
+
                         <!-- Inner Card Slider -->
                         <div class="swiper card-inner-slider">
                             <div class="swiper-wrapper">
@@ -120,7 +120,7 @@
                     </div>
                     <div class="card-body-global">
                         <h3 class="card-title-global">Modern Office Space</h3>
-                        
+
                         <div class="info-row">
                             <div class="price-text">$5,000 / mo</div>
                             <div class="detail-item"><span class="info-label">Project ID:</span> DP-2201</div>
@@ -152,7 +152,7 @@
                             <span class="status-badge" style="background: #00A699;">For Rent</span>
                         </div>
                         <span class="type-badge">Residential</span>
-                        
+
                         <!-- Inner Card Slider -->
                         <div class="swiper card-inner-slider">
                             <div class="swiper-wrapper">
@@ -166,7 +166,7 @@
                     </div>
                     <div class="card-body-global">
                         <h3 class="card-title-global">Garden Townhouse</h3>
-                        
+
                         <div class="info-row">
                             <div class="price-text">$3,200 / mo</div>
                             <div class="detail-item"><span class="info-label">Project ID:</span> DP-3312</div>
