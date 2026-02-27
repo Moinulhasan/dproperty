@@ -38,10 +38,12 @@
                     <div class="search-box card shadow">
                         <form action="#" method="GET" class="search-form">
                             <input type="hidden" name="search_type" id="search_type" value="sale">
-                            <div class="row align-items-end g-2">
-                                <div class="col-lg-2 col-md-6">
+                            
+                            <div class="compact-search-grid">
+                                <!-- Location Card -->
+                                <div class="search-card" onclick="$('#locationSelect').select2('open')">
+                                    <div class="card-label">LOCATION</div>
                                     <div class="search-field">
-                                        <label>LOCATION</label>
                                         <select class="form-select select2-location" name="location" id="locationSelect">
                                             <option value=""></option>
                                             <option value="dhaka">Dhaka</option>
@@ -54,109 +56,120 @@
                                             <option value="mymensingh">Mymensingh</option>
                                         </select>
                                     </div>
+                                    <div class="card-sub-label" id="locationSubLabel">Select City</div>
                                 </div>
-                                <div class="col-lg-2 col-md-6">
+
+                                <!-- Property Type Card -->
+                                <div class="search-card" onclick="$('#propertyTypeSelect').select2('open')">
+                                    <div class="card-label">PROPERTY TYPE</div>
                                     <div class="search-field">
-                                        <label>PROPERTY TYPE</label>
                                         <select class="form-select select2-property-type" name="property_type" id="propertyTypeSelect">
                                             <option value=""></option>
                                         </select>
                                     </div>
+                                    <div class="card-sub-label" id="propertyTypeSubLabel">Residential/Commercial</div>
                                 </div>
-                                <div class="col-lg-2 col-md-6">
-                                    <div class="search-field">
-                                        <label>BED</label>
-                                        <div class="custom-dropdown" id="bedDropdown">
-                                            <div class="dropdown-toggle-custom" id="bedToggle">Bedrooms</div>
-                                            <div class="dropdown-content-custom">
-                                                <div class="dropdown-header-custom">Bed</div>
-                                                <div class="dropdown-body-custom">
-                                                    <div class="bed-options">
-                                                        <div class="bed-btn" data-value="any">Any</div>
-                                                        <div class="bed-btn" data-value="1">1</div>
-                                                        <div class="bed-btn" data-value="2">2</div>
-                                                        <div class="bed-btn" data-value="3">3</div>
-                                                        <div class="bed-btn" data-value="4">4</div>
-                                                        <div class="bed-btn" data-value="5">5</div>
-                                                    </div>
-                                                </div>
-                                                <div class="dropdown-footer-custom">
-                                                    <button type="button" class="btn-clear-dropdown">Clear</button>
-                                                    <button type="button" class="btn-apply-dropdown">Apply</button>
+
+                                <!-- Bed Card -->
+                                <div class="search-card" id="bedCard">
+                                    <div class="card-label">BED</div>
+                                    <div class="custom-dropdown" id="bedDropdown">
+                                        <div class="dropdown-toggle-custom" id="bedToggle">Bedrooms</div>
+                                        <div class="dropdown-content-custom">
+                                            <div class="dropdown-header-custom">Bed</div>
+                                            <div class="dropdown-body-custom">
+                                                <div class="bed-options">
+                                                    <div class="bed-btn" data-value="any">Any</div>
+                                                    <div class="bed-btn" data-value="1">1</div>
+                                                    <div class="bed-btn" data-value="2">2</div>
+                                                    <div class="bed-btn" data-value="3">3</div>
+                                                    <div class="bed-btn" data-value="4">4</div>
+                                                    <div class="bed-btn" data-value="5">5</div>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="bedrooms" id="bedValue">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-6">
-                                    <div class="search-field">
-                                        <label>PROPERTY SIZE</label>
-                                        <div class="custom-dropdown" id="areaDropdown">
-                                            <div class="dropdown-toggle-custom" id="areaToggle">Any Size</div>
-                                            <div class="dropdown-content-custom">
-                                                <div class="dropdown-header-custom">Area (SFT)</div>
-                                                <div class="dropdown-body-custom">
-                                                    <div class="range-container">
-                                                        <div class="range-field">
-                                                            <label>Minimum</label>
-                                                            <div class="input-with-prefix">
-                                                                <span class="prefix">SFT</span>
-                                                                <input type="number" name="min_area" id="minArea" placeholder="MIN">
-                                                            </div>
-                                                        </div>
-                                                        <div class="range-field">
-                                                            <label>Maximum</label>
-                                                            <div class="input-with-prefix">
-                                                                <span class="prefix">SFT</span>
-                                                                <input type="number" name="max_area" id="maxArea" placeholder="MAX">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dropdown-footer-custom">
-                                                    <button type="button" class="btn-clear-dropdown">Clear</button>
-                                                    <button type="button" class="btn-apply-dropdown">Apply</button>
-                                                </div>
+                                            <div class="dropdown-footer-custom">
+                                                <button type="button" class="btn-clear-dropdown">Clear</button>
+                                                <button type="button" class="btn-apply-dropdown">Apply</button>
                                             </div>
                                         </div>
+                                        <input type="hidden" name="bedrooms" id="bedValue">
                                     </div>
+                                    <div class="card-sub-label" id="bedSubLabel">Number of Beds</div>
                                 </div>
-                                <div class="col-lg-2 col-md-12">
-                                    <div class="search-field">
-                                        <label>PRICE</label>
-                                        <div class="custom-dropdown" id="priceDropdown">
-                                            <div class="dropdown-toggle-custom" id="priceToggle">Max. Price</div>
-                                            <div class="dropdown-content-custom">
-                                                <div class="dropdown-header-custom">Price</div>
-                                                <div class="dropdown-body-custom">
-                                                    <div class="range-container">
-                                                        <div class="range-field">
-                                                            <label>Minimum</label>
-                                                            <div class="input-with-prefix">
-                                                                <span class="prefix">BDT</span>
-                                                                <input type="number" name="min_price" id="minPrice" placeholder="MIN">
-                                                            </div>
+
+                                <!-- Property Size Card -->
+                                <div class="search-card" id="areaCard">
+                                    <div class="card-label">PROPERTY SIZE</div>
+                                    <div class="custom-dropdown" id="areaDropdown">
+                                        <div class="dropdown-toggle-custom" id="areaToggle">Any Size</div>
+                                        <div class="dropdown-content-custom">
+                                            <div class="dropdown-header-custom">Area (SFT)</div>
+                                            <div class="dropdown-body-custom">
+                                                <div class="range-container">
+                                                    <div class="range-field">
+                                                        <label>Minimum</label>
+                                                        <div class="input-with-prefix">
+                                                            <span class="prefix">SFT</span>
+                                                            <input type="number" name="min_area" id="minArea" placeholder="MIN">
                                                         </div>
-                                                        <div class="range-field">
-                                                            <label>Maximum</label>
-                                                            <div class="input-with-prefix">
-                                                                <span class="prefix">BDT</span>
-                                                                <input type="number" name="max_price" id="maxPrice" placeholder="MAX">
-                                                            </div>
+                                                    </div>
+                                                    <div class="range-field">
+                                                        <label>Maximum</label>
+                                                        <div class="input-with-prefix">
+                                                            <span class="prefix">SFT</span>
+                                                            <input type="number" name="max_area" id="maxArea" placeholder="MAX">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="dropdown-footer-custom">
-                                                    <button type="button" class="btn-clear-dropdown">Clear</button>
-                                                    <button type="button" class="btn-apply-dropdown">Apply</button>
-                                                </div>
+                                            </div>
+                                            <div class="dropdown-footer-custom">
+                                                <button type="button" class="btn-clear-dropdown">Clear</button>
+                                                <button type="button" class="btn-apply-dropdown">Apply</button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="card-sub-label" id="areaSubLabel">Area in SFT</div>
                                 </div>
-                                <div class="col-lg-2 col-md-12 text-end">
-                                    <button type="submit" class="btn btn-search w-100">Search</button>
+
+                                <!-- Price Card -->
+                                <div class="search-card" id="priceCard">
+                                    <div class="card-label">PRICE</div>
+                                    <div class="custom-dropdown" id="priceDropdown">
+                                        <div class="dropdown-toggle-custom" id="priceToggle">Max. Price</div>
+                                        <div class="dropdown-content-custom">
+                                            <div class="dropdown-header-custom">Price</div>
+                                            <div class="dropdown-body-custom">
+                                                <div class="range-container">
+                                                    <div class="range-field">
+                                                        <label>Minimum</label>
+                                                        <div class="input-with-prefix">
+                                                            <span class="prefix">BDT</span>
+                                                            <input type="number" name="min_price" id="minPrice" placeholder="MIN">
+                                                        </div>
+                                                    </div>
+                                                    <div class="range-field">
+                                                        <label>Maximum</label>
+                                                        <div class="input-with-prefix">
+                                                            <span class="prefix">BDT</span>
+                                                            <input type="number" name="max_price" id="maxPrice" placeholder="MAX">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown-footer-custom">
+                                                <button type="button" class="btn-clear-dropdown">Clear</button>
+                                                <button type="button" class="btn-apply-dropdown">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-sub-label" id="priceSubLabel">Budget Range</div>
+                                </div>
+
+                                <!-- Search Button -->
+                                <div class="search-action-box">
+                                    <button type="submit" class="btn-search-compact">
+                                        <i class="fas fa-search"></i>
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -280,6 +293,7 @@
         }
 
         // Initialize Select2
+        // Initialize Select2
         $(document).ready(function() {
             const select2Options = {
                 allowClear: true,
@@ -289,10 +303,20 @@
             $('#locationSelect').select2({
                 ...select2Options,
                 placeholder: 'All Cities'
+            }).on('change', function() {
+                const data = $(this).select2('data')[0];
+                const subLabel = data && data.text ? 'Selected in ' + data.text : 'Select City';
+                document.getElementById('locationSubLabel').innerText = subLabel;
             });
 
             const initialType = document.getElementById('search_type').value || 'sale';
             updatePropertyType(initialType);
+            
+            $('#propertyTypeSelect').on('change', function() {
+                const data = $(this).select2('data')[0];
+                const subLabel = data && data.text ? 'Type: ' + data.text : 'Residential/Commercial';
+                document.getElementById('propertyTypeSubLabel').innerText = subLabel;
+            });
         });
 
         // Tab switching logic
@@ -306,44 +330,57 @@
                 
                 // Update Select2 options
                 updatePropertyType(type);
+                document.getElementById('propertyTypeSubLabel').innerText = 'Residential/Commercial';
             });
         });
+
+        // Card Click logic for custom dropdowns
+        document.getElementById('bedCard').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAllDropdowns(document.getElementById('bedDropdown'));
+            document.getElementById('bedDropdown').classList.toggle('active');
+        });
+        document.getElementById('areaCard').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAllDropdowns(document.getElementById('areaDropdown'));
+            document.getElementById('areaDropdown').classList.toggle('active');
+        });
+        document.getElementById('priceCard').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAllDropdowns(document.getElementById('priceDropdown'));
+            document.getElementById('priceDropdown').classList.toggle('active');
+        });
+
+        function closeAllDropdowns(except = null) {
+            document.querySelectorAll('.custom-dropdown').forEach(d => {
+                if (d !== except) d.classList.remove('active');
+            });
+        }
 
         // Custom Dropdown logic
         const dropdowns = document.querySelectorAll('.custom-dropdown');
         
         dropdowns.forEach(dropdown => {
-            const toggle = dropdown.querySelector('.dropdown-toggle-custom');
-            const content = dropdown.querySelector('.dropdown-content-custom');
             const clearBtn = dropdown.querySelector('.btn-clear-dropdown');
             const applyBtn = dropdown.querySelector('.btn-apply-dropdown');
 
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // Close other dropdowns
-                dropdowns.forEach(d => {
-                    if (d !== dropdown) d.classList.remove('active');
-                });
-                dropdown.classList.toggle('active');
-            });
-
             // Prevent closing when clicking inside dropdown content
-            content.addEventListener('click', (e) => e.stopPropagation());
+            dropdown.querySelector('.dropdown-content-custom').addEventListener('click', (e) => e.stopPropagation());
 
             // Clear button
             clearBtn.addEventListener('click', () => {
                 if (dropdown.id === 'bedDropdown') {
                     dropdown.querySelectorAll('.bed-btn').forEach(btn => btn.classList.remove('active'));
                     document.getElementById('bedValue').value = '';
-                    toggle.innerText = 'Bedrooms';
+                    document.getElementById('bedSubLabel').innerText = 'Number of Beds';
                 } else if (dropdown.id === 'areaDropdown') {
                     document.getElementById('minArea').value = '';
                     document.getElementById('maxArea').value = '';
-                    toggle.innerText = 'Any Size';
+                    document.getElementById('areaSubLabel').innerText = 'Area in SFT';
                 } else if (dropdown.id === 'priceDropdown') {
                     document.getElementById('minPrice').value = '';
                     document.getElementById('maxPrice').value = '';
-                    toggle.innerText = 'Max. Price';
+                    document.getElementById('priceSubLabel').innerText = 'Budget Range';
                 }
                 dropdown.classList.remove('active');
             });
@@ -352,21 +389,21 @@
             applyBtn.addEventListener('click', () => {
                 if (dropdown.id === 'bedDropdown') {
                     const activeBed = dropdown.querySelector('.bed-btn.active');
-                    toggle.innerText = activeBed ? activeBed.innerText + ' Bed' : 'Bedrooms';
+                    document.getElementById('bedSubLabel').innerText = activeBed ? activeBed.innerText + ' Bedrooms Selected' : 'Number of Beds';
                 } else if (dropdown.id === 'areaDropdown') {
                     const min = document.getElementById('minArea').value;
                     const max = document.getElementById('maxArea').value;
-                    if (min && max) toggle.innerText = min + ' - ' + max + ' SFT';
-                    else if (min) toggle.innerText = min + '+ SFT';
-                    else if (max) toggle.innerText = 'Up to ' + max + ' SFT';
-                    else toggle.innerText = 'Any Size';
+                    if (min && max) document.getElementById('areaSubLabel').innerText = min + ' - ' + max + ' SFT';
+                    else if (min) document.getElementById('areaSubLabel').innerText = min + '+ SFT';
+                    else if (max) document.getElementById('areaSubLabel').innerText = 'Up to ' + max + ' SFT';
+                    else document.getElementById('areaSubLabel').innerText = 'Area in SFT';
                 } else if (dropdown.id === 'priceDropdown') {
                     const min = document.getElementById('minPrice').value;
                     const max = document.getElementById('maxPrice').value;
-                    if (min && max) toggle.innerText = min + ' - ' + max + ' BDT';
-                    else if (min) toggle.innerText = min + '+ BDT';
-                    else if (max) toggle.innerText = 'Up to ' + max + ' BDT';
-                    else toggle.innerText = 'Max. Price';
+                    if (min && max) document.getElementById('priceSubLabel').innerText = min + ' - ' + max + ' BDT';
+                    else if (min) document.getElementById('priceSubLabel').innerText = min + '+ BDT';
+                    else if (max) document.getElementById('priceSubLabel').innerText = 'Up to ' + max + ' BDT';
+                    else document.getElementById('priceSubLabel').innerText = 'Budget Range';
                 }
                 dropdown.classList.remove('active');
             });
@@ -384,7 +421,7 @@
 
         // Close dropdowns on outside click
         window.addEventListener('click', () => {
-            dropdowns.forEach(d => d.classList.remove('active'));
+            closeAllDropdowns();
         });
     });
 </script>

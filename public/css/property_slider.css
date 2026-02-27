@@ -1,0 +1,79 @@
+/* Property Section Sliders */
+.property-slider-container {
+    padding: 20px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.property-slider-container .swiper-slide {
+    height: auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* Navigation Buttons Styling */
+.section-slider-next,
+.section-slider-prev {
+    width: 45px;
+    height: 45px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: var(--bs-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.section-slider-next:hover,
+.section-slider-prev:hover {
+    background: var(--bs-primary);
+    color: #fff;
+}
+
+.section-slider-prev {
+    left: 10px;
+}
+
+.section-slider-next {
+    right: 10px;
+}
+
+.section-slider-next::after,
+.section-slider-prev::after {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Pagination Styling */
+.property-slider-pagination {
+    bottom: 20px !important;
+}
+
+.property-slider-pagination .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.property-slider-pagination .swiper-pagination-bullet-active {
+    width: 25px;
+    border-radius: 5px;
+    background: var(--bs-primary);
+}
+
+@media (max-width: 768px) {
+
+    .section-slider-next,
+    .section-slider-prev {
+        display: none;
+    }
+}

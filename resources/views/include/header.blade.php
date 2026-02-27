@@ -34,6 +34,7 @@
 <link rel="stylesheet" href="{{asset('css/neighborhoods.css')}}">
 <link rel="stylesheet" href="{{asset('css/articles.css')}}">
 <link rel="stylesheet" href="{{asset('css/property_cards.css')}}">
+<link rel="stylesheet" href="{{asset('css/property_slider.css')}}">
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <!-- Select2 CSS -->

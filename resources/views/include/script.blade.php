@@ -118,5 +118,70 @@
         }
     });
 
+    // Initialize Swiper Sliders
+    document.addEventListener('DOMContentLoaded', function() {
+        // Rent Slider (Right to Left - Standard)
+        const rentSlider = document.querySelector('.rent-slider');
+        if (rentSlider) {
+            new Swiper(rentSlider, {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                    reverseDirection: false // Right to Left
+                },
+                navigation: {
+                    nextEl: rentSlider.querySelector('.section-slider-next'),
+                    prevEl: rentSlider.querySelector('.section-slider-prev'),
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                    1400: { slidesPerView: 4 }
+                }
+            });
+        }
+
+        // Sale Slider (Left to Right)
+        const saleSlider = document.querySelector('.sale-slider');
+        if (saleSlider) {
+            new Swiper(saleSlider, {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                    reverseDirection: true // Left to Right
+                },
+                navigation: {
+                    nextEl: saleSlider.querySelector('.section-slider-next'),
+                    prevEl: saleSlider.querySelector('.section-slider-prev'),
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                    1400: { slidesPerView: 4 }
+                }
+            });
+        }
+
+        // Inner Card Sliders
+        const innerSliders = document.querySelectorAll('.card-inner-slider');
+        innerSliders.forEach(slider => {
+            new Swiper(slider, {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: true,
+                navigation: {
+                    nextEl: slider.querySelector('.swiper-button-next'),
+                    prevEl: slider.querySelector('.swiper-button-prev'),
+                },
+            });
+        });
+    });
+
 
 </script>
