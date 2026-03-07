@@ -22,48 +22,45 @@
 <div class="filter-wrapper">
     <div class="container px-md-5 px-3">
         <div class="filter-card border-0">
-            <form action="#" class="row g-3 align-items-end">
+            <form action="{{ url()->current() }}" method="GET" class="row g-3 align-items-end">
                 <div class="col-lg-3 col-md-6">
                     <label class="filter-label">Location</label>
-                    <select class="filter-control select2-basic">
+                    <select name="location" class="filter-control select2-basic">
                         <option value="">All Locations</option>
-                        <option value="banani">Banani, Dhaka</option>
-                        <option value="gulshan">Gulshan, Dhaka</option>
-                        <option value="dhanmondi">Dhanmondi, Dhaka</option>
-                        <option value="uttara">Uttara, Dhaka</option>
+                        @foreach($locations as $loc)
+                            <option value="{{ $loc }}" {{ request('location') == $loc ? 'selected' : '' }}>{{ $loc }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <label class="filter-label">Property Type</label>
-                    <select class="filter-control">
+                    <select name="property_type" class="filter-control">
                         <option value="">All Types</option>
-                        <option value="apartment">Apartment</option>
-                        <option value="house">Independent House</option>
-                        <option value="villa">Luxury Villa</option>
-                        <option value="office">Office Space</option>
+                        @foreach($property_types as $type)
+                            <option value="{{ $type }}" {{ request('property_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <label class="filter-label">Bedrooms</label>
-                    <select class="filter-control">
-                        <option value="">Any</option>
-                        <option value="1">1+</option>
-                        <option value="2">2+</option>
-                        <option value="3">3+</option>
-                        <option value="4">4+</option>
+                    <select name="bedrooms" class="filter-control">
+                        <option value="any">Any</option>
+                        <option value="1" {{ request('bedrooms') == '1' ? 'selected' : '' }}>1</option>
+                        <option value="2" {{ request('bedrooms') == '2' ? 'selected' : '' }}>2</option>
+                        <option value="3" {{ request('bedrooms') == '3' ? 'selected' : '' }}>3</option>
+                        <option value="4" {{ request('bedrooms') == '4' ? 'selected' : '' }}>4</option>
+                        <option value="5" {{ request('bedrooms') == '5' ? 'selected' : '' }}>5+</option>
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <label class="filter-label">Price Range</label>
-                    <select class="filter-control">
-                        <option value="">Any Price</option>
-                        <option value="low">Under ৳ 1,000,000</option>
-                        <option value="mid">৳ 1,000,000 - ৳ 5,000,000</option>
-                        <option value="high">Above ৳ 5,000,000</option>
-                    </select>
+                    <div class="d-flex gap-1">
+                        <input type="number" name="min_price" class="form-control filter-control" placeholder="Min" value="{{ request('min_price') }}">
+                        <input type="number" name="max_price" class="form-control filter-control" placeholder="Max" value="{{ request('max_price') }}">
+                    </div>
                 </div>
                 <div class="col-lg-3 col-md-12">
-                    <button type="submit" class="btn-filter-apply py-3">
+                    <button type="submit" class="btn-filter-apply py-3 w-100">
                         <i class="fas fa-search me-2"></i> Find properties
                     </button>
                 </div>
@@ -79,8 +76,12 @@
             <div class="property-card-global">
                 <div class="card-image-box">
                     <div class="status-badge-container">
-                        <span class="status-badge" style="background: {{ $property->property_status == 'Rent' ? '#00A699' : '#FF385C' }};">
-                            For {{ $property->property_status }}
+                        <span class="status-badge" style="background: {{ $property->property_status == 'Rent' || $property->property_status == 'For Rent' ? '#00A699' : '#FF385C' }};">
+                            @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                                {{ $property->property_status }}
+                            @else
+                                For {{ $property->property_status }}
+                            @endif
                         </span>
                     </div>
                     <span class="type-badge">{{ $property->category }}</span>
@@ -108,23 +109,21 @@
                 <div class="card-body-global">
                     <h3 class="card-title-global">{{ $property->title }}</h3>
 
-                    <div class="info-row">
-                        <div class="price-text">৳ {{ number_format($property->price, 0) }}{{ $property->property_status == 'Rent' ? ' / mo' : '' }}</div>
+                    <div class="info-grid">
+                        <h4 class="price-text">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? ' / mo' : '' }}</h4>
                         <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
-                    </div>
-
-                    <div class="info-row">
+                        
                         <div class="location-text">
-                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
                         </div>
                         <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                     </div>
                 </div>
                 <div class="card-footer-global">
                     <div class="feature-group">
-                        <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
-                        <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
-                        <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
+                        <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
+                        <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
+                        <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
                     </div>
                     <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                 </div>

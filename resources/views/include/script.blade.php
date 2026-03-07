@@ -162,8 +162,8 @@
             }
         });
 
-        // Sale Slider (Left to Right)
-        initConditionalSlider('.sale-slider', {
+        // Sell Slider (Left to Right)
+        initConditionalSlider('.sell-slider', {
             slidesPerView: 1,
             spaceBetween: 20,
             loop: true,
@@ -173,8 +173,8 @@
                 reverseDirection: true
             },
             navigation: {
-                nextEl: '.sale-slider .section-slider-next',
-                prevEl: '.sale-slider .section-slider-prev',
+                nextEl: '.sell-slider .section-slider-next',
+                prevEl: '.sell-slider .section-slider-prev',
             },
             breakpoints: {
                 640: { slidesPerView: 2 },

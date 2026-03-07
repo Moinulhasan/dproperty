@@ -28,13 +28,13 @@ class HomePageController extends Controller
 
         // Dynamic Properties for sections
         $rent_properties = Property::where('status', 1)
-            ->where('property_status', 'Rent')
+            ->where('property_status', 'For Rent')
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
 
         $sale_properties = Property::where('status', 1)
-            ->whereIn('property_status', ['Buy', 'For Sell'])
+            ->where('property_status', 'For Sell')
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
@@ -82,49 +82,25 @@ class HomePageController extends Controller
 
     public function buy(Request $request)
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
-        $query = Property::where('status', 1)
-            ->whereIn('property_status', ['Buy', 'Sell', 'For Sale']) // Support both formats
-            ->orderBy('created_at', 'desc');
-
-        if ($request->filled('location')) {
-            $query->where('route', $request->location);
-        }
-        if ($request->filled('property_type')) {
-            $query->where('property_type', $request->property_type);
-        }
-        if ($request->filled('bedrooms') && $request->bedrooms != 'any') {
-            $query->where('bedrooms', $request->bedrooms);
-        }
-        if ($request->filled('min_area')) {
-            $query->where('area', '>=', $request->min_area);
-        }
-        if ($request->filled('max_area')) {
-            $query->where('area', '<=', $request->max_area);
-        }
-        if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
-        }
-        if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
-        }
-
-        $properties = $query->paginate(12)->withQueryString();
-
-        $title = "Properties For Sale";
-        return view('pages.listings', compact('settings', 'title', 'properties'));
+        return $this->handle_property_listing($request, 'Buy', 'Properties For Buy');
     }
 
     public function sell(Request $request)
     {
-        return $this->buy($request); // Reuse buy for sell as they usually share the same list
+        return $this->handle_property_listing($request, 'Sell', 'Properties For Sell');
     }
 
     public function rent(Request $request)
     {
+        return $this->handle_property_listing($request, 'Rent', 'Properties For Rent');
+    }
+
+    private function handle_property_listing(Request $request, $property_status, $title)
+    {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
+
         $query = Property::where('status', 1)
-            ->whereIn('property_status', ['Rent', 'For Rent'])
+            ->where('property_status', $property_status)
             ->orderBy('created_at', 'desc');
 
         if ($request->filled('location')) {
@@ -134,7 +110,11 @@ class HomePageController extends Controller
             $query->where('property_type', $request->property_type);
         }
         if ($request->filled('bedrooms') && $request->bedrooms != 'any') {
-            $query->where('bedrooms', $request->bedrooms);
+            if ($request->bedrooms == '5') {
+                $query->where('bedrooms', '>=', 5);
+            } else {
+                $query->where('bedrooms', $request->bedrooms);
+            }
         }
         if ($request->filled('min_area')) {
             $query->where('area', '>=', $request->min_area);
@@ -149,10 +129,12 @@ class HomePageController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
+        $locations = Property::where('status', 1)->distinct()->pluck('route')->filter()->values();
+        $property_types = Property::where('status', 1)->distinct()->pluck('property_type')->filter()->values();
+
         $properties = $query->paginate(12)->withQueryString();
 
-        $title = "Properties For Rent";
-        return view('pages.listings', compact('settings', 'title', 'properties'));
+        return view('pages.listings', compact('settings', 'title', 'properties', 'locations', 'property_types'));
     }
 
     public function article_details($slug)

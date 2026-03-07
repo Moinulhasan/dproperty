@@ -12,7 +12,13 @@
                         <div class="property-card-global">
                             <div class="card-image-box">
                                 <div class="status-badge-container">
-                                    <span class="status-badge" style="background: #00A699;">For {{ $property->property_status }}</span>
+                                    <span class="status-badge" style="background: #00A699;">
+                                        @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                                            {{ $property->property_status }}
+                                        @else
+                                            For {{ $property->property_status }}
+                                        @endif
+                                    </span>
                                 </div>
                                 <span class="type-badge">{{ $property->category }}</span>
 
@@ -36,23 +42,21 @@
                             <div class="card-body-global">
                                 <h3 class="card-title-global">{{ $property->title }}</h3>
 
-                                <div class="info-row">
-                                    <div class="price-text">৳ {{ number_format($property->price, 0) }} / mo</div>
+                                <div class="info-grid">
+                                    <h4 class="price-text">৳ {{ number_format($property->price, 0) }} / mo</h4>
                                     <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
-                                </div>
-
-                                <div class="info-row">
+                                    
                                     <div class="location-text">
-                                        <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                                        <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
                                     </div>
                                     <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                 </div>
                             </div>
                             <div class="card-footer-global">
                                 <div class="feature-group">
-                                    <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
-                                    <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
-                                    <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
+                                    <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
+                                    <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
+                                    <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
                                 </div>
                                 <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                             </div>
@@ -72,7 +76,13 @@
                                 <div class="property-card-global">
                                     <div class="card-image-box">
                                         <div class="status-badge-container">
-                                            <span class="status-badge" style="background: #00A699;">For {{ $property->property_status }}</span>
+                                            <span class="status-badge" style="background: #00A699;">
+                                                @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                                                    {{ $property->property_status }}
+                                                @else
+                                                    For {{ $property->property_status }}
+                                                @endif
+                                            </span>
                                         </div>
                                         <span class="type-badge">{{ $property->category }}</span>
 
@@ -96,23 +106,21 @@
                                     <div class="card-body-global">
                                         <h3 class="card-title-global">{{ $property->title }}</h3>
 
-                                        <div class="info-row">
-                                            <div class="price-text">৳ {{ number_format($property->price, 0) }} / mo</div>
+                                        <div class="info-grid">
+                                            <h4 class="price-text">৳ {{ number_format($property->price, 0) }} / mo</h4>
                                             <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
-                                        </div>
-
-                                        <div class="info-row">
+                                            
                                             <div class="location-text">
-                                                <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                                                <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
                                             </div>
                                             <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                         </div>
                                     </div>
                                     <div class="card-footer-global">
                                         <div class="feature-group">
-                                            <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
-                                            <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
-                                            <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
+                                            <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
+                                            <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
+                                            <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
                                         </div>
                                         <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                                     </div>

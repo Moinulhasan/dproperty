@@ -2,7 +2,7 @@
     <section class="py-5 bg-light" id="for-sale">
         <div class="container-fluid px-md-5 px-3">
             <div class="section-header text-center mb-5">
-                <h2 class="text-primary">Properties For Sale</h2>
+                <h2 class="text-primary">Properties For Sell</h2>
                 <p>Explore our best selection of properties available for purchase</p>
             </div>
 
@@ -12,7 +12,13 @@
                         <div class="property-card-global">
                             <div class="card-image-box">
                                 <div class="status-badge-container">
-                                    <span class="status-badge">For {{ $property->property_status }}</span>
+                                    <span class="status-badge">
+                                        @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                                            {{ $property->property_status }}
+                                        @else
+                                            For {{ $property->property_status }}
+                                        @endif
+                                    </span>
                                 </div>
                                 <span class="type-badge">{{ $property->category }}</span>
 
@@ -36,23 +42,21 @@
                             <div class="card-body-global">
                                 <h3 class="card-title-global">{{ $property->title }}</h3>
 
-                                <div class="info-row">
-                                    <div class="price-text">৳ {{ number_format($property->price, 0) }}</div>
+                                <div class="info-grid">
+                                    <h4 class="price-text">৳ {{ number_format($property->price, 0) }}</h4>
                                     <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
-                                </div>
-
-                                <div class="info-row">
+                                    
                                     <div class="location-text">
-                                        <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                                        <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
                                     </div>
                                     <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                 </div>
                             </div>
                             <div class="card-footer-global">
                                 <div class="feature-group">
-                                    <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
-                                    <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
-                                    <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
+                                    <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
+                                    <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
+                                    <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
                                 </div>
                                 <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                             </div>
@@ -65,7 +69,7 @@
 
             <!-- Mobile Slider View (Slider only) -->
             <div class="property-slider-container d-lg-none">
-                <div class="swiper main-property-slider sale-slider">
+                <div class="swiper main-property-slider sell-slider">
                     <div class="swiper-wrapper">
                         @foreach($sale_properties as $property)
                             <div class="swiper-slide">
@@ -96,23 +100,21 @@
                                     <div class="card-body-global">
                                         <h3 class="card-title-global">{{ $property->title }}</h3>
 
-                                        <div class="info-row">
-                                            <div class="price-text">৳ {{ number_format($property->price, 0) }}</div>
+                                        <div class="info-grid">
+                                            <h4 class="price-text">৳ {{ number_format($property->price, 0) }}</h4>
                                             <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
-                                        </div>
-
-                                        <div class="info-row">
+                                            
                                             <div class="location-text">
-                                                <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                                                <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
                                             </div>
                                             <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                         </div>
                                     </div>
                                     <div class="card-footer-global">
                                         <div class="feature-group">
-                                            <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
-                                            <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
-                                            <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
+                                            <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
+                                            <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
+                                            <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
                                         </div>
                                         <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                                     </div>
@@ -127,7 +129,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <a href="{{ route('buy') }}" class="btn btn-primary px-5 py-3 rounded-pill fw-bold">View All Properties</a>
+                <a href="{{ route('sell') }}" class="btn btn-primary px-5 py-3 rounded-pill fw-bold">View All Properties</a>
             </div>
         </div>
     </section>

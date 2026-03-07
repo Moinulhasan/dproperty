@@ -59,7 +59,7 @@ class PropertyController extends Controller
             'price' => 'required|numeric',
             'category' => 'required|string',
             'property_type' => 'required|string',
-            'property_status' => 'required|string',
+            'property_status' => 'required|string|in:Buy,Rent,Sell',
             'route' => 'nullable|string',
             'sub_route' => 'nullable|string',
             'road' => 'nullable|string',

@@ -10,7 +10,13 @@
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-{{--                <li class="breadcrumb-item"><a href="{{ route(strtolower($property->property_status)) }}">{{ $property->property_status }}</a></li>--}}
+                @php
+                    $status = strtolower($property->property_status);
+                    $route = 'buy';
+                    if (str_contains($status, 'rent')) $route = 'rent';
+                    elseif (str_contains($status, 'sell') || str_contains($status, 'sale')) $route = 'sell';
+                @endphp
+                <li class="breadcrumb-item"><a href="{{ route($route) }}">{{ $property->property_status }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $property->title }}</li>
             </ol>
         </nav>
@@ -61,8 +67,14 @@
                 <div class="detail-content-box mt-4">
                     <div class="property-main-header">
                         <div class="price-box">
-                            <h2 class="m-0">৳ {{ number_format($property->price, 2) }}</h2>
-                            <div class="badge bg-primary mt-2">For {{ $property->property_status }}</div>
+                            <h2 class="m-0">৳ {{ number_format($property->price, 2) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? ' / mo' : '' }}</h2>
+                            <div class="badge bg-primary mt-2">
+                                @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                                    {{ $property->property_status }}
+                                @else
+                                    For {{ $property->property_status }}
+                                @endif
+                            </div>
                         </div>
                         <div class="meta-info">
                             <h3 class="m-0">ID: {{ $property->project_id }}</h3>
@@ -182,6 +194,13 @@
             <div class="col-lg-4">
                 <div class="details-sidebar">
                     <div class="seller-profile">
+                        @if($property->user && $property->user->company && $property->user->company->logo)
+                            <img src="{{ asset($property->user->company->logo) }}" class="seller-logo" alt="{{ $property->user->company->name }}">
+                        @else
+                            <div class="seller-logo d-flex align-items-center justify-content-center bg-light">
+                                <i class="fas fa-building text-muted"></i>
+                            </div>
+                        @endif
                         <div class="seller-info">
                             <h4>{{ $property->user->name ?? 'DProperty Agent' }}</h4>
                             <div class="verified-badge">

@@ -3,19 +3,50 @@
 :root {
     --detail-bg: #f8f9fa;
     --sidebar-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --accent-teal: #00A699;
+    --accent-red: #FF385C;
 }
 
 .details-page-wrapper {
     background-color: var(--detail-bg);
-    padding: 40px 0;
+    padding: 30px 0;
 }
 
-/* Gallery Styles */
-.detail-gallery-container {
+/* Premium Breadcrumb */
+.breadcrumb {
     background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: var(--sidebar-shadow);
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: inline-flex;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 0;
+}
+
+.breadcrumb-item {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.breadcrumb-item a {
+    color: var(--accent-teal);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--accent-red);
+}
+
+.breadcrumb-item.active {
+    color: #888;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: "\f105";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: #ccc;
+    font-size: 0.8rem;
 }
 
 .main-image-swiper {
@@ -80,31 +111,38 @@
 .seller-logo {
     width: 60px;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 10px;
     object-fit: contain;
-    border: 1px solid #eee;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    padding: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .seller-info h4 {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     margin: 0;
 }
 
 .verified-badge {
-    background: #f0f0f0;
-    color: #666;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-top: 5px;
+    background: rgba(0, 166, 153, 0.1);
+    color: #00A699;
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .verified-badge i {
-    color: #0084ff;
+    color: #00A699;
+    font-size: 0.75rem;
 }
 
 .contact-actions {
@@ -129,7 +167,7 @@
 
 .btn-phone {
     background: #fff;
-    color: #333;
+    color: #444;
 }
 
 .btn-chat {
@@ -165,9 +203,10 @@
 }
 
 .price-box h2 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--primary-color, #006A50);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color, #00A699);
+    letter-spacing: -0.5px;
 }
 
 .meta-info {
@@ -175,15 +214,15 @@
 }
 
 .meta-info h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #333;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #444;
 }
 
 .location-tag {
-    font-size: 1.1rem;
-    color: #666;
-    margin-top: 5px;
+    font-size: 1rem;
+    color: #777;
+    margin-top: 4px;
 }
 
 /* Specs Icon Grid */
@@ -195,12 +234,12 @@
 }
 
 .spec-item {
-    background: #fcfcfc;
-    border: 1px solid #f0f0f0;
-    padding: 15px;
+    background: #fff;
+    border: 1px solid #f2f2f2;
+    padding: 18px 12px;
     border-radius: 12px;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .spec-item:hover {
@@ -209,14 +248,14 @@
 }
 
 .spec-icon {
-    font-size: 1.8rem;
-    color: var(--primary-color, #006A50);
-    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: var(--primary-color, #00A699);
+    margin-bottom: 8px;
 }
 
 .spec-value {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: #333;
     display: block;
 }
@@ -253,12 +292,12 @@
 
 /* Section Headlines */
 .detail-section-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 20px;
-    color: #333;
+    margin-bottom: 18px;
+    color: #222;
     position: relative;
-    padding-bottom: 10px;
+    padding-bottom: 12px;
 }
 
 .detail-section-title::after {
@@ -266,9 +305,10 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 40px;
-    height: 3px;
-    background: var(--primary-color, #006A50);
+    width: 35px;
+    height: 2.5px;
+    background: var(--primary-color, #00A699);
+    border-radius: 2px;
 }
 
 .description-text {

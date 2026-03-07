@@ -29,7 +29,7 @@
                     <!-- Tabs -->
                     <div class="search-tabs-outer">
                         <div class="search-tabs">
-                            <button class="search-tab active" data-type="sale">SALE</button>
+                            <button class="search-tab active" data-type="sell">SELL</button>
                             <button class="search-tab" data-type="rent">RENT</button>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                     <!-- Search Box -->
                     <div class="search-box card shadow">
                         <form action="#" method="GET" class="search-form">
-                            <input type="hidden" name="search_type" id="search_type" value="sale">
+                            <input type="hidden" name="search_type" id="search_type" value="sell">
                             
                             <div class="compact-search-grid">
                                 <!-- Location Card -->
@@ -226,7 +226,7 @@
                     ]
                 }
             ],
-            sale: [
+            sell: [
                 {
                     text: 'Residential',
                     children: [
@@ -320,6 +320,8 @@
                 const type = $('#search_type').val();
                 if (type === 'rent') {
                     $(this).attr('action', "{{ route('rent') }}");
+                } else if (type === 'sell') {
+                    $(this).attr('action', "{{ route('sell') }}");
                 } else {
                     $(this).attr('action', "{{ route('buy') }}");
                 }
