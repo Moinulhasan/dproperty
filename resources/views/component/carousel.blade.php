@@ -46,14 +46,9 @@
                                     <div class="search-field">
                                         <select class="form-select select2-location" name="location" id="locationSelect">
                                             <option value=""></option>
-                                            <option value="dhaka">Dhaka</option>
-                                            <option value="chattogram">Chattogram</option>
-                                            <option value="sylhet">Sylhet</option>
-                                            <option value="rajshahi">Rajshahi</option>
-                                            <option value="khulna">Khulna</option>
-                                            <option value="barishal">Barishal</option>
-                                            <option value="rangpur">Rangpur</option>
-                                            <option value="mymensingh">Mymensingh</option>
+                                            @foreach($locations as $loc)
+                                                <option value="{{ $loc }}">{{ $loc }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="card-sub-label" id="locationSubLabel">Select City</div>
@@ -65,6 +60,9 @@
                                     <div class="search-field">
                                         <select class="form-select select2-property-type" name="property_type" id="propertyTypeSelect">
                                             <option value=""></option>
+                                            @foreach($property_types as $type)
+                                                <option value="{{ $type }}">{{ $type }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="card-sub-label" id="propertyTypeSubLabel">Residential/Commercial</div>
@@ -293,7 +291,6 @@
         }
 
         // Initialize Select2
-        // Initialize Select2
         $(document).ready(function() {
             const select2Options = {
                 allowClear: true,
@@ -309,13 +306,23 @@
                 document.getElementById('locationSubLabel').innerText = subLabel;
             });
 
-            const initialType = document.getElementById('search_type').value || 'sale';
-            updatePropertyType(initialType);
-            
-            $('#propertyTypeSelect').on('change', function() {
+            $('#propertyTypeSelect').select2({
+                ...select2Options,
+                placeholder: 'Property Type'
+            }).on('change', function() {
                 const data = $(this).select2('data')[0];
                 const subLabel = data && data.text ? 'Type: ' + data.text : 'Residential/Commercial';
                 document.getElementById('propertyTypeSubLabel').innerText = subLabel;
+            });
+            
+            // Handle form submission based on type
+            $('.search-form').on('submit', function(e) {
+                const type = $('#search_type').val();
+                if (type === 'rent') {
+                    $(this).attr('action', "{{ route('rent') }}");
+                } else {
+                    $(this).attr('action', "{{ route('buy') }}");
+                }
             });
         });
 
@@ -328,8 +335,6 @@
                 const type = this.getAttribute('data-type');
                 document.getElementById('search_type').value = type;
                 
-                // Update Select2 options
-                updatePropertyType(type);
                 document.getElementById('propertyTypeSubLabel').innerText = 'Residential/Commercial';
             });
         });

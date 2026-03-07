@@ -8,7 +8,7 @@
                     document.write(new Date().getFullYear());
                 </script>
                 , made by
-                <b>SSL Wireless</b>
+                <b>Moinul</b>
             </div>
         </div>
     </div>

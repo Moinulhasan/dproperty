@@ -1,209 +1,139 @@
-<section class="py-5 bg-light" id="for-sale">
-    <div class="container-fluid px-md-5 px-3">
-        <div class="section-header text-center mb-5">
-            <h2 class="text-primary">Properties For Sale</h2>
-            <p>Explore our best selection of properties available for purchase</p>
-        </div>
+@if(count($sale_properties))
+    <section class="py-5 bg-light" id="for-sale">
+        <div class="container-fluid px-md-5 px-3">
+            <div class="section-header text-center mb-5">
+                <h2 class="text-primary">Properties For Sale</h2>
+                <p>Explore our best selection of properties available for purchase</p>
+            </div>
 
-        <div class="property-slider-container">
-            <div class="swiper main-property-slider sale-slider">
-                <div class="swiper-wrapper">
-                    <!-- Property Card 1 -->
-                    <div class="swiper-slide">
+            <div class="row d-none d-lg-flex">
+                @forelse($sale_properties as $property)
+                    <div class="col-lg-3">
                         <div class="property-card-global">
                             <div class="card-image-box">
                                 <div class="status-badge-container">
-                                    <span class="status-badge">For Sale</span>
+                                    <span class="status-badge">For {{ $property->property_status }}</span>
                                 </div>
-                                <span class="type-badge">Residential</span>
+                                <span class="type-badge">{{ $property->category }}</span>
 
                                 <!-- Inner Card Slider -->
                                 <div class="swiper card-inner-slider">
                                     <div class="swiper-wrapper">
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
+                                        @if($property->feature_image)
+                                            <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                                        @endif
+                                        @php
+                                            $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
+                                        @endphp
+                                        @foreach($gallery as $img)
+                                            <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                                        @endforeach
                                     </div>
                                     <div class="swiper-button-next"></div>
                                     <div class="swiper-button-prev"></div>
                                 </div>
                             </div>
                             <div class="card-body-global">
-                                <h3 class="card-title-global">Cozy Cottage</h3>
+                                <h3 class="card-title-global">{{ $property->title }}</h3>
 
                                 <div class="info-row">
-                                    <div class="price-text">$250,800.00</div>
-                                    <div class="detail-item"><span class="info-label">Project ID:</span> DP-7790</div>
-                                </div>
-
-                                <div class="info-row">
-                                    <div class="location-text">
-                                        <i class="fas fa-map-marker-alt"></i> New York
-                                    </div>
-                                    <div class="detail-item"><span class="info-label">Type:</span> Furnished</div>
-                                </div>
-                            </div>
-                            <div class="card-footer-global">
-                                <div class="feature-group">
-                                    <div class="feature-item-global">Bed 4</div>
-                                    <div class="feature-item-global">Bath 2</div>
-                                    <div class="feature-item-global">1500 sqft</div>
-                                </div>
-                                <a href="{{ route('property-details', 1) }}" class="btn-view-more">View More</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Property Card 2 -->
-                    <div class="swiper-slide">
-                        <div class="property-card-global">
-                            <div class="card-image-box">
-                                <div class="status-badge-container">
-                                    <span class="status-badge">For Sale</span>
-                                </div>
-                                <span class="type-badge">Commercial</span>
-
-                                <!-- Inner Card Slider -->
-                                <div class="swiper card-inner-slider">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600607687940-477a4a6b4737?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
-                                    </div>
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-button-prev"></div>
-                                </div>
-                            </div>
-                            <div class="card-body-global">
-                                <h3 class="card-title-global">Modern Beach House</h3>
-
-                                <div class="info-row">
-                                    <div class="price-text">$189,800.00</div>
-                                    <div class="detail-item"><span class="info-label">Project ID:</span> DP-8821</div>
+                                    <div class="price-text">৳ {{ number_format($property->price, 0) }}</div>
+                                    <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
                                 </div>
 
                                 <div class="info-row">
                                     <div class="location-text">
-                                        <i class="fas fa-map-marker-alt"></i> Los Angeles
+                                        <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
                                     </div>
-                                    <div class="detail-item"><span class="info-label">Type:</span> Semi Furnished</div>
+                                    <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                 </div>
                             </div>
                             <div class="card-footer-global">
                                 <div class="feature-group">
-                                    <div class="feature-item-global">Bed 4</div>
-                                    <div class="feature-item-global">Bath 2</div>
-                                    <div class="feature-item-global">1500 sqft</div>
+                                    <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
+                                    <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
+                                    <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
                                 </div>
-                                <a href="{{ route('property-details', 1) }}" class="btn-view-more">View More</a>
+                                <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                             </div>
                         </div>
                     </div>
+                @empty
+                    <div class="col-12 text-center text-muted">No properties available for purchase.</div>
+                @endforelse
+            </div>
 
-                    <!-- Property Card 3 -->
-                    <div class="swiper-slide">
-                        <div class="property-card-global">
-                            <div class="card-image-box">
-                                <div class="status-badge-container">
-                                    <span class="status-badge">For Sale</span>
-                                </div>
-                                <span class="type-badge">Residential</span>
+            <!-- Mobile Slider View (Slider only) -->
+            <div class="property-slider-container d-lg-none">
+                <div class="swiper main-property-slider sale-slider">
+                    <div class="swiper-wrapper">
+                        @foreach($sale_properties as $property)
+                            <div class="swiper-slide">
+                                <div class="property-card-global">
+                                    <div class="card-image-box">
+                                        <div class="status-badge-container">
+                                            <span class="status-badge">For {{ $property->property_status }}</span>
+                                        </div>
+                                        <span class="type-badge">{{ $property->category }}</span>
 
-                                <!-- Inner Card Slider -->
-                                <div class="swiper card-inner-slider">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
+                                        <!-- Inner Card Slider -->
+                                        <div class="swiper card-inner-slider">
+                                            <div class="swiper-wrapper">
+                                                @if($property->feature_image)
+                                                    <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                                                @endif
+                                                @php
+                                                    $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
+                                                @endphp
+                                                @foreach($gallery as $img)
+                                                    <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                                                @endforeach
+                                            </div>
+                                            <div class="swiper-button-next"></div>
+                                            <div class="swiper-button-prev"></div>
+                                        </div>
                                     </div>
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-button-prev"></div>
-                                </div>
-                            </div>
-                            <div class="card-body-global">
-                                <h3 class="card-title-global">Luxury Villa</h3>
+                                    <div class="card-body-global">
+                                        <h3 class="card-title-global">{{ $property->title }}</h3>
 
-                                <div class="info-row">
-                                    <div class="price-text">$320,000.00</div>
-                                    <div class="detail-item"><span class="info-label">Project ID:</span> DP-9932</div>
-                                </div>
+                                        <div class="info-row">
+                                            <div class="price-text">৳ {{ number_format($property->price, 0) }}</div>
+                                            <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
+                                        </div>
 
-                                <div class="info-row">
-                                    <div class="location-text">
-                                        <i class="fas fa-map-marker-alt"></i> Miami
+                                        <div class="info-row">
+                                            <div class="location-text">
+                                                <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                                            </div>
+                                            <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
+                                        </div>
                                     </div>
-                                    <div class="detail-item"><span class="info-label">Type:</span> Non Furnished</div>
+                                    <div class="card-footer-global">
+                                        <div class="feature-group">
+                                            <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
+                                            <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
+                                            <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
+                                        </div>
+                                        <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="card-footer-global">
-                                <div class="feature-group">
-                                    <div class="feature-item-global">Bed 5</div>
-                                    <div class="feature-item-global">Bath 3</div>
-                                    <div class="feature-item-global">2200 sqft</div>
-                                </div>
-                                <a href="{{ route('property-details', 1) }}" class="btn-view-more">View More</a>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
-
-                    <!-- Property Card 4 -->
-                    <div class="swiper-slide">
-                        <div class="property-card-global">
-                            <div class="card-image-box">
-                                <div class="status-badge-container">
-                                    <span class="status-badge">For Sale</span>
-                                </div>
-                                <span class="type-badge">Commercial</span>
-
-                                <!-- Inner Card Slider -->
-                                <div class="swiper card-inner-slider">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
-                                    </div>
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-button-prev"></div>
-                                </div>
-                            </div>
-                            <div class="card-body-global">
-                                <h3 class="card-title-global">Urban Penthouse</h3>
-
-                                <div class="info-row">
-                                    <div class="price-text">$450,000.00</div>
-                                    <div class="detail-item"><span class="info-label">Project ID:</span> DP-1102</div>
-                                </div>
-
-                                <div class="info-row">
-                                    <div class="location-text">
-                                        <i class="fas fa-map-marker-alt"></i> New York
-                                    </div>
-                                    <div class="detail-item"><span class="info-label">Type:</span> Furnished</div>
-                                </div>
-                            </div>
-                            <div class="card-footer-global">
-                                <div class="feature-group">
-                                    <div class="feature-item-global">Bed 3</div>
-                                    <div class="feature-item-global">Bath 2</div>
-                                    <div class="feature-item-global">1800 sqft</div>
-                                </div>
-                                <a href="#" class="btn-view-more">View More</a>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Navigation -->
+                    <div class="section-slider-next swiper-button-next"></div>
+                    <div class="section-slider-prev swiper-button-prev"></div>
                 </div>
-                <!-- Navigation -->
-                <div class="section-slider-next swiper-button-next"></div>
-                <div class="section-slider-prev swiper-button-prev"></div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{{ route('buy') }}" class="btn btn-primary px-5 py-3 rounded-pill fw-bold">View All Properties</a>
             </div>
         </div>
+    </section>
 
-        <div class="text-center mt-5">
-            <a href="#" class="btn btn-primary px-5 py-3 rounded-pill fw-bold">View All Properties</a>
-        </div>
-    </div>
-</section>
+    @section('scripts')
+    @endsection
 
-@section('scripts')
-@endsection
 
+@endif

@@ -1,9 +1,11 @@
 <?php
 
-
 use App\Http\Controllers\Admin\AppSettingsController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -61,6 +63,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{property}', [PropertyController::class, 'edit'])->name('property.edit');
         Route::post('edit/{property}', [PropertyController::class, 'editPost'])->name('property.edit.post');
         Route::get('delete/{property}', [PropertyController::class, 'delete'])->name('property.delete');
+        Route::post('image-delete/{property}', [PropertyController::class, 'deleteImage'])->name('property.image.delete');
     });
 
     Route::group(['prefix' => 'app-settings'], function () {
@@ -75,5 +78,32 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{tag}',[ServiceController::class,'tagEdit'])->name('tag.edit');
         Route::post('edit/{tag}',[ServiceController::class,'tagEditPost'])->name('tag.edit.post');
         Route::get('delete/{tag}',[ServiceController::class,'tagDelete'])->name('tag.delete');
+    });
+
+    Route::group(['prefix' => 'roles'], function () {
+        Route::get('list', [RoleController::class, 'index'])->name('role.list');
+        Route::get('add', [RoleController::class, 'add'])->name('role.add');
+        Route::post('add', [RoleController::class, 'addPost'])->name('role.add.post');
+        Route::get('edit/{role}', [RoleController::class, 'edit'])->name('role.edit');
+        Route::post('edit/{role}', [RoleController::class, 'editPost'])->name('role.edit.post');
+        Route::get('delete/{role}', [RoleController::class, 'delete'])->name('role.delete');
+    });
+
+    Route::group(['prefix' => 'permissions'], function () {
+        Route::get('list', [PermissionController::class, 'index'])->name('permission.list');
+        Route::get('add', [PermissionController::class, 'add'])->name('permission.add');
+        Route::post('add', [PermissionController::class, 'addPost'])->name('permission.add.post');
+        Route::get('edit/{permission}', [PermissionController::class, 'edit'])->name('permission.edit');
+        Route::post('edit/{permission}', [PermissionController::class, 'editPost'])->name('permission.edit.post');
+        Route::get('delete/{permission}', [PermissionController::class, 'delete'])->name('permission.delete');
+    });
+
+    Route::group(['prefix' => 'companies'], function () {
+        Route::get('list', [CompanyController::class, 'index'])->name('company.list');
+        Route::get('add', [CompanyController::class, 'add'])->name('company.add');
+        Route::post('add', [CompanyController::class, 'addPost'])->name('company.add.post');
+        Route::get('edit/{company}', [CompanyController::class, 'edit'])->name('company.edit');
+        Route::post('edit/{company}', [CompanyController::class, 'editPost'])->name('company.edit.post');
+        Route::get('delete/{company}', [CompanyController::class, 'delete'])->name('company.delete');
     });
 });

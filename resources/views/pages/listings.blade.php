@@ -72,69 +72,79 @@
     </div>
 </div>
 
-<div class=" px-md-5 px-3 mb-5">
+<div class="container-90 mb-5">
     <div class="row g-4">
-        @for($i = 0; $i < 8; $i++)
+        @forelse($properties as $property)
         <div class="col-xl-3 col-lg-4 col-md-6">
             <div class="property-card-global">
                 <div class="card-image-box">
                     <div class="status-badge-container">
-                        <span class="status-badge" style="background: {{ $title == 'Properties For Rent' ? '#00A699' : '#FF385C' }};">
-                            {{ $title == 'Properties For Rent' ? 'For Rent' : 'For Sale' }}
+                        <span class="status-badge" style="background: {{ $property->property_status == 'Rent' ? '#00A699' : '#FF385C' }};">
+                            For {{ $property->property_status }}
                         </span>
                     </div>
-                    <span class="type-badge">Residential</span>
+                    <span class="type-badge">{{ $property->category }}</span>
 
                     <!-- Inner Card Slider -->
                     <div class="swiper card-inner-slider">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Image 1"></div>
-                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80" alt="Image 2"></div>
-                            <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80" alt="Image 3"></div>
+                            @if($property->feature_image)
+                                <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                            @endif
+                            @php
+                                $gallery = $property->images ?? [];
+                            @endphp
+                            @foreach($gallery as $img)
+                                <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                            @endforeach
+                            @if(!$property->feature_image && count($gallery) == 0)
+                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
+                            @endif
                         </div>
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
                     </div>
                 </div>
                 <div class="card-body-global">
-                    <h3 class="card-title-global">Premium Property {{ $i+1 }}</h3>
+                    <h3 class="card-title-global">{{ $property->title }}</h3>
 
                     <div class="info-row">
-                        <div class="price-text">{{ $title == 'Properties For Rent' ? '৳ 45,000 / mo' : '৳ 45,000,000.00' }}</div>
-                        <div class="detail-item"><span class="info-label">Project ID:</span> DP-{{ 7000 + $i }}</div>
+                        <div class="price-text">৳ {{ number_format($property->price, 0) }}{{ $property->property_status == 'Rent' ? ' / mo' : '' }}</div>
+                        <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
                     </div>
 
                     <div class="info-row">
                         <div class="location-text">
-                            <i class="fas fa-map-marker-alt"></i> Banani, Dhaka
+                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
                         </div>
-                        <div class="detail-item"><span class="info-label">Type:</span> Furnished</div>
+                        <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                     </div>
                 </div>
                 <div class="card-footer-global">
                     <div class="feature-group">
-                        <div class="feature-item-global">Bed 3</div>
-                        <div class="feature-item-global">Bath 3</div>
-                        <div class="feature-item-global">2100 sqft</div>
+                        <div class="feature-item-global">Bed {{ $property->bedrooms }}</div>
+                        <div class="feature-item-global">Bath {{ $property->bathrooms }}</div>
+                        <div class="feature-item-global">{{ number_format($property->area) }} sqft</div>
                     </div>
-                    <a href="{{ route('property-details', 1) }}" class="btn-view-more">View More</a>
+                    <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                 </div>
             </div>
         </div>
-        @endfor
+        @empty
+            <div class="col-12 text-center py-5">
+                <div class="empty-listings">
+                    <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No Properties Found</h4>
+                    <p class="text-muted">We couldn't find any properties matching this category at the moment.</p>
+                    <a href="{{ route('home') }}" class="btn btn-primary mt-3">Back to Home</a>
+                </div>
+            </div>
+        @endforelse
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-wrapper text-center">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a></li>
-            </ul>
-        </nav>
+    <div class="pagination-wrapper mt-5 d-flex justify-content-center">
+        {{ $properties->links('pagination::bootstrap-5') }}
     </div>
 </div>
 @endsection

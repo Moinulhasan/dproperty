@@ -74,10 +74,12 @@
 .neighborhood-card:hover .card-content {
     background: #fff !important;
     color: #000 !important;
-    border-radius: 10px;
-    margin: 20px;
-    width: calc(100% - 40px);
+    border-radius: 12px;
+    margin: 15px;
+    width: calc(100% - 30px);
     padding: 15px 20px;
+    bottom: 0;
+    left: 0;
 }
 
 .neighborhood-card .property-count {

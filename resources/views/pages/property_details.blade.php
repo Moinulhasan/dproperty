@@ -10,8 +10,8 @@
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Properties</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Modern City Apartment</li>
+                <li class="breadcrumb-item"><a href="{{ route(strtolower($property->property_status)) }}">{{ $property->property_status }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $property->title }}</li>
             </ol>
         </nav>
 
@@ -22,18 +22,19 @@
                     <!-- Main Swiper -->
                     <div class="swiper main-image-swiper">
                         <div class="swiper-wrapper">
+                            @if($property->feature_image)
                             <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=1200" alt="Main Property">
+                                <img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}">
                             </div>
+                            @endif
+                            @php
+                                $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
+                            @endphp
+                            @foreach($gallery as $img)
                             <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200" alt="Room 1">
+                                <img src="{{ asset($img) }}" alt="{{ $property->title }}">
                             </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1600607687940-477a4a6b4737?auto=format&fit=crop&w=1200" alt="Kitchen">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200" alt="Living Room">
-                            </div>
+                            @endforeach
                         </div>
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
@@ -42,18 +43,16 @@
                     <!-- Thumbnails Swiper -->
                     <div class="swiper thumb-image-swiper mt-3">
                         <div class="swiper-wrapper">
+                            @if($property->feature_image)
                             <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1600585154340-be6199fbfd0b?auto=format&fit=crop&w=200" alt="Thumb 1">
+                                <img src="{{ asset($property->feature_image) }}" alt="Thumb">
                             </div>
+                            @endif
+                            @foreach($gallery as $img)
                             <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=200" alt="Thumb 2">
+                                <img src="{{ asset($img) }}" alt="Thumb">
                             </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1600607687940-477a4a6b4737?auto=format&fit=crop&w=200" alt="Thumb 3">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200" alt="Thumb 4">
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -62,13 +61,13 @@
                 <div class="detail-content-box mt-4">
                     <div class="property-main-header">
                         <div class="price-box">
-                            <h2 class="m-0">৳ 45,000,000.00</h2>
-                            <div class="badge bg-success mt-2">For Sale</div>
+                            <h2 class="m-0">৳ {{ number_format($property->price, 2) }}</h2>
+                            <div class="badge bg-primary mt-2">For {{ $property->property_status }}</div>
                         </div>
                         <div class="meta-info">
-                            <h3 class="m-0">ID: DP-7790</h3>
+                            <h3 class="m-0">ID: {{ $property->project_id }}</h3>
                             <div class="location-tag">
-                                <i class="fas fa-map-marker-alt text-danger me-2"></i> Banani, Dhaka
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
                             </div>
                         </div>
                     </div>
@@ -78,32 +77,32 @@
                     <div class="specs-grid">
                         <div class="spec-item">
                             <i class="fas fa-expand-arrows-alt spec-icon"></i>
-                            <span class="spec-value">2100</span>
+                            <span class="spec-value">{{ number_format($property->area) }}</span>
                             <span class="spec-label">Sqft</span>
                         </div>
                         <div class="spec-item">
                             <i class="fas fa-bed spec-icon"></i>
-                            <span class="spec-value">3</span>
-                            <span class="spec-label">Bedroom</span>
+                            <span class="spec-value">{{ $property->bedrooms }}</span>
+                            <span class="spec-label">Bedrooms</span>
                         </div>
                         <div class="spec-item">
                             <i class="fas fa-bath spec-icon"></i>
-                            <span class="spec-value">3</span>
-                            <span class="spec-label">Bathroom</span>
+                            <span class="spec-value">{{ $property->bathrooms }}</span>
+                            <span class="spec-label">Bathrooms</span>
                         </div>
                         <div class="spec-item">
                             <i class="fas fa-couch spec-icon"></i>
-                            <span class="spec-value">Furnished</span>
+                            <span class="spec-value">{{ $property->is_furnished }}</span>
                             <span class="spec-label">Type</span>
                         </div>
                         <div class="spec-item">
                             <i class="fas fa-car spec-icon"></i>
-                            <span class="spec-value">1</span>
+                            <span class="spec-value">{{ $property->parking ?? 0 }}</span>
                             <span class="spec-label">Parking</span>
                         </div>
                         <div class="spec-item">
                             <i class="fas fa-building spec-icon"></i>
-                            <span class="spec-value">6th</span>
+                            <span class="spec-value">{{ $property->floor }}</span>
                             <span class="spec-label">Floor</span>
                         </div>
                     </div>
@@ -112,38 +111,32 @@
                     <div class="features-container">
                         <h4 class="detail-section-title">Features & Amenities</h4>
                         <div class="features-grid">
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Gym</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Swimming Pool</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> BBQ Area</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Mosque</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Community Room</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Generator</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> 24*7 Security</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> CCTV</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Reception</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Gardening Area</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Broadband Internet</div>
-                            <div class="feature-check"><i class="fas fa-check-square"></i> Soundproof Glass</div>
+                            @foreach($property->amenities as $amenity)
+                            <div class="feature-check"><i class="fas fa-check-square"></i> {{ $amenity->name }}</div>
+                            @endforeach
                         </div>
                     </div>
 
                     <!-- Description -->
                     <h4 class="detail-section-title">Description</h4>
                     <div class="description-text">
-                        <p>This luxurious 2100 Sqft apartment is located in the heart of Banani. Featuring 3 spacious bedrooms, 3 modern bathrooms, and a large balcony with a city view. The building offers premium amenities including a rooftop pool, state-of-the-art gym, and 24/7 high-level security.</p>
-                        <p>Perfect for families looking for a premium lifestyle with all conveniences nearby. Well ventilated and natural light throughout the day. Includes 1 dedicated parking space.</p>
+                        {!! $property->description !!}
                     </div>
 
                     <!-- More Sections -->
+                    @if($property->floor_plan)
                     <h4 class="detail-section-title">Floor Plan</h4>
                     <div class="mb-4 text-center">
-                        <img src="https://images.unsplash.com/photo-1541888941255-081d746efdea?auto=format&fit=crop&w=800" class="img-fluid rounded border" alt="Floor Plan Mock">
+                        <img src="{{ asset($property->floor_plan) }}" class="img-fluid rounded border" alt="Floor Plan">
                     </div>
+                    @endif
 
+                    @if($property->video_link)
                     <h4 class="detail-section-title">Property Video</h4>
                     <div class="ratio ratio-16x9 mb-4 rounded overflow-hidden">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Property Video" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/{{ explode('v=', $property->video_link)[1] ?? '' }}" title="Property Video" allowfullscreen></iframe>
                     </div>
+                    @endif
 
                     <h4 class="detail-section-title">Location</h4>
                     <div class="mb-4 rounded overflow-hidden border">
@@ -159,24 +152,23 @@
             <div class="col-lg-4">
                 <div class="details-sidebar">
                     <div class="seller-profile">
-                        <img src="{{ asset('img/logo.png') }}" class="seller-logo" alt="DProperty">
                         <div class="seller-info">
-                            <h4>DProperty Agent</h4>
+                            <h4>{{ $property->user->name ?? 'DProperty Agent' }}</h4>
                             <div class="verified-badge">
                                 <i class="fas fa-check-circle"></i> VERIFIED SELLER
                             </div>
-                            <p class="text-muted small mt-1">Member since April 2024</p>
+                            <p class="text-muted small mt-1">Agent ID: {{ $property->user->agent_id ?? 'N/A' }}</p>
                         </div>
                     </div>
 
                     <div class="contact-actions">
                         <button class="contact-btn btn-phone" id="showPhoneBtn">
-                            <i class="fas fa-phone-alt"></i> 01600XXXXXX
+                            <i class="fas fa-phone-alt"></i> {{ substr($property->user->phone ?? '01XXXXXXXXX', 0, 5) }}XXXXXX
                         </button>
-                        <a href="#" class="contact-btn btn-chat">
-                            <i class="fas fa-comment"></i> Chat with Seller
+                        <a href="mailto:{{ $property->user->email ?? '#' }}" class="contact-btn btn-chat">
+                            <i class="fas fa-envelope"></i> Email Seller
                         </a>
-                        <a href="#" class="contact-btn btn-whatsapp">
+                        <a href="https://wa.me/{{ $property->user->phone ?? '' }}" target="_blank" class="contact-btn btn-whatsapp">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </a>
                     </div>
@@ -221,7 +213,7 @@
         // Phone Reveal Logic
         const phoneBtn = document.getElementById('showPhoneBtn');
         phoneBtn.addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-phone-alt"></i> +880 1600-123456';
+            this.innerHTML = '<i class="fas fa-phone-alt"></i> {{ $property->user->phone ?? "Private Number" }}';
             this.classList.add('bg-light');
         });
     });

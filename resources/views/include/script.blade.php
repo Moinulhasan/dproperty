@@ -120,53 +120,67 @@
 
     // Initialize Swiper Sliders
     document.addEventListener('DOMContentLoaded', function() {
-        // Rent Slider (Right to Left - Standard)
-        const rentSlider = document.querySelector('.rent-slider');
-        if (rentSlider) {
-            new Swiper(rentSlider, {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                loop: true,
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                    reverseDirection: false // Right to Left
-                },
-                navigation: {
-                    nextEl: rentSlider.querySelector('.section-slider-next'),
-                    prevEl: rentSlider.querySelector('.section-slider-prev'),
-                },
-                breakpoints: {
-                    640: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
-                    1400: { slidesPerView: 4 }
+        // Helper function for conditional slider
+        function initConditionalSlider(selector, options) {
+            const element = document.querySelector(selector);
+            if (!element) return null;
+
+            let swiper = null;
+
+            function handleResize() {
+                const isDesktop = window.innerWidth >= 992;
+                if (isDesktop && swiper) {
+                    swiper.destroy(true, true);
+                    swiper = null;
+                } else if (!isDesktop && !swiper) {
+                    swiper = new Swiper(element, options);
                 }
-            });
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize();
+            return swiper;
         }
 
+        // Rent Slider (Right to Left - Standard)
+        initConditionalSlider('.rent-slider', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+                reverseDirection: false
+            },
+            navigation: {
+                nextEl: '.rent-slider .section-slider-next',
+                prevEl: '.rent-slider .section-slider-prev',
+            },
+            breakpoints: {
+                640: { slidesPerView: 2 },
+                768: { slidesPerView: 2.5 }
+            }
+        });
+
         // Sale Slider (Left to Right)
-        const saleSlider = document.querySelector('.sale-slider');
-        if (saleSlider) {
-            new Swiper(saleSlider, {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                loop: true,
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                    reverseDirection: true // Left to Right
-                },
-                navigation: {
-                    nextEl: saleSlider.querySelector('.section-slider-next'),
-                    prevEl: saleSlider.querySelector('.section-slider-prev'),
-                },
-                breakpoints: {
-                    640: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
-                    1400: { slidesPerView: 4 }
-                }
-            });
-        }
+        initConditionalSlider('.sale-slider', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+                reverseDirection: true
+            },
+            navigation: {
+                nextEl: '.sale-slider .section-slider-next',
+                prevEl: '.sale-slider .section-slider-prev',
+            },
+            breakpoints: {
+                640: { slidesPerView: 2 },
+                768: { slidesPerView: 2.5 }
+            }
+        });
 
         // Inner Card Sliders
         const innerSliders = document.querySelectorAll('.card-inner-slider');

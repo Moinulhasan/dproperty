@@ -40,6 +40,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.property-card-global:hover .card-inner-slider .swiper-slide img {
+    transform: scale(1.1);
 }
 
 /* Inner Navigation - Only show on hover */
@@ -160,9 +165,10 @@
 }
 
 .price-text {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     font-weight: 800;
-    color: #333;
+    color: var(--primary-color, #006A50);
+    letter-spacing: -0.5px;
 }
 
 .location-text {
@@ -202,20 +208,22 @@
 }
 
 .btn-view-more {
-    color: #666;
+    color: var(--primary-color, #006A50);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border: 1px solid #ddd;
-    padding: 5px 15px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: 1.5px solid var(--primary-color, #006A50);
+    padding: 6px 18px;
     border-radius: 20px;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn-view-more:hover {
     background: var(--primary-color, #006A50);
     color: #fff;
-    border-color: var(--primary-color, #006A50);
+    box-shadow: 0 4px 12px rgba(0, 106, 80, 0.2);
 }
 
 @media (max-width: 768px) {

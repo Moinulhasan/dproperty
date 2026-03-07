@@ -76,7 +76,7 @@
                                                 name="site_logo"
                                                 aria-label="john.doe"/>
                                             <div class="mt-2">
-                                                @if($settings->logo)
+                                                @if(isset($settings->logo))
                                                     <img src="{{$settings->logo}}" alt="dproperty" srcset=""
                                                          style="height: 50px;width: 100px;">
                                                 @endif
@@ -91,7 +91,7 @@
                                                 name="favicon"
                                                 aria-label="john.doe"/>
                                             <div class="mt-2">
-                                                @if($settings->favicon)
+                                                @if(isset($settings->favicon))
                                                     <img src="{{$settings->favicon}}" alt="dproperty" srcset=""
                                                          style="height: 50px;width: 100px;">
                                                 @endif
@@ -106,7 +106,7 @@
                                                 name="contact_image"
                                                 aria-label="john.doe"/>
                                             <div class="mt-2">
-                                                @if($settings->contact_image)
+                                                @if(isset($settings->contact_image))
                                                     <img src="{{$settings->contact_image}}" alt="dproperty" srcset=""
                                                          style="height: 50px;width: 100px;">
                                                 @endif

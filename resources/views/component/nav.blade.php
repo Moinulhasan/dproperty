@@ -23,10 +23,10 @@
                     <a class="nav-link text-white {{ request()->routeIs('buy') ? 'active' : '' }}" href="{{ route('buy') }}">Buy</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('sell') ? 'active' : '' }}" href="#">Sell</a>
+                    <a class="nav-link text-white {{ request()->routeIs('sell') ? 'active' : '' }}" href="{{ route('sell') }}">Sell</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('rent') ? 'active' : '' }}" href="#">Rent</a>
+                    <a class="nav-link text-white {{ request()->routeIs('rent') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('services') ? 'active' : '' }}" href="#services">Services</a>
@@ -59,9 +59,9 @@
        </div>
         <ul class="mobile-nav-menu">
             <li><a href="#home" class="mobile-nav-link">Home</a></li>
-            <li><a href="#" class="mobile-nav-link">Buy</a></li>
-            <li><a href="#" class="mobile-nav-link">Rent</a></li>
-            <li><a href="#" class="mobile-nav-link">Sell</a></li>
+            <li><a href="{{route('buy')}}" class="mobile-nav-link">Buy</a></li>
+            <li><a href="{{route('rent')}}" class="mobile-nav-link">Rent</a></li>
+            <li><a href="{{route('sell')}}" class="mobile-nav-link">Sell</a></li>
             <li><a href="#services" class="mobile-nav-link">Services</a></li>
             <li><a href="#projects" class="mobile-nav-link">Project</a></li>
             <li><a href="#contact" class="mobile-nav-link">Contact Us</a></li>
