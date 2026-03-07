@@ -7,22 +7,22 @@
             <h5 class="mb-0">Role List</h5>
             <a href="{{ route('admin.role.add') }}" class="btn btn-primary">Add Role</a>
         </div>
-        <div class="table-responsive text-nowrap">
+        <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Permissions</th>
-                        <th>Actions</th>
+                        <th width="20%">Name</th>
+                        <th width="60%">Permissions</th>
+                        <th width="20%">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
                     @foreach($roles as $role)
                         <tr>
                             <td>{{ $role->name }}</td>
-                            <td>
+                            <td class="text-wrap">
                                 @foreach($role->permissions as $permission)
-                                    <span class="badge bg-label-primary">{{ $permission->name }}</span>
+                                    <span class="badge bg-label-primary mb-1">{{ $permission->name }}</span>
                                 @endforeach
                             </td>
                             <td>

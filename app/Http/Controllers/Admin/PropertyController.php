@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Amenity;
 use App\Models\Property;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,7 @@ class PropertyController extends Controller
             $query->where('created_by', $user->id);
         }
 
-        $properties = $query->paginate(10)->withQueryString();
+        $properties = $query->paginate(3)->withQueryString();
         return view('admin.property.index', compact('properties'));
     }
 
@@ -128,7 +129,7 @@ class PropertyController extends Controller
     {
         // Authorization check
         $user = auth()->user();
-        if (!$user->hasRole('Super Admin')) {
+        if ($user->hasRole('Super Admin')) {
         } elseif ($user->hasRole('Property Admin')) {
             if ($property->user->company_id !== $user->company_id) {
                 abort(403, 'Unauthorized access to this property.');
@@ -151,7 +152,8 @@ class PropertyController extends Controller
                 if ($property->user->company_id !== $user->company_id) {
                     abort(403);
                 }
-            } elseif ($property->created_by !== $user->id) {
+            }
+            elseif ($property->created_by !== $user->id) {
                 abort(403);
             }
         }
@@ -246,19 +248,19 @@ class PropertyController extends Controller
             }
         }
 
-// Delete files
-if ($property->images) {
-    foreach ($property->images as $image) {
-        if (file_exists(public_path($image))) unlink(public_path($image));
-    }
-}
-if ($property->floor_plan && file_exists(public_path($property->floor_plan))) {
-    unlink(public_path($property->floor_plan));
-}
+        // Delete files
+        if ($property->images) {
+            foreach ($property->images as $image) {
+                if (file_exists(public_path($image))) unlink(public_path($image));
+            }
+        }
+        if ($property->floor_plan && file_exists(public_path($property->floor_plan))) {
+            unlink(public_path($property->floor_plan));
+        }
 
-$property->delete();
-return redirect()->route('admin.property.list')->with('success', 'Property deleted successfully.');
-}
+        $property->delete();
+        return redirect()->route('admin.property.list')->with('success', 'Property deleted successfully.');
+    }
 
     public function deleteImage(Request $request, Property $property)
     {
@@ -274,22 +276,22 @@ return redirect()->route('admin.property.list')->with('success', 'Property delet
             }
         }
 
-$imagePath = $request->image_path;
-$images = $property->images ?? [];
+        $imagePath = $request->image_path;
+        $images = $property->images ?? [];
 
-if (($key = array_search($imagePath, $images)) !== false) {
-    unset($images[$key]);
+        if (($key = array_search($imagePath, $images)) !== false) {
+            unset($images[$key]);
 
-    // Delete physical file
-    if (file_exists(public_path($imagePath))) {
-        unlink(public_path($imagePath));
+            // Delete physical file
+            if (file_exists(public_path($imagePath))) {
+                unlink(public_path($imagePath));
+            }
+
+            $property->update(['images' => array_values($images)]);
+
+            return response()->json(['success' => true, 'message' => 'Image deleted successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Image not found.']);
     }
-
-    $property->update(['images' => array_values($images)]);
-
-    return response()->json(['success' => true, 'message' => 'Image deleted successfully.']);
-}
-
-return response()->json(['success' => false, 'message' => 'Image not found.']);
-}
 }

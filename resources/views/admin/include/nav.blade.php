@@ -51,13 +51,21 @@
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">Property Management</span>
             </li>
-            @can('manage-properties')
+            @canany(['manage-properties','manage-amenities'])
                 <li class="menu-item {{request()->routeIs('admin.property*')? 'active' : ''}}">
                     <a href="{{route('admin.property.list')}}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-home"></i>
                         <div data-i18n="Property">Property</div>
                     </a>
                 </li>
+                @can('manage-amenities')
+                    <li class="menu-item {{request()->routeIs('admin.amenity*')? 'active' : ''}}">
+                        <a href="{{route('admin.amenity.list')}}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-star"></i>
+                            <div data-i18n="Amenities">Amenities</div>
+                        </a>
+                    </li>
+                @endcan
             @endcan
             @can('manage-tags')
                 <li class="menu-item {{request()->routeIs('admin.tag*')? 'active' : ''}}">

@@ -10,7 +10,7 @@
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route(strtolower($property->property_status)) }}">{{ $property->property_status }}</a></li>
+{{--                <li class="breadcrumb-item"><a href="{{ route(strtolower($property->property_status)) }}">{{ $property->property_status }}</a></li>--}}
                 <li class="breadcrumb-item active" aria-current="page">{{ $property->title }}</li>
             </ol>
         </nav>
@@ -108,20 +108,26 @@
                     </div>
 
                     <!-- Features & Amenities -->
-                    <div class="features-container">
-                        <h4 class="detail-section-title">Features & Amenities</h4>
-                        <div class="features-grid">
-                            @foreach($property->amenities as $amenity)
-                            <div class="feature-check"><i class="fas fa-check-square"></i> {{ $amenity->name }}</div>
-                            @endforeach
+                   @if(count($property->amenities))
+                        <div class="features-container">
+                            <h4 class="detail-section-title">Features & Amenities</h4>
+                            <div class="features-grid">
+                                @foreach($property->amenities as $amenity)
+                                    <div class="feature-check">
+                                        <i class="{{ $amenity->icon ?? 'fas fa-check-square' }}"></i> {{ $amenity->name }}
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                   @endif
 
                     <!-- Description -->
-                    <h4 class="detail-section-title">Description</h4>
-                    <div class="description-text">
-                        {!! $property->description !!}
-                    </div>
+                   @if($property->description)
+                        <h4 class="detail-section-title">Description</h4>
+                        <div class="description-text">
+                            {!! $property->description !!}
+                        </div>
+                   @endif
 
                     <!-- More Sections -->
                     @if($property->floor_plan)
@@ -132,19 +138,43 @@
                     @endif
 
                     @if($property->video_link)
-                    <h4 class="detail-section-title">Property Video</h4>
-                    <div class="ratio ratio-16x9 mb-4 rounded overflow-hidden">
-                        <iframe src="https://www.youtube.com/embed/{{ explode('v=', $property->video_link)[1] ?? '' }}" title="Property Video" allowfullscreen></iframe>
-                    </div>
+                        @php
+                            $videoId = '';
+                            if (str_contains($property->video_link, 'v=')) {
+                                parse_str(parse_url($property->video_link, PHP_URL_QUERY), $vars);
+                                $videoId = $vars['v'] ?? '';
+                            } elseif (str_contains($property->video_link, 'youtu.be/')) {
+                                $videoId = last(explode('/', parse_url($property->video_link, PHP_URL_PATH)));
+                            } elseif (str_contains($property->video_link, 'embed/')) {
+                                $videoId = last(explode('/', parse_url($property->video_link, PHP_URL_PATH)));
+                            } else {
+                                $videoId = $property->video_link;
+                            }
+                        @endphp
+                        <h4 class="detail-section-title">Property Video</h4>
+                        <div class="ratio ratio-16x9 mb-4 rounded overflow-hidden">
+                            <iframe src="https://www.youtube.com/embed/{{ $videoId }}" title="Property Video" allowfullscreen></iframe>
+                        </div>
                     @endif
 
-                    <h4 class="detail-section-title">Location</h4>
-                    <div class="mb-4 rounded overflow-hidden border">
-                         <!-- Placeholder for Google Map -->
-                         <div style="height: 400px; background: #eee; display: flex; align-items: center; justify-content: center;">
-                            <span class="text-muted">Interactive Map Placeholder</span>
-                         </div>
-                    </div>
+                    @if($property->map_link)
+                        <h4 class="detail-section-title">Location</h4>
+                        <div class="mb-4 rounded overflow-hidden border">
+                            @if(str_contains($property->map_link, '<iframe'))
+                                {!! $property->map_link !!}
+                            @else
+                                <iframe src="{{ $property->map_link }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            @endif
+                        </div>
+                    @else
+                        <h4 class="detail-section-title">Location</h4>
+                        <div class="mb-4 rounded overflow-hidden border">
+                             <!-- Placeholder for Google Map if no link provided -->
+                             <div style="height: 400px; background: #eee; display: flex; align-items: center; justify-content: center;">
+                                <span class="text-muted">Interactive Map Placeholder</span>
+                             </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 

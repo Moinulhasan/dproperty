@@ -60,7 +60,8 @@ class RoleController extends Controller
 
     public function editPost(Request $request, Role $role)
     {
-        if ($role->name != 'Super Admin') {
+        $roleCheck = $request->user()->roles()->where('name', 'Super Admin')->first();
+        if (!$roleCheck) {
             return redirect()->route('admin.role.list')->withErrors(['error' => 'The Super Admin role cannot be edited.']);
         }
 

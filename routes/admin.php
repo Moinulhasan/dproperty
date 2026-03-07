@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\AppSettingsController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CompanyController;
@@ -105,5 +106,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{company}', [CompanyController::class, 'edit'])->name('company.edit');
         Route::post('edit/{company}', [CompanyController::class, 'editPost'])->name('company.edit.post');
         Route::get('delete/{company}', [CompanyController::class, 'delete'])->name('company.delete');
+    });
+
+    Route::group(['prefix' => 'amenities'], function () {
+        Route::get('list', [AmenityController::class, 'index'])->name('amenity.list');
+        Route::get('add', [AmenityController::class, 'add'])->name('amenity.add');
+        Route::post('add', [AmenityController::class, 'addPost'])->name('amenity.add.post');
+        Route::get('edit/{amenity}', [AmenityController::class, 'edit'])->name('amenity.edit');
+        Route::post('edit/{amenity}', [AmenityController::class, 'editPost'])->name('amenity.edit.post');
+        Route::get('delete/{amenity}', [AmenityController::class, 'delete'])->name('amenity.delete');
     });
 });
