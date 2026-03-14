@@ -42,14 +42,16 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const slideCount = {{ isset($featured_properties) ? count($featured_properties) : 0 }};
         const featuredSwiper = new Swiper('#featuredPropertiesSlider', {
             slidesPerView: 1,
             spaceBetween: 20,
-            loop: true,
-            autoplay: {
+            loop: slideCount > 4,
+            watchOverflow: true,
+            autoplay: slideCount > 1 ? {
                 delay: 6000,
                 disableOnInteraction: false,
-            },
+            } : false,
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',

@@ -28,13 +28,13 @@ class HomePageController extends Controller
 
         // Dynamic Properties for sections
         $rent_properties = Property::where('status', 1)
-            ->where('property_status', 'For Rent')
+            ->where('property_status', 'Rent')
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
 
         $sale_properties = Property::where('status', 1)
-            ->where('property_status', 'For Sell')
+            ->where('property_status', 'Sell')
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
@@ -64,7 +64,7 @@ class HomePageController extends Controller
 
         $locations = Property::where('status', 1)->distinct()->pluck('route')->filter()->values();
         $property_types = Property::where('status', 1)->distinct()->pluck('property_type')->filter()->values();
-
+//        dd($rent_properties);
         return view('homepage', compact(
             'sliders', 'services', 'testimonials', 'settings',
             'rent_properties', 'sale_properties', 'featured_properties',
