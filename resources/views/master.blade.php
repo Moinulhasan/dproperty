@@ -13,9 +13,10 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
 
-    <title>Dproperty</title>
+    <title>@yield('title', 'Dproperty')</title>
 
-    <meta name="description" content=""/>
+    <meta name="description" content="@yield('meta_description', 'Your premium real estate partner')"/>
+    @yield('seo')
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/favicon.ico')}}"/>

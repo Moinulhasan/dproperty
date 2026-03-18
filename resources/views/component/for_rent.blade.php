@@ -12,15 +12,32 @@
                         <div class="property-card-global">
                             <div class="card-image-box">
                                 <div class="status-badge-container">
-                                    <span class="status-badge" style="background: #00A699;">
+                                    <div class="status-badge">
+                                        <span class="badge-dot left"></span>
+                                        <span class="badge-dot right"></span>
                                         @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
                                             {{ $property->property_status }}
                                         @else
                                             For {{ $property->property_status }}
                                         @endif
-                                    </span>
+                                    </div>
                                 </div>
                                 <span class="type-badge">{{ $property->category }}</span>
+                                
+                                @php
+                                    $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
+                                    $allImages = [];
+                                    if ($property->feature_image) $allImages[] = asset($property->feature_image);
+                                    foreach ($gallery as $img) $allImages[] = asset($img);
+                                @endphp
+                                <div class="card-image-hover-actions">
+                                    <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
+                                        <i class="fas fa-bookmark"></i>
+                                    </button>
+                                    <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                </div>
 
                                 <!-- Inner Card Slider -->
                                 <div class="swiper card-inner-slider">
@@ -54,9 +71,11 @@
                             </div>
                             <div class="card-footer-global">
                                 <div class="feature-group">
-                                    <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
-                                    <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
-                                    <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
+                        @foreach($property->detailValues->take(3) as $dv)
+                            @if($dv->detail && $dv->value)
+                                <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
+                            @endif
+                        @endforeach
                                 </div>
                                 <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                             </div>
@@ -76,15 +95,32 @@
                                 <div class="property-card-global">
                                     <div class="card-image-box">
                                         <div class="status-badge-container">
-                                            <span class="status-badge" style="background: #00A699;">
+                                            <div class="status-badge">
+                                                <span class="badge-dot left"></span>
+                                                <span class="badge-dot right"></span>
                                                 @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
                                                     {{ $property->property_status }}
                                                 @else
                                                     For {{ $property->property_status }}
                                                 @endif
-                                            </span>
+                                            </div>
                                         </div>
                                         <span class="type-badge">{{ $property->category }}</span>
+                                        
+                                        @php
+                                            $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
+                                            $allImages = [];
+                                            if ($property->feature_image) $allImages[] = asset($property->feature_image);
+                                            foreach ($gallery as $img) $allImages[] = asset($img);
+                                        @endphp
+                                        <div class="card-image-hover-actions">
+                                            <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
+                                                <i class="fas fa-bookmark"></i>
+                                            </button>
+                                            <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                                                <i class="fas fa-camera"></i>
+                                            </button>
+                                        </div>
 
                                         <!-- Inner Card Slider -->
                                         <div class="swiper card-inner-slider">
@@ -118,9 +154,11 @@
                                     </div>
                                     <div class="card-footer-global">
                                         <div class="feature-group">
-                                            <div class="feature-item-global">{{ $property->bedrooms }} <span>Bed</span></div>
-                                            <div class="feature-item-global">{{ $property->bathrooms }} <span>Bath</span></div>
-                                            <div class="feature-item-global">{{ number_format($property->area) }} <span>sqft</span></div>
+                                            @foreach($property->detailValues->take(3) as $dv)
+                                                @if($dv->detail && $dv->value)
+                                                    <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
+                                                @endif
+                                            @endforeach
                                         </div>
                                         <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
                                     </div>

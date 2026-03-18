@@ -49,12 +49,50 @@
     font-size: 0.8rem;
 }
 
+/* Gallery Container */
+.detail-gallery-container {
+    background: transparent;
+    box-shadow: none !important;
+    border-radius: 0;
+}
+
+.gallery-header {
+    padding: 0 0 14px;
+    background: transparent;
+    border-bottom: none;
+}
+
+.gallery-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+}
+
+.gallery-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.gallery-date {
+    font-size: 0.82rem;
+    color: #777;
+    font-weight: 400;
+}
+
+.gallery-date i {
+    color: #00A699;
+}
+
 .main-image-swiper {
     width: 100%;
     height: 500px;
-    border-radius: 8px;
+    border-radius: 16px;
     overflow: hidden;
     position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .main-image-swiper img {
@@ -64,7 +102,7 @@
 }
 
 .thumb-image-swiper {
-    margin-top: 15px;
+    margin-top: 12px;
     height: 80px;
     box-sizing: border-box;
 }
@@ -74,8 +112,13 @@
     height: 100%;
     opacity: 0.4;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.thumb-image-swiper .swiper-slide:hover {
+    opacity: 0.7;
 }
 
 .thumb-image-swiper .swiper-slide-thumb-active {
@@ -317,17 +360,179 @@
     margin-bottom: 40px;
 }
 
+/* ========== Mobile Title Section ========== */
+.mobile-title-section {
+    display: none;
+}
+
+.mobile-property-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 6px 0;
+    line-height: 1.35;
+}
+
+.mobile-location {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 6px;
+}
+
+.mobile-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+/* ========== Mobile Fixed Bottom Agent Bar ========== */
+.mobile-agent-bar {
+    display: none;
+}
+
 @media (max-width: 991px) {
     .main-image-swiper {
-        height: 350px;
+        height: 300px;
+        border-radius: 12px;
     }
 
+    /* Hide desktop gallery header on mobile */
+    .gallery-header {
+        display: none;
+    }
+
+    /* Show mobile title section */
+    .mobile-title-section {
+        display: block;
+        padding: 0 4px;
+    }
+
+    /* Hide desktop header inside detail box on mobile */
+    .property-main-header {
+        display: none !important;
+    }
+
+    /* Hide desktop sidebar on mobile */
     .details-sidebar {
-        position: static;
-        margin-top: 30px;
+        display: none !important;
+    }
+
+    /* Add bottom padding so content isn't hidden behind fixed bar */
+    .details-page-wrapper {
+        padding-bottom: 90px;
+    }
+
+    /* Show fixed bottom agent bar */
+    .mobile-agent-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: #fff;
+        border-top: 1px solid #eee;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        padding: 12px 16px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .mobile-agent-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mobile-agent-logo {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        object-fit: contain;
+        border: 1px solid #eee;
+        flex-shrink: 0;
+    }
+
+    .mobile-agent-name {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #222;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mobile-agent-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .mobile-action-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+    }
+
+    .mobile-action-btn:active {
+        transform: scale(0.92);
+    }
+
+    .btn-email-m {
+        background: #E8820E;
+        color: #fff;
+    }
+
+    .btn-wa-m {
+        background: #25D366;
+        color: #fff;
+    }
+
+    .btn-phone-m {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
     }
 
     .price-box h2 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
+
+    .detail-content-box {
+        padding: 20px;
+        margin-top: 16px !important;
+    }
+
+    .specs-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}
+
+/* Recommended Section Styling */
+.recommended-section {
+    border-top: 1px solid #eee;
+    padding-top: 50px;
+}
+
+.recommended-section .detail-section-title {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 40px !important;
+}
+
+.recommended-section .detail-section-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
 }

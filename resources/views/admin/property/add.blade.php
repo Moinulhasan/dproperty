@@ -77,8 +77,13 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label class="form-label" for="loc-route">Route</label>
-                                <input type="text" class="form-control" id="loc-route" name="route" placeholder="e.g. Dhaka" value="{{ old('route') }}">
+                                <label class="form-label" for="loc-location">Location</label>
+                                <select class="form-select" id="loc-location" name="location_id">
+                                    <option value="">Select Location</option>
+                                    @foreach($locations as $location)
+                                        <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>{{ $location->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label" for="loc-sub-route">Sub Route</label>
@@ -104,18 +109,24 @@
                             <div class="divider-text">Property Details</div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label" for="bedrooms">Bedrooms</label>
-                                <input type="number" class="form-control" id="bedrooms" name="bedrooms" value="{{ old('bedrooms') }}">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label" for="bathrooms">Bathrooms</label>
-                                <input type="number" class="form-control" id="bathrooms" name="bathrooms" value="{{ old('bathrooms') }}">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label" for="area">Area (Sq Ft)</label>
-                                <input type="number" class="form-control" id="area" name="area" value="{{ old('area') }}">
-                            </div>
+                            @foreach($propertyDetails as $detail)
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label" for="detail-{{ $detail->id }}">
+                                        @if($detail->icon)<i class="{{ $detail->icon }} me-1"></i>@endif
+                                        {{ $detail->name }}
+                                    </label>
+                                    @if($detail->input_type == 'select')
+                                        <select class="form-select" id="detail-{{ $detail->id }}" name="details[{{ $detail->id }}]">
+                                            <option value="">Select</option>
+                                            @foreach($detail->options ?? [] as $option)
+                                                <option value="{{ $option }}" {{ old('details.'.$detail->id) == $option ? 'selected' : '' }}>{{ $option }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <input type="{{ $detail->input_type }}" class="form-control" id="detail-{{ $detail->id }}" name="details[{{ $detail->id }}]" value="{{ old('details.'.$detail->id) }}" placeholder="{{ $detail->name }}">
+                                    @endif
+                                </div>
+                            @endforeach
                             <div class="col-md-3 mb-3">
                                 <label class="form-label" for="project-id">Project ID</label>
                                 <input type="text" class="form-control" id="project-id" name="project_id" placeholder="e.g. PR-001" value="{{ old('project_id') }}">

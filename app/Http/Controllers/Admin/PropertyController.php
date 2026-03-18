@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Amenity;
+use App\Models\Location;
 use App\Models\Property;
+use App\Models\PropertyDetail;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -49,7 +51,9 @@ class PropertyController extends Controller
     public function add()
     {
         $amenities = \App\Models\Amenity::all();
-        return view('admin.property.add', compact('amenities'));
+        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
+        return view('admin.property.add', compact('amenities', 'locations', 'propertyDetails'));
     }
 
     public function addPost(Request $request)
@@ -81,7 +85,7 @@ class PropertyController extends Controller
         }
 
         try {
-            $data = $request->except(['images', 'feature_image', 'floor_plan', 'amenities', 'is_featured', 'is_home_featured', 'is_location_featured']);
+            $data = $request->except(['images', 'feature_image', 'floor_plan', 'amenities', 'is_featured', 'is_home_featured', 'is_location_featured', 'details']);
             $data['slug'] = \Str::slug($request->title) . '-' . time();
             $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
             $data['is_home_featured'] = $request->has('is_home_featured') ? 1 : 0;
@@ -119,6 +123,18 @@ class PropertyController extends Controller
                 $property->amenities()->attach($request->amenities);
             }
 
+            // Save dynamic detail values
+            if ($request->has('details')) {
+                foreach ($request->details as $detailId => $value) {
+                    if ($value !== null && $value !== '') {
+                        $property->detailValues()->create([
+                            'property_detail_id' => $detailId,
+                            'value' => $value,
+                        ]);
+                    }
+                }
+            }
+
             return redirect()->route('admin.property.list')->with('success', 'Property added successfully.');
         } catch (\Exception $exception) {
             return redirect()->back()->withErrors(['error' => $exception->getMessage()])->withInput();
@@ -140,7 +156,9 @@ class PropertyController extends Controller
 
 
         $amenities = Amenity::all();
-        return view('admin.property.edit', compact('property', 'amenities'));
+        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
+        return view('admin.property.edit', compact('property', 'amenities', 'locations', 'propertyDetails'));
     }
 
     public function editPost(Request $request, Property $property)
@@ -185,7 +203,7 @@ class PropertyController extends Controller
         }
 
         try {
-            $data = $request->except(['images', 'feature_image', 'floor_plan', 'amenities', 'is_featured', 'is_home_featured', 'is_location_featured']);
+            $data = $request->except(['images', 'feature_image', 'floor_plan', 'amenities', 'is_featured', 'is_home_featured', 'is_location_featured', 'details']);
             $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
             $data['is_home_featured'] = $request->has('is_home_featured') ? 1 : 0;
             $data['is_location_featured'] = $request->has('is_location_featured') ? 1 : 0;
@@ -227,6 +245,16 @@ class PropertyController extends Controller
                 $property->amenities()->sync($request->amenities);
             } else {
                 $property->amenities()->sync([]);
+            }
+
+            // Sync dynamic detail values
+            if ($request->has('details')) {
+                foreach ($request->details as $detailId => $value) {
+                    $property->detailValues()->updateOrCreate(
+                        ['property_detail_id' => $detailId],
+                        ['value' => $value]
+                    );
+                }
             }
 
             return redirect()->route('admin.property.list')->with('success', 'Property updated successfully.');

@@ -25,6 +25,12 @@
             <!-- Left Side: Gallery & Description -->
             <div class="col-lg-8">
                 <div class="detail-gallery-container shadow-sm">
+                    <div class="gallery-header">
+                        <h2 class="gallery-title">{{ $property->title }}</h2>
+                        <div class="gallery-meta">
+                            <span class="gallery-date"><i class="far fa-calendar-alt me-1"></i>Posted on {{ $property->created_at->format('d M Y, h:i a') }}{{ $property->location ? ', ' . $property->location->name : '' }}</span>
+                        </div>
+                    </div>
                     <!-- Main Swiper -->
                     <div class="swiper main-image-swiper">
                         <div class="swiper-wrapper">
@@ -63,6 +69,22 @@
                     </div>
                 </div>
 
+                <!-- Mobile Title (shown only on mobile, after image) -->
+                <div class="mobile-title-section d-lg-none mt-3">
+                    <div class="badge bg-primary mb-2">
+                        @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                            {{ $property->property_status }}
+                        @else
+                            For {{ $property->property_status }}
+                        @endif
+                    </div>
+                    <h2 class="mobile-property-title">{{ $property->title }}</h2>
+                    <div class="mobile-location">
+                        <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->location ? ', ' : '' }}{{ $property->location ? $property->location->name : '' }}
+                    </div>
+                    <h3 class="mobile-price">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h3>
+                </div>
+
                 <!-- Lower Content (Ref Image 2 details) -->
                 <div class="detail-content-box mt-4">
                     <div class="property-main-header">
@@ -87,35 +109,19 @@
                     <!-- Specs Grid -->
                     <h4 class="detail-section-title">Property Details</h4>
                     <div class="specs-grid">
-                        <div class="spec-item">
-                            <i class="fas fa-expand-arrows-alt spec-icon"></i>
-                            <span class="spec-value">{{ number_format($property->area) }}</span>
-                            <span class="spec-label">Sqft</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-bed spec-icon"></i>
-                            <span class="spec-value">{{ $property->bedrooms }}</span>
-                            <span class="spec-label">Bedrooms</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-bath spec-icon"></i>
-                            <span class="spec-value">{{ $property->bathrooms }}</span>
-                            <span class="spec-label">Bathrooms</span>
-                        </div>
+                        @foreach($property->detailValues as $dv)
+                            @if($dv->detail && $dv->value)
+                                <div class="spec-item">
+                                    <i class="{{ $dv->detail->icon ?? 'fas fa-info-circle' }} spec-icon"></i>
+                                    <span class="spec-value">{{ $dv->value }}</span>
+                                    <span class="spec-label">{{ $dv->detail->name }}</span>
+                                </div>
+                            @endif
+                        @endforeach
                         <div class="spec-item">
                             <i class="fas fa-couch spec-icon"></i>
                             <span class="spec-value">{{ $property->is_furnished }}</span>
                             <span class="spec-label">Type</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-car spec-icon"></i>
-                            <span class="spec-value">{{ $property->parking ?? 0 }}</span>
-                            <span class="spec-label">Parking</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fas fa-building spec-icon"></i>
-                            <span class="spec-value">{{ $property->floor }}</span>
-                            <span class="spec-label">Floor</span>
                         </div>
                     </div>
 
@@ -233,6 +239,79 @@
                 </div>
             </div>
         </div>
+
+        @if(count($recommended_properties) > 0)
+        <!-- Recommended Properties Section -->
+        <div class="recommended-section mt-5 pb-5">
+            <h3 class="detail-section-title mb-4">Recommended Properties</h3>
+            <div class="row g-4">
+                @foreach($recommended_properties as $rp)
+                <div class="col-lg-3 col-md-6">
+                    <div class="property-card-global">
+                        <div class="card-image-box">
+                            <div class="status-badge-container">
+                                <span class="status-badge">For {{ $rp->property_status }}</span>
+                            </div>
+                            <div class="swiper card-inner-slider">
+                                <div class="swiper-wrapper">
+                                    @if($rp->feature_image)
+                                        <div class="swiper-slide"><img src="{{ asset($rp->feature_image) }}" alt="{{ $rp->title }}"></div>
+                                    @endif
+                                    @php
+                                        $gallery = is_array($rp->images) ? $rp->images : (json_decode($rp->images) ?? []);
+                                    @endphp
+                                    @foreach($gallery as $img)
+                                        <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $rp->title }}"></div>
+                                    @endforeach
+                                </div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                            </div>
+                        </div>
+                        <div class="card-body-global">
+                            <h3 class="card-title-global">{{ $rp->title }}</h3>
+                            <div class="info-grid">
+                                <h4 class="price-text">৳ {{ number_format($rp->price, 0) }}{{ in_array($rp->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h4>
+                                <div class="location-text">
+                                    <i class="fas fa-map-marker-alt"></i> {{ $rp->location ? $rp->location->name : ($rp->sub_route ?: $rp->route) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer-global">
+                            <div class="feature-group">
+                                @foreach($rp->detailValues->take(3) as $dv)
+                                    @if($dv->detail && $dv->value)
+                                        <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
+                                    @endif
+                                @endforeach
+                            </div>
+                            <a href="{{ route('property-details', $rp->id) }}" class="btn-view-more">View More</a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+    </div>
+</div>
+
+<!-- Mobile Fixed Bottom Agent Bar -->
+<div class="mobile-agent-bar d-lg-none">
+    <div class="mobile-agent-info">
+        @if($property->user && $property->user->company && $property->user->company->logo)
+            <img src="{{ asset($property->user->company->logo) }}" class="mobile-agent-logo" alt="Agent">
+        @else
+            <div class="mobile-agent-logo d-flex align-items-center justify-content-center bg-light">
+                <i class="fas fa-building text-muted"></i>
+            </div>
+        @endif
+        <span class="mobile-agent-name">{{ $property->user->name ?? 'DProperty Agent' }}</span>
+    </div>
+    <div class="mobile-agent-actions">
+        <a href="mailto:{{ $property->user->email ?? '#' }}" class="mobile-action-btn btn-email-m"><i class="fas fa-envelope"></i></a>
+        <a href="https://wa.me/{{ $property->user->phone ?? '' }}" target="_blank" class="mobile-action-btn btn-wa-m"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:{{ $property->user->phone ?? '' }}" class="mobile-action-btn btn-phone-m"><i class="fas fa-phone-alt"></i></a>
     </div>
 </div>
 @endsection
@@ -257,6 +336,20 @@
             thumbs: {
                 swiper: thumbsSwiper,
             },
+        });
+
+        // Initialize all inner card sliders for recommended properties
+        const innerSliders = document.querySelectorAll('.card-inner-slider');
+        innerSliders.forEach(slider => {
+            new Swiper(slider, {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: true,
+                navigation: {
+                    nextEl: slider.querySelector('.swiper-button-next'),
+                    prevEl: slider.querySelector('.swiper-button-prev'),
+                },
+            });
         });
 
         // Phone Reveal Logic

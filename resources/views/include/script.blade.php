@@ -10,6 +10,7 @@
 <script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/script.js"></script>
 <script src="{{asset('custom/custom_js.js')}}"></script>
 <!-- Custom JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 <script>
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -29,23 +30,36 @@
         });
     });
 
-    // Back to top button functionality
+    // Back to top with circular progress
     const backToTopButton = document.getElementById('backToTop');
+    const progressFill = backToTopButton ? backToTopButton.querySelector('.progress-ring-fill') : null;
 
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            backToTopButton.style.display = 'block';
-        } else {
-            backToTopButton.style.display = 'none';
-        }
-    });
+    if (backToTopButton && progressFill) {
+        const radius = 26;
+        const circumference = 2 * Math.PI * radius;
+        progressFill.style.strokeDasharray = circumference;
+        progressFill.style.strokeDashoffset = circumference;
 
-    backToTopButton.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = docHeight > 0 ? scrollTop / docHeight : 0;
+            const offset = circumference - (scrollPercent * circumference);
+            progressFill.style.strokeDashoffset = offset;
+
+            if (scrollTop > 300) {
+                backToTopButton.classList.add('visible');
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.classList.remove('visible');
+                backToTopButton.style.display = 'none';
+            }
         });
-    });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
     // Active navigation highlighting
     window.addEventListener('scroll', () => {

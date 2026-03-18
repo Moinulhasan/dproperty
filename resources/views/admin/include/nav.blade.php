@@ -66,6 +66,18 @@
                         </a>
                     </li>
                 @endcan
+                <li class="menu-item {{request()->routeIs('admin.location*')? 'active' : ''}}">
+                    <a href="{{route('admin.location.list')}}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-map-pin"></i>
+                        <div data-i18n="Locations">Locations</div>
+                    </a>
+                </li>
+                <li class="menu-item {{request()->routeIs('admin.property-detail*')? 'active' : ''}}">
+                    <a href="{{route('admin.property-detail.list')}}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-list-details"></i>
+                        <div data-i18n="Property Details">Property Details</div>
+                    </a>
+                </li>
             @endcan
             @can('manage-tags')
                 <li class="menu-item {{request()->routeIs('admin.tag*')? 'active' : ''}}">
@@ -77,7 +89,7 @@
             @endcan
         @endcanany
         <!-- Content Management -->
-        @canany(['manage-slider','manage-service','manage-client-review'])
+        @canany(['manage-slider','manage-service','manage-client-review','manage-article'])
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">Content Management</span>
             </li>
@@ -105,6 +117,12 @@
                     </a>
                 </li>
             @endcan
+            <li class="menu-item {{request()->routeIs('admin.article.*')? 'active' : ''}}">
+                <a href="{{route('admin.article.list')}}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-news"></i>
+                    <div data-i18n="Articles">Articles</div>
+                </a>
+            </li>
         @endcanany
 
         <!-- Access Control -->

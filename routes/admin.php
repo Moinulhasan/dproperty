@@ -4,11 +4,14 @@ use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\AppSettingsController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\Admin\PropertyDetailController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\DashboardController;
 use \Illuminate\Support\Facades\Route;
@@ -67,6 +70,24 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('image-delete/{property}', [PropertyController::class, 'deleteImage'])->name('property.image.delete');
     });
 
+    Route::group(['prefix' => 'locations'], function () {
+        Route::get('list', [LocationController::class, 'index'])->name('location.list');
+        Route::get('add', [LocationController::class, 'add'])->name('location.add');
+        Route::post('add', [LocationController::class, 'addPost'])->name('location.add.post');
+        Route::get('edit/{location}', [LocationController::class, 'edit'])->name('location.edit');
+        Route::post('edit/{location}', [LocationController::class, 'editPost'])->name('location.edit.post');
+        Route::get('delete/{location}', [LocationController::class, 'delete'])->name('location.delete');
+    });
+
+    Route::group(['prefix' => 'property-details'], function () {
+        Route::get('list', [PropertyDetailController::class, 'index'])->name('property-detail.list');
+        Route::get('add', [PropertyDetailController::class, 'add'])->name('property-detail.add');
+        Route::post('add', [PropertyDetailController::class, 'addPost'])->name('property-detail.add.post');
+        Route::get('edit/{propertyDetail}', [PropertyDetailController::class, 'edit'])->name('property-detail.edit');
+        Route::post('edit/{propertyDetail}', [PropertyDetailController::class, 'editPost'])->name('property-detail.edit.post');
+        Route::get('delete/{propertyDetail}', [PropertyDetailController::class, 'delete'])->name('property-detail.delete');
+    });
+
     Route::group(['prefix' => 'app-settings'], function () {
         Route::get('list', [AppSettingsController::class, 'appSettings'])->name('app.settings');
         Route::post('update', [AppSettingsController::class, 'updateAppSettings'])->name('app.settings.update');
@@ -115,5 +136,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{amenity}', [AmenityController::class, 'edit'])->name('amenity.edit');
         Route::post('edit/{amenity}', [AmenityController::class, 'editPost'])->name('amenity.edit.post');
         Route::get('delete/{amenity}', [AmenityController::class, 'delete'])->name('amenity.delete');
+    });
+
+    Route::group(['prefix' => 'articles'], function () {
+        Route::get('list', [ArticleController::class, 'index'])->name('article.list');
+        Route::get('add', [ArticleController::class, 'add'])->name('article.add');
+        Route::post('add', [ArticleController::class, 'addPost'])->name('article.add.post');
+        Route::get('edit/{article}', [ArticleController::class, 'edit'])->name('article.edit');
+        Route::post('edit/{article}', [ArticleController::class, 'editPost'])->name('article.edit.post');
+        Route::get('delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
     });
 });

@@ -9,7 +9,7 @@
             <div class="swiper-wrapper">
                 @forelse($neighborhoods as $neighborhood)
                 <div class="swiper-slide">
-                    <a href="{{ route('property-details', $neighborhood->id) }}" class="neighborhood-card-link text-decoration-none">
+                    <a href="{{ route('location.properties', $neighborhood->id) }}" class="neighborhood-card-link text-decoration-none">
                         <div class="neighborhood-card">
                             @if($neighborhood->image)
                                 <img src="{{ asset($neighborhood->image) }}" alt="{{ $neighborhood->name }}">

@@ -76,19 +76,102 @@
 /* Badges */
 .status-badge-container {
     position: absolute;
-    top: 15px;
-    left: 15px;
+    top: 0;
+    left: 20px;
     z-index: 5;
 }
 
 .status-badge {
     background: var(--accent-red);
     color: #fff;
-    padding: 6px 16px;
+    padding: 8px 18px;
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 700;
-    box-shadow: 0 4px 10px rgba(255, 56, 92, 0.3);
+    position: relative;
+    top: 25px; /* space for the strings */
+    display: inline-block;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* The strings */
+.status-badge::before,
+.status-badge::after {
+    content: '';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    width: 2px;
+    height: 26px;
+    background: #fff;
+    z-index: 10;
+}
+.status-badge::before {
+    transform-origin: top center;
+    transform: rotate(35deg);
+}
+.status-badge::after {
+    transform-origin: top center;
+    transform: rotate(-35deg);
+}
+
+/* The holes (dots) */
+.badge-dot {
+    position: absolute;
+    top: 3px;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    border: 1px solid var(--accent-red);
+    z-index: 15;
+}
+.badge-dot.left {
+    left: calc(50% - 15px);
+}
+.badge-dot.right {
+    right: calc(50% - 14px);
+}
+
+/* Hover Actions */
+.card-image-hover-actions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 15px;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.property-card-global:hover .card-image-hover-actions {
+    opacity: 1;
+    visibility: visible;
+}
+
+.action-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    color: var(--accent-red);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: var(--accent-red);
+    color: #fff;
+    transform: scale(1.1);
 }
 
 .type-badge {

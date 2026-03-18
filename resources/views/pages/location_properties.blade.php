@@ -15,7 +15,7 @@
             </ol>
         </nav>
         <h1>{{ $title }}</h1>
-        <p class="mb-0 text-white-50">Find the perfect property from our curated collection.</p>
+        <p class="mb-0 text-white-50">Explore all properties available in {{ $location->name }}.</p>
     </div>
 </div>
 
@@ -23,13 +23,13 @@
     <div class="container px-md-5 px-3">
         <div class="filter-card border-0">
             <form action="{{ url()->current() }}" method="GET" class="row g-3 align-items-end">
-                <div class="col-lg-3 col-md-6">
-                    <label class="filter-label">Location</label>
-                    <select name="location" class="filter-control select2-basic">
-                        <option value="">All Locations</option>
-                        @foreach($locations as $loc)
-                            <option value="{{ $loc->id }}" {{ request('location') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
-                        @endforeach
+                <div class="col-lg-2 col-md-6">
+                    <label class="filter-label">Property Status</label>
+                    <select name="property_status" class="filter-control">
+                        <option value="">All Types</option>
+                        <option value="Buy" {{ request('property_status') == 'Buy' ? 'selected' : '' }}>Buy</option>
+                        <option value="Rent" {{ request('property_status') == 'Rent' ? 'selected' : '' }}>Rent</option>
+                        <option value="Sell" {{ request('property_status') == 'Sell' ? 'selected' : '' }}>Sell</option>
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-6">
@@ -52,7 +52,7 @@
                         <option value="5" {{ request('bedrooms') == '5' ? 'selected' : '' }}>5+</option>
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <label class="filter-label">Price Range</label>
                     <div class="d-flex gap-1">
                         <input type="number" name="min_price" class="form-control filter-control" placeholder="Min" value="{{ request('min_price') }}">
@@ -110,9 +110,6 @@
                             @if($property->feature_image)
                                 <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
                             @endif
-                            @php
-                                $gallery = $property->images ?? [];
-                            @endphp
                             @foreach($gallery as $img)
                                 <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
                             @endforeach
@@ -132,7 +129,7 @@
                         <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
                         
                         <div class="location-text">
-                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
+                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: ($property->location ? $property->location->name : '') }}
                         </div>
                         <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                     </div>
@@ -154,7 +151,7 @@
                 <div class="empty-listings">
                     <i class="fas fa-home fa-3x text-muted mb-3"></i>
                     <h4 class="text-muted">No Properties Found</h4>
-                    <p class="text-muted">We couldn't find any properties matching this category at the moment.</p>
+                    <p class="text-muted">No properties available in {{ $location->name }} at the moment.</p>
                     <a href="{{ route('home') }}" class="btn btn-primary mt-3">Back to Home</a>
                 </div>
             </div>
@@ -184,15 +181,6 @@
                 },
             });
         });
-
-        // Initialize Select2 if available
-        if (typeof $('.select2-basic').select2 === 'function') {
-            $('.select2-basic').select2({
-                placeholder: 'Select Location',
-                allowClear: true,
-                width: '100%'
-            });
-        }
     });
 </script>
 @endpush

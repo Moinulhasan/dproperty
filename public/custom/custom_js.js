@@ -28,3 +28,19 @@ var swiper = new Swiper(".slide-content", {
         },
     },
 });
+
+function openGallery(btn) {
+    if (typeof Fancybox !== 'undefined') {
+        try {
+            const images = JSON.parse(btn.dataset.images);
+            if (images && images.length > 0) {
+                const fancyboxImages = images.map(img => ({ src: img, type: "image", caption: "Property Image" }));
+                Fancybox.show(fancyboxImages);
+            }
+        } catch (e) {
+            console.error("Error parsing images for gallery", e);
+        }
+    } else {
+        console.warn("Fancybox is not loaded.");
+    }
+}

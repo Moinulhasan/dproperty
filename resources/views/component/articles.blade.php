@@ -7,81 +7,29 @@
 
         <div class="articles-slider swiper" id="articlesSlider">
             <div class="swiper-wrapper">
-                <!-- Article 1 -->
+                @foreach($articles as $article)
                 <div class="swiper-slide h-auto">
                     <div class="article-card">
                         <div class="article-image">
-                            <span class="article-badge">Buying Tips</span>
-                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="Article 1">
+                            <span class="article-badge">{{ $article->meta_title ?? 'Real Estate' }}</span>
+                            @if($article->image)
+                                <img src="{{ asset($article->image) }}" alt="{{ $article->title }}">
+                            @else
+                                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="{{ $article->title }}">
+                            @endif
                         </div>
                         <div class="article-content">
                             <div class="article-meta">
-                                <span><i class="far fa-calendar-alt"></i> Oct 24, 2023</span>
-                                <span><i class="far fa-user"></i> Admin</span>
+                                <span><i class="far fa-calendar-alt"></i> {{ $article->created_at->format('M d, Y') }}</span>
+                                <span><i class="far fa-eye"></i> {{ $article->views }} Views</span>
                             </div>
-                            <h3 class="article-title"><a href="{{ route('article-details', 'buying-tips') }}" class="text-decoration-none text-dark">10 Important Things to Know Before Buying a Home</a></h3>
-                            <p class="article-excerpt">Buying a home is one of the biggest investments you'll ever make. Here are the key factors you should consider...</p>
-                            <a href="{{ route('article-details', 'buying-tips') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                            <h3 class="article-title"><a href="{{ route('article-details', $article->slug) }}" class="text-decoration-none text-dark">{{ $article->title }}</a></h3>
+                            <p class="article-excerpt">{{ Str::limit(strip_tags($article->content), 120) }}</p>
+                            <a href="{{ route('article-details', $article->slug) }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
-
-                <!-- Article 2 -->
-                <div class="swiper-slide h-auto">
-                    <div class="article-card">
-                        <div class="article-image">
-                            <span class="article-badge">Market Trends</span>
-                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Article 2">
-                        </div>
-                        <div class="article-content">
-                            <div class="article-meta">
-                                <span><i class="far fa-calendar-alt"></i> Oct 20, 2023</span>
-                                <span><i class="far fa-user"></i> Editor</span>
-                            </div>
-                            <h3 class="article-title"><a href="{{ route('article-details', 'market-trends') }}" class="text-decoration-none text-dark">The Future of Real Estate: Trends to Watch in 2024</a></h3>
-                            <p class="article-excerpt">As we approach the new year, several emerging trends are set to reshape the property market landscape...</p>
-                            <a href="{{ route('article-details', 'market-trends') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Article 3 -->
-                <div class="swiper-slide h-auto">
-                    <div class="article-card">
-                        <div class="article-image">
-                            <span class="article-badge">Interior Design</span>
-                            <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80" alt="Article 3">
-                        </div>
-                        <div class="article-content">
-                            <div class="article-meta">
-                                <span><i class="far fa-calendar-alt"></i> Oct 15, 2023</span>
-                                <span><i class="far fa-user"></i> Admin</span>
-                            </div>
-                            <h3 class="article-title"><a href="{{ route('article-details', 'interior-design') }}" class="text-decoration-none text-dark">How to Maximize Your Space in a Small Apartment</a></h3>
-                            <p class="article-excerpt">Living in a compact space doesn't mean compromising on style or functionality. Discover our top tips for...</p>
-                            <a href="{{ route('article-details', 'interior-design') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Article 4 -->
-                <div class="swiper-slide h-auto">
-                    <div class="article-card">
-                        <div class="article-image">
-                            <span class="article-badge">Investment</span>
-                            <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=800&q=80" alt="Article 4">
-                        </div>
-                        <div class="article-content">
-                            <div class="article-meta">
-                                <span><i class="far fa-calendar-alt"></i> Oct 10, 2023</span>
-                                <span><i class="far fa-user"></i> Editor</span>
-                            </div>
-                            <h3 class="article-title"><a href="{{ route('article-details', 'investment-strategy') }}" class="text-decoration-none text-dark">Why Real Estate is Still the Best Long-Term Investment</a></h3>
-                            <p class="article-excerpt">Compared to other asset classes, real estate offers unique advantages for building long-term wealth...</p>
-                            <a href="{{ route('article-details', 'investment-strategy') }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Add Swiper Navigation -->

@@ -24,4 +24,14 @@ class Property extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    public function detailValues()
+    {
+        return $this->hasMany(PropertyDetailValue::class);
+    }
 }

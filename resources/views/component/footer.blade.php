@@ -110,7 +110,10 @@
         </div>
     </div>
 </footer>
-<button id="backToTop" class="btn btn-primary position-fixed bottom-0 end-0 m-3 rounded-circle"
-        style="display: none; z-index: 1000;padding: 12px 14px">
-    <i class="bi bi-arrow-up"></i>
-</button>
+<div id="backToTop" class="scroll-progress-btn" style="display: none;">
+    <svg class="progress-ring" viewBox="0 0 60 60">
+        <circle class="progress-ring-bg" cx="30" cy="30" r="26" />
+        <circle class="progress-ring-fill" cx="30" cy="30" r="26" />
+    </svg>
+    <span class="scroll-arrow"><i class="bi bi-arrow-up"></i></span>
+</div>
