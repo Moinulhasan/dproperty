@@ -108,10 +108,10 @@
                     <div class="swiper card-inner-slider">
                         <div class="swiper-wrapper">
                             @if($property->feature_image)
-                                <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                                <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->sub_route ?: ($property->location ? $property->location->name : '') }}" title="{{ $property->title }}"></div>
                             @endif
                             @foreach($gallery as $img)
-                                <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                                <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
                             @endforeach
                             @if(!$property->feature_image && count($gallery) == 0)
                                 <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>

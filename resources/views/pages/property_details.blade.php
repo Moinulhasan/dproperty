@@ -1,5 +1,21 @@
 @extends('master')
 
+@section('meta_description', Str::limit(strip_tags($property->description), 160))
+
+@section('seo')
+    <meta property="og:title" content="{{ $property->title }} | DProperty">
+    <meta property="og:description" content="{{ Str::limit(strip_tags($property->description), 160) }}">
+    <meta property="og:image" content="{{ asset($property->feature_image) }}">
+    <meta property="og:image:alt" content="{{ $property->title }} - {{ $property->property_type }} in {{ $property->sub_route ?? $property->route }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $property->title }}">
+    <meta name="twitter:description" content="{{ Str::limit(strip_tags($property->description), 160) }}">
+    <meta name="twitter:image" content="{{ asset($property->feature_image) }}">
+@endsection
+
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/details.css') }}">
 @endsection()
@@ -36,7 +52,7 @@
                         <div class="swiper-wrapper">
                             @if($property->feature_image)
                             <div class="swiper-slide">
-                                <img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}">
+                                <img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->property_type }} in {{ $property->sub_route ?? $property->route }}" title="{{ $property->title }}">
                             </div>
                             @endif
                             @php
@@ -44,7 +60,7 @@
                             @endphp
                             @foreach($gallery as $img)
                             <div class="swiper-slide">
-                                <img src="{{ asset($img) }}" alt="{{ $property->title }}">
+                                <img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}">
                             </div>
                             @endforeach
                         </div>
@@ -151,7 +167,7 @@
                     @if($property->floor_plan)
                     <h4 class="detail-section-title">Floor Plan</h4>
                     <div class="mb-4 text-center">
-                        <img src="{{ asset($property->floor_plan) }}" class="img-fluid rounded border" alt="Floor Plan">
+                        <img src="{{ asset($property->floor_plan) }}" class="img-fluid rounded border" alt="Floor Plan for {{ $property->title }} - {{ $property->property_type }}" title="Floor Plan - {{ $property->title }}">
                     </div>
                     @endif
 

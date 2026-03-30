@@ -43,13 +43,13 @@
                                 <div class="swiper card-inner-slider">
                                     <div class="swiper-wrapper">
                                         @if($property->feature_image)
-                                            <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                                            <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} for Sale in {{ $property->sub_route ?: $property->route }}" title="{{ $property->title }}"></div>
                                         @endif
                                         @php
                                             $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
                                         @endphp
                                         @foreach($gallery as $img)
-                                            <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                                            <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
                                         @endforeach
                                     </div>
                                     <div class="swiper-button-next"></div>

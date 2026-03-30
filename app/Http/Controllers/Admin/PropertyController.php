@@ -7,10 +7,18 @@ use App\Models\Amenity;
 use App\Models\Location;
 use App\Models\Property;
 use App\Models\PropertyDetail;
+use App\Services\ImageProcessingService;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+    protected ImageProcessingService $imageService;
+
+    public function __construct(ImageProcessingService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     //
     public function index(Request $request)
     {
@@ -96,8 +104,9 @@ class PropertyController extends Controller
             if ($request->hasFile('images')) {
                 $images = [];
                 foreach ($request->file('images') as $image) {
-                    $name = time() . '_' . uniqid() . '.' . $image->extension();
-                    $image->move(public_path('uploads/property'), $name);
+                    $name = time() . '_' . uniqid() . '.webp'; // Set to webp for better compression
+                    $targetPath = public_path('uploads/property/') . $name;
+                    $this->imageService->process($image->getRealPath(), $targetPath);
                     $images[] = 'uploads/property/' . $name;
                 }
                 $data['images'] = $images;
@@ -105,15 +114,17 @@ class PropertyController extends Controller
 
             // Handle Feature Image
             if ($request->hasFile('feature_image')) {
-                $name = time() . '_feature.' . $request->feature_image->extension();
-                $request->feature_image->move(public_path('uploads/property'), $name);
+                $name = time() . '_feature.webp';
+                $targetPath = public_path('uploads/property/') . $name;
+                $this->imageService->process($request->feature_image->getRealPath(), $targetPath);
                 $data['feature_image'] = 'uploads/property/' . $name;
             }
 
             // Handle Floor Plan
             if ($request->hasFile('floor_plan')) {
-                $name = time() . '_floor.' . $request->floor_plan->extension();
-                $request->floor_plan->move(public_path('uploads/property'), $name);
+                $name = time() . '_floor.webp';
+                $targetPath = public_path('uploads/property/') . $name;
+                $this->imageService->process($request->floor_plan->getRealPath(), $targetPath);
                 $data['floor_plan'] = 'uploads/property/' . $name;
             }
 
@@ -212,8 +223,9 @@ class PropertyController extends Controller
             if ($request->hasFile('images')) {
                 $images = $property->images ?? [];
                 foreach ($request->file('images') as $image) {
-                    $name = time() . '_' . uniqid() . '.' . $image->extension();
-                    $image->move(public_path('uploads/property'), $name);
+                    $name = time() . '_' . uniqid() . '.webp';
+                    $targetPath = public_path('uploads/property/') . $name;
+                    $this->imageService->process($image->getRealPath(), $targetPath);
                     $images[] = 'uploads/property/' . $name;
                 }
                 $data['images'] = $images;
@@ -224,8 +236,9 @@ class PropertyController extends Controller
                 if ($property->feature_image && file_exists(public_path($property->feature_image))) {
                     unlink(public_path($property->feature_image));
                 }
-                $name = time() . '_feature.' . $request->feature_image->extension();
-                $request->feature_image->move(public_path('uploads/property'), $name);
+                $name = time() . '_feature.webp';
+                $targetPath = public_path('uploads/property/') . $name;
+                $this->imageService->process($request->feature_image->getRealPath(), $targetPath);
                 $data['feature_image'] = 'uploads/property/' . $name;
             }
 
@@ -234,8 +247,9 @@ class PropertyController extends Controller
                 if ($property->floor_plan && file_exists(public_path($property->floor_plan))) {
                     unlink(public_path($property->floor_plan));
                 }
-                $name = time() . '_floor.' . $request->floor_plan->extension();
-                $request->floor_plan->move(public_path('uploads/property'), $name);
+                $name = time() . '_floor.webp';
+                $targetPath = public_path('uploads/property/') . $name;
+                $this->imageService->process($request->floor_plan->getRealPath(), $targetPath);
                 $data['floor_plan'] = 'uploads/property/' . $name;
             }
 
