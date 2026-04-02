@@ -10,6 +10,5 @@
     @include('component.articles')
     @include('component.why_us')
     @include('component.testimony')
-    @include('component.contact')
 
 @endsection

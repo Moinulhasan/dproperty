@@ -23,9 +23,9 @@
         </div>
 
         <!-- Search Section Over Carousel -->
-        <div class="search-section-wrapper animate-slide-up">
+        <div class="search-section-wrapper">
             <div class="container">
-                <div class="search-container content-align-left">
+                <div class="search-container content-align-left animate-slide-up">
                     <!-- Tabs -->
                     <div class="search-tabs-outer">
                         <div class="search-tabs">
@@ -47,7 +47,7 @@
                                         <select class="form-select select2-location" name="location" id="locationSelect">
                                             <option value=""></option>
                                             @foreach($locations as $loc)
-                                                <option value="{{ $loc }}">{{ $loc }}</option>
+                                                <option value="{{ $loc->id }}">{{ $loc->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>

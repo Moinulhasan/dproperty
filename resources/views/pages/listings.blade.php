@@ -21,50 +21,59 @@
 
 <div class="filter-wrapper">
     <div class="container px-md-5 px-3">
-        <div class="filter-card border-0">
-            <form action="{{ url()->current() }}" method="GET" class="row g-3 align-items-end">
-                <div class="col-lg-3 col-md-6">
-                    <label class="filter-label">Location</label>
-                    <select name="location" class="filter-control select2-basic">
-                        <option value="">All Locations</option>
-                        @foreach($locations as $loc)
-                            <option value="{{ $loc->id }}" {{ request('location') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">Property Type</label>
-                    <select name="property_type" class="filter-control">
-                        <option value="">All Types</option>
-                        @foreach($property_types as $type)
-                            <option value="{{ $type }}" {{ request('property_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">Bedrooms</label>
-                    <select name="bedrooms" class="filter-control">
-                        <option value="any">Any</option>
-                        <option value="1" {{ request('bedrooms') == '1' ? 'selected' : '' }}>1</option>
-                        <option value="2" {{ request('bedrooms') == '2' ? 'selected' : '' }}>2</option>
-                        <option value="3" {{ request('bedrooms') == '3' ? 'selected' : '' }}>3</option>
-                        <option value="4" {{ request('bedrooms') == '4' ? 'selected' : '' }}>4</option>
-                        <option value="5" {{ request('bedrooms') == '5' ? 'selected' : '' }}>5+</option>
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">Price Range</label>
-                    <div class="d-flex gap-1">
-                        <input type="number" name="min_price" class="form-control filter-control" placeholder="Min" value="{{ request('min_price') }}">
-                        <input type="number" name="max_price" class="form-control filter-control" placeholder="Max" value="{{ request('max_price') }}">
+        <!-- Mobile Filter Toggle Button -->
+        <button class="btn-filter-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileFilterForm" aria-expanded="false" aria-controls="mobileFilterForm">
+            <span><i class="fas fa-sliders-h me-2"></i> Filter Properties</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+
+        <!-- Filter Form (Collapsible on Mobile, always visible on Desktop) -->
+        <div class="collapse d-lg-block" id="mobileFilterForm">
+            <div class="filter-card border-0">
+                <form action="{{ url()->current() }}" method="GET" class="row g-3 align-items-end">
+                    <div class="col-lg-3 col-md-6">
+                        <label class="filter-label">Location</label>
+                        <select name="location" class="filter-control select2-basic">
+                            <option value="">All Locations</option>
+                            @foreach($locations as $loc)
+                                <option value="{{ $loc->id }}" {{ request('location') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-12">
-                    <button type="submit" class="btn-filter-apply py-3 w-100">
-                        <i class="fas fa-search me-2"></i> Find properties
-                    </button>
-                </div>
-            </form>
+                    <div class="col-lg-2 col-md-6">
+                        <label class="filter-label">Property Type</label>
+                        <select name="property_type" class="filter-control">
+                            <option value="">All Types</option>
+                            @foreach($property_types as $type)
+                                <option value="{{ $type }}" {{ request('property_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label class="filter-label">Bedrooms</label>
+                        <select name="bedrooms" class="filter-control">
+                            <option value="any">Any</option>
+                            <option value="1" {{ request('bedrooms') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ request('bedrooms') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ request('bedrooms') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ request('bedrooms') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ request('bedrooms') == '5' ? 'selected' : '' }}>5+</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label class="filter-label">Price Range</label>
+                        <div class="d-flex gap-1">
+                            <input type="number" name="min_price" class="form-control filter-control" placeholder="Min" value="{{ request('min_price') }}">
+                            <input type="number" name="max_price" class="form-control filter-control" placeholder="Max" value="{{ request('max_price') }}">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-12">
+                        <button type="submit" class="btn-filter-apply py-3 w-100">
+                            <i class="fas fa-search me-2"></i> Find properties
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -125,7 +134,9 @@
                     </div>
                 </div>
                 <div class="card-body-global">
-                    <h3 class="card-title-global">{{ $property->title }}</h3>
+                    <h3 class="card-title-global">
+                        <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                    </h3>
 
                     <div class="info-grid">
                         <h4 class="price-text">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? ' / mo' : '' }}</h4>
@@ -138,14 +149,9 @@
                     </div>
                 </div>
                 <div class="card-footer-global">
-                    <div class="feature-group">
-                        @foreach($property->detailValues->take(3) as $dv)
-                            @if($dv->detail && $dv->value)
-                                <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
-                            @endif
-                        @endforeach
-                    </div>
-                    <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
+                    <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
+                    <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
+                    <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
                 </div>
             </div>
         </div>

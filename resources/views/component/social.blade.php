@@ -1,4 +1,4 @@
-<section id="projects" class="py-5" style="margin-top: 75px;">
+<section id="projects" class="py-2" style="margin-top: 15px;">
     <div class="container-fluid px-md-5 px-3">
         <div class="section-header text-center w-100">
             <h2 class="text-primary">Featured Properties</h2>
@@ -12,8 +12,8 @@
                 @if(isset($featured_properties) && count($featured_properties) > 0)
                     @foreach($featured_properties as $property)
                         <div class="swiper-slide h-auto">
-                            <div class="card h-100 property-card">
-                                <div class="property-image position-relative card-image-box">
+                            <div class="property-card-global h-100">
+                                <div class="card-image-box">
                                     <div class="status-badge-container">
                                         <div class="status-badge" style="background: {{ $property->property_status == 'Rent' || $property->property_status == 'For Rent' ? '#00A699' : '#FF385C' }} !important;">
                                             <span class="badge-dot left"></span>
@@ -42,19 +42,31 @@
                                             <i class="fas fa-camera"></i>
                                         </button>
                                     </div>
-                                    <div class="ratio ratio-16x9 card-inner-slider swiper">
+                                    <div class="card-inner-slider swiper">
                                         <div class="swiper-wrapper">
                                             @foreach($allImages as $sliderImg)
-                                                <div class="swiper-slide"><img src="{{ $sliderImg }}" alt="" style="object-fit: cover;"></div>
+                                                <div class="swiper-slide"><img src="{{ $sliderImg }}" alt="" class="w-100 h-100" style="object-fit: cover;"></div>
                                             @endforeach
                                         </div>
                                         <div class="swiper-button-next"></div>
                                         <div class="swiper-button-prev"></div>
                                     </div>
                                 </div>
-                                <div class="card-content p-3 card-body-global">
-                                    <p class="mb-0">{{ $property->title }}</p>
-                                    <p class="mb-0 small text-muted">{{ Str::limit(strip_tags($property->description), 100) }}</p>
+                                <div class="card-body-global">
+                                    <h3 class="card-title-global">
+                                        <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                                    </h3>
+                                    <div class="info-grid">
+                                        <h4 class="price-text">৳ {{ number_format($property->price, 0) }}</h4>
+                                        <div class="location-text">
+                                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer-global">
+                                    <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
+                                    <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
+                                    <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
                                 </div>
                             </div>
                         </div>

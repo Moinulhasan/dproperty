@@ -204,5 +204,12 @@ class HomePageController extends Controller
 
         return view('pages.article_details', compact('settings', 'article', 'recent_articles'));
     }
+
+    public function contact()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $tags = Tags::where('status', 1)->get();
+        return view('pages.contact', compact('settings', 'tags'));
+    }
 }
 

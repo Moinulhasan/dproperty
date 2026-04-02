@@ -285,7 +285,9 @@
                             </div>
                         </div>
                         <div class="card-body-global">
-                            <h3 class="card-title-global">{{ $rp->title }}</h3>
+                            <h3 class="card-title-global">
+                                <a href="{{ route('property-details', $rp->id) }}">{{ $rp->title }}</a>
+                            </h3>
                             <div class="info-grid">
                                 <h4 class="price-text">৳ {{ number_format($rp->price, 0) }}{{ in_array($rp->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h4>
                                 <div class="location-text">
@@ -294,14 +296,9 @@
                             </div>
                         </div>
                         <div class="card-footer-global">
-                            <div class="feature-group">
-                                @foreach($rp->detailValues->take(3) as $dv)
-                                    @if($dv->detail && $dv->value)
-                                        <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
-                                    @endif
-                                @endforeach
-                            </div>
-                            <a href="{{ route('property-details', $rp->id) }}" class="btn-view-more">View More</a>
+                            <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $rp->bedrooms }} Bed</div>
+                            <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $rp->bathrooms }} Bath</div>
+                            <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $rp->area }} SFT</div>
                         </div>
                     </div>
                 </div>

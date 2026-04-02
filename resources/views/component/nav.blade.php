@@ -28,6 +28,7 @@
                 <li class="nav-item">
                     <a class="nav-link text-white {{ request()->routeIs('rent') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
                 </li>
+                @if(Request::is('/'))
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('services') ? 'active' : '' }}" href="#services">Services</a>
                 </li>
@@ -37,8 +38,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-white {{ Request::is('about') ? 'active' : '' }}" href="#about">About</a>
                 </li>
+                @endif
                 <li class="nav-item">
-                    <a class="nav-link text-white {{ Request::is('contact') ? 'active' : '' }}" href="#contact">Contact Us</a>
+                    <a class="nav-link text-white {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Contact Us</a>
                 </li>
             </ul>
         </div>
@@ -62,10 +64,14 @@
             <li><a href="{{route('buy')}}" class="mobile-nav-link">Buy</a></li>
             <li><a href="{{route('rent')}}" class="mobile-nav-link">Rent</a></li>
             <li><a href="{{route('sell')}}" class="mobile-nav-link">Sell</a></li>
+            @if(Request::is('/'))
             <li><a href="#services" class="mobile-nav-link">Services</a></li>
             <li><a href="#projects" class="mobile-nav-link">Project</a></li>
-            <li><a href="#contact" class="mobile-nav-link">Contact Us</a></li>
+            @endif
+            <li><a href="{{ route('contact') }}" class="mobile-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact Us</a></li>
+            @if(Request::is('/'))
             <li><a href="#about" class="mobile-nav-link">About</a></li>
+            @endif
         </ul>
     </div>
 </div>

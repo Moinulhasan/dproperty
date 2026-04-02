@@ -19,4 +19,5 @@ Route::get('rent', [HomePageController::class, 'rent'])->name('rent');
 Route::get('article/{slug}', [HomePageController::class, 'article_details'])->name('article-details');
 
 Route::get('location/{id}', [HomePageController::class, 'locationProperties'])->name('location.properties');
+Route::get('contact-us', [HomePageController::class, 'contact'])->name('contact');
 

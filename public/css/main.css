@@ -69,15 +69,21 @@ body {
 
 /* Hero Carousel Styles */
 .hero-carousel-section {
-    margin-top: -14px;
     position: relative;
+    margin-top: 0;
+}
+
+@media (min-width: 992px) {
+    .hero-carousel-section {
+        margin-top: -14px;
+    }
 }
 
 .hero-slide {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    min-height: 47vh;
+    min-height: 60vh;
     position: relative;
     overflow: hidden;
 }
@@ -139,9 +145,10 @@ body {
 /* Compact Search Section Styles */
 .search-section-wrapper {
     position: absolute;
-    bottom: -60px;
+    top: 50%;
     left: 0;
     right: 0;
+    transform: translateY(-50%);
     z-index: 10;
 }
 
@@ -539,9 +546,20 @@ body {
 @media (max-width: 850px) {
     .search-section-wrapper {
         position: relative;
-        bottom: 0;
-        margin-top: -40px;
+        top: auto;
+        left: auto;
+        right: auto;
+        transform: none;
+        z-index: 100 !important;
         padding: 0 15px;
+        margin-top: -80px;
+        /* Pull it up to overlap the slider */
+        margin-bottom: 40px;
+        /* Push the next section down */
+    }
+
+    .hero-slide {
+        min-height: 70vh;
     }
 
     .compact-search-grid {
@@ -564,13 +582,27 @@ body {
 }
 
 @media (max-width: 576px) {
+    .search-section-wrapper {
+        margin-top: -265px;
+        /* Slightly more pull up on small screens */
+    }
+
     .compact-search-grid {
         grid-template-columns: 1fr 1fr;
     }
 
+    .search-tabs-outer {
+        margin-left: 15px;
+    }
+
+    .search-tab {
+        padding: 6px 18px;
+        font-size: 0.8rem;
+    }
+
     .search-card {
-        padding: 12px 15px;
-        min-height: 85px;
+        padding: 10px 12px;
+        min-height: 75px;
         border-right: 1px solid #f2f2f2;
     }
 
@@ -581,15 +613,17 @@ body {
     .search-card .card-value,
     .search-card .select2-container--default .select2-selection--single .select2-selection__rendered,
     .dropdown-toggle-custom {
-        font-size: 1rem !important;
+        font-size: 0.9rem !important;
     }
 
     .search-card .card-label {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
+        margin-bottom: 2px;
     }
 
     .search-card .card-sub-label {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+        margin-top: 2px;
     }
 
     .search-action-box {
@@ -915,9 +949,9 @@ body {
         padding-top: 60px;
     }
 
-    .hero-carousel-section {
-        /*margin-top: -60px;*/
-    }
+    /* .hero-carousel-section {
+        margin-top: -60px;
+    } */
 }
 
 @media (max-width: 768px) {
@@ -954,6 +988,10 @@ body {
 @media (max-width: 576px) {
     .mobile-nav-content {
         width: 55%;
+    }
+
+    .hero-carousel-section {
+        margin-top: -1px;
     }
 
     .hero-title {
@@ -1309,7 +1347,7 @@ html {
 }
 
 .progress-ring-bg {
-    fill: rgba(255,255,255,0.95);
+    fill: rgba(255, 255, 255, 0.95);
     stroke: #e0e0e0;
     stroke-width: 2.5;
 }
@@ -1359,6 +1397,7 @@ html {
         font-size: 0.95rem;
     }
 }
+
 /* ========== Contact Section Premium Styles ========== */
 .section-header-global .header-line {
     width: 60px;
@@ -1369,7 +1408,8 @@ html {
 }
 
 .contact-card-premium {
-    background: #F9F7F5; /* Light cream/gray from ref image */
+    background: #F9F7F5;
+    /* Light cream/gray from ref image */
     padding: 30px;
     border-radius: 12px;
     display: flex;
@@ -1452,7 +1492,7 @@ html {
     .contact-card-premium {
         padding: 20px;
     }
-    
+
     .inquiry-form-card {
         padding: 30px 20px;
     }

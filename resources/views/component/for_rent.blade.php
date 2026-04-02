@@ -1,7 +1,7 @@
 @if(count($rent_properties))
-    <section class="py-5" id="for-rent">
+    <section class="py-2" id="for-rent">
         <div class="container-fluid px-md-5 px-3">
-            <div class="section-header text-center mb-5">
+            <div class="section-header text-center mb-3">
                 <h2 class="text-primary">Properties For Rent</h2>
                 <p>Discover our best selection of properties available for rent</p>
             </div>
@@ -57,7 +57,9 @@
                                 </div>
                             </div>
                             <div class="card-body-global">
-                                <h3 class="card-title-global">{{ $property->title }}</h3>
+                                <h3 class="card-title-global">
+                                    <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                                </h3>
 
                                 <div class="info-grid">
                                     <h4 class="price-text">৳ {{ number_format($property->price, 0) }} / mo</h4>
@@ -70,14 +72,9 @@
                                 </div>
                             </div>
                             <div class="card-footer-global">
-                                <div class="feature-group">
-                        @foreach($property->detailValues->take(3) as $dv)
-                            @if($dv->detail && $dv->value)
-                                <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
-                            @endif
-                        @endforeach
-                                </div>
-                                <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
+                                <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
+                                <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
+                                <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
                             </div>
                         </div>
                     </div>
@@ -140,7 +137,9 @@
                                         </div>
                                     </div>
                                     <div class="card-body-global">
-                                        <h3 class="card-title-global">{{ $property->title }}</h3>
+                                        <h3 class="card-title-global">
+                                            <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                                        </h3>
 
                                         <div class="info-grid">
                                             <h4 class="price-text">৳ {{ number_format($property->price, 0) }} / mo</h4>
@@ -153,14 +152,9 @@
                                         </div>
                                     </div>
                                     <div class="card-footer-global">
-                                        <div class="feature-group">
-                                            @foreach($property->detailValues->take(3) as $dv)
-                                                @if($dv->detail && $dv->value)
-                                                    <div class="feature-item-global">{{ $dv->value }} <span>{{ $dv->detail->name }}</span></div>
-                                                @endif
-                                            @endforeach
-                                        </div>
-                                        <a href="{{ route('property-details', $property->id) }}" class="btn-view-more">View More</a>
+                                        <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
+                                        <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
+                                        <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
                                     </div>
                                 </div>
                             </div>
@@ -172,8 +166,8 @@
                 </div>
             </div>
 
-            <div class="text-center mt-5">
-                <a href="{{ route('rent') }}" class="btn btn-outline-primary px-5 py-3 rounded-pill fw-bold">View All Rental Properties</a>
+            <div class="text-center mt-lg-5 mt-3">
+                <a href="{{ route('rent') }}" class="btn btn-outline-primary px-lg-5 py-lg-3 px-4 py-2 rounded-pill fw-bold">View All Rental Properties</a>
             </div>
         </div>
     </section>

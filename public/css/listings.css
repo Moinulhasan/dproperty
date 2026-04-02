@@ -133,13 +133,56 @@
 }
 
 @media (max-width: 991px) {
+    .listings-hero {
+        display: none !important;
+    }
+
     .filter-wrapper {
-        margin-top: 0;
+        margin-top: 15px;
+        margin-bottom: 25px;
         padding: 0 15px;
     }
 
-    .listings-hero {
-        padding: 40px 0;
+    .container-90 {
+        padding-top: 10px !important;
+    }
+
+    .filter-card {
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f0f0f0 !important;
+    }
+
+    .btn-filter-toggle {
+        width: 100%;
+        background: #fff;
+        color: var(--primary-color, #006A50);
+        padding: 14px 20px;
+        border-radius: 12px;
+        border: 1.5px solid #eee;
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .btn-filter-toggle:active, .btn-filter-toggle:focus {
+        background: #f8f9fa;
+        border-color: var(--primary-color);
+    }
+
+    .btn-filter-toggle i {
+        font-size: 1.1rem;
+    }
+
+    /* Adjust form spacing in collapse */
+    #mobileFilterForm .row > div {
+        margin-bottom: 12px;
     }
 }
 
