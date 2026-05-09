@@ -1,8 +1,7 @@
-<section class="articles-section">
+<section class="articles-section" id="articles">
     <div class="container-fluid px-md-5 px-3">
         <div class="section-header text-center">
             <h2 class="text-primary">Helpful Real Estate Articles</h2>
-            <p>Stay updated with the latest trends and tips in real estate</p>
         </div>
 
         <div class="articles-slider swiper" id="articlesSlider">

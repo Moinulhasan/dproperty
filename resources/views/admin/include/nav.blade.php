@@ -78,6 +78,18 @@
                         <div data-i18n="Property Details">Property Details</div>
                     </a>
                 </li>
+                <li class="menu-item {{request()->routeIs('admin.property-request*')? 'active' : ''}}">
+                    <a href="{{route('admin.property-request.list')}}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-inbox"></i>
+                        <div data-i18n="Property Requests">Property Requests</div>
+                    </a>
+                </li>
+                <li class="menu-item {{request()->routeIs('admin.contact-inquiry*')? 'active' : ''}}">
+                    <a href="{{route('admin.contact-inquiry.list')}}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-message"></i>
+                        <div data-i18n="Contact Inquiries">Contact Inquiries</div>
+                    </a>
+                </li>
             @endcan
             @can('manage-tags')
                 <li class="menu-item {{request()->routeIs('admin.tag*')? 'active' : ''}}">

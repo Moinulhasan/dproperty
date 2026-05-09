@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\PropertyRequestController;
+use App\Http\Controllers\Admin\ContactInquiryController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\DashboardController;
 use \Illuminate\Support\Facades\Route;
@@ -68,6 +70,20 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('edit/{property}', [PropertyController::class, 'editPost'])->name('property.edit.post');
         Route::get('delete/{property}', [PropertyController::class, 'delete'])->name('property.delete');
         Route::post('image-delete/{property}', [PropertyController::class, 'deleteImage'])->name('property.image.delete');
+    });
+
+    Route::group(['prefix' => 'property-requests'], function () {
+        Route::get('list', [PropertyRequestController::class, 'index'])->name('property-request.list');
+        Route::get('show/{propertyRequest}', [PropertyRequestController::class, 'show'])->name('property-request.show');
+        Route::post('update-status/{propertyRequest}', [PropertyRequestController::class, 'updateStatus'])->name('property-request.update-status');
+        Route::get('delete/{propertyRequest}', [PropertyRequestController::class, 'delete'])->name('property-request.delete');
+    });
+
+    Route::group(['prefix' => 'contact-inquiries'], function () {
+        Route::get('list', [ContactInquiryController::class, 'index'])->name('contact-inquiry.list');
+        Route::get('show/{contactInquiry}', [ContactInquiryController::class, 'show'])->name('contact-inquiry.show');
+        Route::post('update-status/{contactInquiry}', [ContactInquiryController::class, 'updateStatus'])->name('contact-inquiry.update-status');
+        Route::get('delete/{contactInquiry}', [ContactInquiryController::class, 'delete'])->name('contact-inquiry.delete');
     });
 
     Route::group(['prefix' => 'locations'], function () {
@@ -147,3 +163,4 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('delete/{article}', [ArticleController::class, 'delete'])->name('article.delete');
     });
 });
+

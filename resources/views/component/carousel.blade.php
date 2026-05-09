@@ -29,41 +29,116 @@
                     <!-- Tabs -->
                     <div class="search-tabs-outer">
                         <div class="search-tabs">
-                            <button class="search-tab active" data-type="sell">SELL</button>
-                            <button class="search-tab" data-type="rent">RENT</button>
+                            <button class="search-tab active" data-type="rent">FOR RENT</button>
+                            <button class="search-tab" data-type="buy">FOR SELL</button>
                         </div>
                     </div>
                     
                     <!-- Search Box -->
                     <div class="search-box card shadow">
                         <form action="#" method="GET" class="search-form">
-                            <input type="hidden" name="search_type" id="search_type" value="sell">
+                            <input type="hidden" name="search_type" id="search_type" value="rent">
                             
                             <div class="compact-search-grid">
                                 <!-- Location Card -->
-                                <div class="search-card" onclick="$('#locationSelect').select2('open')">
+                                <div class="search-card" id="locationCard">
                                     <div class="card-label">LOCATION</div>
                                     <div class="search-field">
-                                        <select class="form-select select2-location" name="location" id="locationSelect">
-                                            <option value=""></option>
-                                            @foreach($locations as $loc)
-                                                <option value="{{ $loc->id }}">{{ $loc->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <!-- Desktop Version (Select2) -->
+                                        <div class="d-none d-lg-block">
+                                            <select class="form-select select2-location" name="location" id="locationSelect">
+                                                <option value="">Select Location</option>
+                                                @foreach($locations as $loc)
+                                                    <option value="{{ $loc->id }}">{{ $loc->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Mobile Version (Custom Picker) -->
+                                        <div class="custom-dropdown d-lg-none" id="locationDropdown">
+                                            <div class="dropdown-toggle-custom picker-toggle" id="locationToggle">
+                                                <span class="toggle-text">Select Location</span>
+                                                <i class="fas fa-chevron-down"></i>
+                                            </div>
+                                            <div class="dropdown-content-custom picker-style">
+                                                <div class="dropdown-body-custom scrollable-list">
+                                                    <div class="property-type-list">
+                                                        <div class="type-item" data-value="" data-text="Select Location">All Locations</div>
+                                                        @foreach($locations as $loc)
+                                                            <div class="type-item" data-value="{{ $loc->id }}" data-text="{{ $loc->name }}">
+                                                               - {{ $loc->name }}
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="location" id="locationMobileValue" class="mobile-input">
+                                        </div>
                                     </div>
                                     <div class="card-sub-label" id="locationSubLabel">Select City</div>
                                 </div>
 
                                 <!-- Property Type Card -->
-                                <div class="search-card" onclick="$('#propertyTypeSelect').select2('open')">
+                                <div class="search-card" id="propertyTypeCard">
                                     <div class="card-label">PROPERTY TYPE</div>
                                     <div class="search-field">
-                                        <select class="form-select select2-property-type" name="property_type" id="propertyTypeSelect">
-                                            <option value=""></option>
-                                            @foreach($property_types as $type)
-                                                <option value="{{ $type }}">{{ $type }}</option>
-                                            @endforeach
-                                        </select>
+                                        <!-- Desktop Version (Select2) -->
+                                        <div class="d-none d-lg-block">
+                                            <select class="form-select select2-property-type" name="property_category_id[]" id="propertyTypeSelect" multiple="multiple">
+                                                @foreach($categories as $parent)
+                                                    <option value="{{ $parent->id }}" data-level="0">{{ $parent->name }} (All)</option>
+                                                    @if(isset($parent->children) && count($parent->children) > 0)
+                                                        @foreach($parent->children as $child)
+                                                            <option value="{{ $child->id }}" data-level="1">&nbsp;&nbsp;&nbsp;- {{ $child->name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <!-- Mobile Version (Custom Picker) -->
+                                        <div class="custom-dropdown d-lg-none" id="propertyTypeDropdown">
+                                            <div class="dropdown-toggle-custom picker-toggle" id="propertyTypeToggle">
+                                                <span class="toggle-text">Property Type</span>
+                                                <i class="fas fa-chevron-down"></i>
+                                            </div>
+                                            <div class="dropdown-content-custom picker-style">
+                                                <div class="dropdown-header-custom border-bottom">
+                                                    <div class="d-flex align-items-center">
+                                                        <button type="button" class="btn-selection-action flex-grow-1" id="btnSelectAllTypes">Select All</button>
+                                                        <div class="action-divider"></div>
+                                                        <button type="button" class="btn-selection-action flex-grow-1" id="btnDeselectAllTypes">Deselect All</button>
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown-body-custom scrollable-list p-0">
+                                                    <div class="property-type-list">
+                                                        <div class="type-item all-types d-flex align-items-center justify-content-between" data-value="all" data-text="All Types">
+                                                            <span>All Types</span>
+                                                            <i class="fas fa-check check-icon"></i>
+                                                        </div>
+                                                        @foreach($categories as $parent)
+                                                            <div class="type-item parent d-flex align-items-center justify-content-between" data-value="{{ $parent->id }}" data-text="{{ $parent->name }}">
+                                                                <span>{{ $parent->name }}</span>
+                                                                <i class="fas fa-check check-icon"></i>
+                                                            </div>
+                                                            @if(isset($parent->children) && count($parent->children) > 0)
+                                                                @foreach($parent->children as $child)
+                                                                    <div class="type-item child d-flex align-items-center justify-content-between" data-value="{{ $child->id }}" data-text="{{ $child->name }}">
+                                                                        <span>- {{ $child->name }}</span>
+                                                                        <i class="fas fa-check check-icon"></i>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown-footer-custom border-top mt-0">
+                                                    <button type="button" class="btn-clear-dropdown" id="btnClearTypes">Reset</button>
+                                                    <button type="button" class="btn-apply-dropdown" id="btnApplyTypes">Apply</button>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="property_category_id" id="propertyTypeMobileValue" class="mobile-input">
+                                        </div>
                                     </div>
                                     <div class="card-sub-label" id="propertyTypeSubLabel">Residential/Commercial</div>
                                 </div>
@@ -190,158 +265,173 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Data for Property Type
-        const propertyOptions = {
-            rent: [
-                {
-                    text: 'Residential',
-                    children: [
-                        { id: 'rent_apt_head', text: '1. Apartment', level: 1, disabled: true },
-                        { id: 'rent_apt_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'rent_apt_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'rent_apt_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'rent_duplex_head', text: '2. Duplex', level: 1, disabled: true },
-                        { id: 'rent_duplex_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'rent_duplex_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'rent_duplex_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'rent_building', text: '3. Full Building', level: 1 },
-                        { id: 'rent_land_head', text: '4. Land', level: 1, disabled: true },
-                        { id: 'rent_land_agri', text: 'a. Agricultural', level: 2 },
-                        { id: 'rent_land_res', text: 'b. Residential', level: 2 }
-                    ]
-                },
-                {
-                    text: 'Commercial',
-                    children: [
-                        { id: 'rent_comm_off_res_head', text: '1. Office Residential', level: 1, disabled: true },
-                        { id: 'rent_comm_off_res_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'rent_comm_off_res_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'rent_comm_off_res_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'rent_comm_off_comm_head', text: '2. Office Commercial', level: 1, disabled: true },
-                        { id: 'rent_comm_off_comm_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'rent_comm_off_comm_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'rent_comm_off_comm_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'rent_comm_factory', text: '3. Godown/ Factory', level: 1 },
-                        { id: 'rent_comm_building', text: '4. Full Building', level: 1 },
-                        { id: 'rent_comm_land', text: '5. Land', level: 1 }
-                    ]
-                }
-            ],
-            sell: [
-                {
-                    text: 'Residential',
-                    children: [
-                        { id: 'sale_apt_head', text: '1. Apartment', level: 1, disabled: true },
-                        { id: 'sale_apt_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'sale_apt_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'sale_apt_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'sale_duplex_head', text: '2. Duplex', level: 1, disabled: true },
-                        { id: 'sale_duplex_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'sale_duplex_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'sale_duplex_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'sale_building', text: '3. Full Building', level: 1 },
-                        { id: 'sale_land', text: '4. Land', level: 1 }
-                    ]
-                },
-                {
-                    text: 'Commercial',
-                    children: [
-                        { id: 'sale_off_head', text: '1. Office', level: 1, disabled: true },
-                        { id: 'sale_off_full', text: 'a. Full Furnished', level: 2 },
-                        { id: 'sale_off_semi', text: 'b. Semi Furnished', level: 2 },
-                        { id: 'sale_off_non', text: 'c. Non-Furnished', level: 2 },
-                        { id: 'sale_comm_factory', text: '2. Godown/ Factory', level: 1 },
-                        { id: 'sale_comm_building', text: '3. Full Building', level: 1 },
-                        { id: 'sale_comm_land', text: '4. Land', level: 1 }
-                    ]
-                }
-            ]
-        };
-
-        function formatPropertyOption(state) {
+        const categories = @json($categories);
+        const tabs = document.querySelectorAll('.search-tab');
+        
+        function formatSearchOption(state) {
             if (!state.id) return state.text;
             
-            const level = state.level || 0;
-            const $state = $(
-                '<span class="select2-option-level-' + level + '">' + state.text + '</span>'
-            );
+            // Get level from data attribute if available
+            const level = $(state.element).data('level') || state.level || 0;
+            const padding = level === 1 ? '20px' : '0';
             
-            if (level === 1) {
-                $state.css('font-weight', 'bold');
-                $state.css('border-bottom', '1px solid #eee');
-                $state.css('padding-bottom', '2px');
-                $state.css('display', 'inline-block');
-            }
+            // For Select2, we can strip the &nbsp; since we use padding-left
+            const cleanText = state.text.replace(/&nbsp;|\s\s\s/g, '');
+            
+            const $state = $(
+                '<div style="display: flex; align-items: center; padding-left: ' + padding + ';">' +
+                    '<span style="color: inherit; font-weight: inherit;">' + cleanText + '</span>' +
+                '</div>'
+            );
             
             return $state;
         }
 
-        function updatePropertyType(type) {
-            const $select = $('#propertyTypeSelect');
-            $select.empty();
-            $select.append(new Option('', ''));
+        function initializeSelect2() {
+            if (typeof $ === 'undefined' || typeof $.fn.select2 === 'undefined') return;
             
-            const options = propertyOptions[type] || [];
-            $select.select2({
-                data: options,
-                placeholder: 'Property Type',
+            // Only initialize Select2 on desktop/larger screens
+            if (window.innerWidth <= 991) return;
+
+            const baseOptions = {
                 allowClear: true,
                 width: '100%',
-                templateResult: formatPropertyOption
+                templateResult: formatSearchOption,
+                minimumResultsForSearch: Infinity,
+                dropdownCssClass: 'premium-search-dropdown'
+            };
+
+            $('.select2-location, .select2-property-type').each(function() {
+                const $el = $(this);
+                const isPropertyType = $el.hasClass('select2-property-type');
+                
+                $el.select2({
+                    ...baseOptions,
+                    placeholder: $el.hasClass('select2-location') ? 'All Locations' : 'Select Type',
+                    dropdownParent: $el.closest('.search-card')
+                });
+
+                // Custom "Select All" for Select2 Property Type
+                if (isPropertyType) {
+                    $el.on('select2:open', function() {
+                        const $dropdown = $('.select2-dropdown--below, .select2-dropdown--above');
+                        if (!$dropdown.find('.select2-all-actions').length) {
+                            $dropdown.prepend(`
+                                <div class="select2-all-actions d-flex align-items-center border-bottom bg-white">
+                                    <button type="button" class="btn-selection-action flex-grow-1 btn-select-all-s2">Select All</button>
+                                    <div class="action-divider"></div>
+                                    <button type="button" class="btn-selection-action flex-grow-1 btn-deselect-all-s2">Deselect All</button>
+                                </div>
+                            `);
+                            
+                            $dropdown.find('.btn-select-all-s2').on('click', function() {
+                                $el.find('option').prop('selected', 'selected');
+                                $el.trigger('change');
+                                $el.select2('close');
+                            });
+                            
+                            $dropdown.find('.btn-deselect-all-s2').on('click', function() {
+                                $el.val(null).trigger('change');
+                                $el.select2('close');
+                            });
+                        }
+                    });
+                }
             });
         }
 
         // Initialize Select2
         $(document).ready(function() {
-            const select2Options = {
-                allowClear: true,
-                width: '100%'
-            };
-
-            $('#locationSelect').select2({
-                ...select2Options,
-                placeholder: 'All Cities'
-            }).on('change', function() {
-                const data = $(this).select2('data')[0];
-                const subLabel = data && data.text ? 'Selected in ' + data.text : 'Select City';
-                document.getElementById('locationSubLabel').innerText = subLabel;
-            });
-
-            $('#propertyTypeSelect').select2({
-                ...select2Options,
-                placeholder: 'Property Type'
-            }).on('change', function() {
-                const data = $(this).select2('data')[0];
-                const subLabel = data && data.text ? 'Type: ' + data.text : 'Residential/Commercial';
-                document.getElementById('propertyTypeSubLabel').innerText = subLabel;
-            });
+            initializeSelect2();
             
             // Handle form submission based on type
             $('.search-form').on('submit', function(e) {
+                e.preventDefault();
+                
                 const type = $('#search_type').val();
+                let targetUrl;
                 if (type === 'rent') {
-                    $(this).attr('action', "{{ route('rent') }}");
-                } else if (type === 'sell') {
-                    $(this).attr('action', "{{ route('sell') }}");
+                    targetUrl = "{{ route('rent') }}";
                 } else {
-                    $(this).attr('action', "{{ route('buy') }}");
+                    // "buy" tab is labelled "FOR SELL" - routes to sell page
+                    targetUrl = "{{ route('sell') }}";
                 }
+                
+                // Build query params, stripping empty values
+                const formData = new FormData(this);
+                const params = new URLSearchParams();
+                
+                for (const [key, value] of formData.entries()) {
+                    // Skip the search_type hidden field and any empty values
+                    if (key === 'search_type') continue;
+                    if (value && value.trim() !== '' && value !== 'any') {
+                        params.append(key, value.trim());
+                    }
+                }
+                
+                const queryString = params.toString();
+                window.location.href = targetUrl + (queryString ? '?' + queryString : '');
             });
         });
 
+        // Global Search Card Click Logic
+        $(document).on('click', '.search-card', function(e) {
+            const $select = $(this).find('select');
+            const $customDropdown = $(this).find('.custom-dropdown');
+            
+            // If it's a select2 element, open it
+            if ($select.length && $select.hasClass('select2-hidden-accessible')) {
+                e.stopPropagation();
+                $select.select2('open');
+                return;
+            }
+
+            // If it's a custom dropdown element, toggle it
+            if ($customDropdown.length) {
+                e.stopPropagation();
+                $('.custom-dropdown').not($customDropdown).removeClass('active');
+                $customDropdown.toggleClass('active');
+                return;
+            }
+        });
+
+        // Close custom dropdowns when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.search-card').length) {
+                $('.custom-dropdown').removeClass('active');
+            }
+        });
+
         // Tab switching logic
-        const tabs = document.querySelectorAll('.search-tab');
         tabs.forEach(tab => {
             tab.addEventListener('click', function() {
                 tabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 const type = this.getAttribute('data-type');
                 document.getElementById('search_type').value = type;
-                
-                document.getElementById('propertyTypeSubLabel').innerText = 'Residential/Commercial';
             });
         });
 
         // Card Click logic for custom dropdowns
+        const locationCard = document.getElementById('locationCard');
+        if (locationCard) {
+            locationCard.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeAllDropdowns(document.getElementById('locationDropdown'));
+                if (document.getElementById('locationDropdown')) {
+                    document.getElementById('locationDropdown').classList.toggle('active');
+                }
+            });
+        }
+
+        document.getElementById('propertyTypeCard').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAllDropdowns(document.getElementById('propertyTypeDropdown'));
+            if (document.getElementById('propertyTypeDropdown')) {
+                document.getElementById('propertyTypeDropdown').classList.toggle('active');
+            }
+        });
+
         document.getElementById('bedCard').addEventListener('click', function(e) {
             e.stopPropagation();
             closeAllDropdowns(document.getElementById('bedDropdown'));
@@ -371,23 +461,27 @@
             const clearBtn = dropdown.querySelector('.btn-clear-dropdown');
             const applyBtn = dropdown.querySelector('.btn-apply-dropdown');
 
+            // Skip dropdowns without clear/apply buttons (location/type pickers)
+            if (!clearBtn || !applyBtn) return;
+
             // Prevent closing when clicking inside dropdown content
-            dropdown.querySelector('.dropdown-content-custom').addEventListener('click', (e) => e.stopPropagation());
+            const content = dropdown.querySelector('.dropdown-content-custom');
+            if (content) content.addEventListener('click', (e) => e.stopPropagation());
 
             // Clear button
             clearBtn.addEventListener('click', () => {
                 if (dropdown.id === 'bedDropdown') {
                     dropdown.querySelectorAll('.bed-btn').forEach(btn => btn.classList.remove('active'));
                     document.getElementById('bedValue').value = '';
-                    document.getElementById('bedSubLabel').innerText = 'Number of Beds';
+                    document.getElementById('bedToggle').innerText = 'Bedrooms';
                 } else if (dropdown.id === 'areaDropdown') {
                     document.getElementById('minArea').value = '';
                     document.getElementById('maxArea').value = '';
-                    document.getElementById('areaSubLabel').innerText = 'Area in SFT';
+                    document.getElementById('areaToggle').innerText = 'Any Size';
                 } else if (dropdown.id === 'priceDropdown') {
                     document.getElementById('minPrice').value = '';
                     document.getElementById('maxPrice').value = '';
-                    document.getElementById('priceSubLabel').innerText = 'Budget Range';
+                    document.getElementById('priceToggle').innerText = 'Max. Price';
                 }
                 dropdown.classList.remove('active');
             });
@@ -396,25 +490,165 @@
             applyBtn.addEventListener('click', () => {
                 if (dropdown.id === 'bedDropdown') {
                     const activeBed = dropdown.querySelector('.bed-btn.active');
-                    document.getElementById('bedSubLabel').innerText = activeBed ? activeBed.innerText + ' Bedrooms Selected' : 'Number of Beds';
+                    if (activeBed) {
+                        const val = activeBed.getAttribute('data-value');
+                        document.getElementById('bedToggle').innerText = val === 'any' ? 'Any' : val + ' Bed';
+                    }
                 } else if (dropdown.id === 'areaDropdown') {
                     const min = document.getElementById('minArea').value;
                     const max = document.getElementById('maxArea').value;
-                    if (min && max) document.getElementById('areaSubLabel').innerText = min + ' - ' + max + ' SFT';
-                    else if (min) document.getElementById('areaSubLabel').innerText = min + '+ SFT';
-                    else if (max) document.getElementById('areaSubLabel').innerText = 'Up to ' + max + ' SFT';
-                    else document.getElementById('areaSubLabel').innerText = 'Area in SFT';
+                    if (min && max) document.getElementById('areaToggle').innerText = min + ' - ' + max + ' SFT';
+                    else if (min) document.getElementById('areaToggle').innerText = min + '+ SFT';
+                    else if (max) document.getElementById('areaToggle').innerText = 'Up to ' + max + ' SFT';
+                    else document.getElementById('areaToggle').innerText = 'Any Size';
                 } else if (dropdown.id === 'priceDropdown') {
                     const min = document.getElementById('minPrice').value;
                     const max = document.getElementById('maxPrice').value;
-                    if (min && max) document.getElementById('priceSubLabel').innerText = min + ' - ' + max + ' BDT';
-                    else if (min) document.getElementById('priceSubLabel').innerText = min + '+ BDT';
-                    else if (max) document.getElementById('priceSubLabel').innerText = 'Up to ' + max + ' BDT';
-                    else document.getElementById('priceSubLabel').innerText = 'Budget Range';
+                    if (min && max) document.getElementById('priceToggle').innerText = min + ' - ' + max + ' BDT';
+                    else if (min) document.getElementById('priceToggle').innerText = min + '+ BDT';
+                    else if (max) document.getElementById('priceToggle').innerText = 'Up to ' + max + ' BDT';
+                    else document.getElementById('priceToggle').innerText = 'Max. Price';
                 }
                 dropdown.classList.remove('active');
             });
         });
+
+        // Property Type Picker Logic (Multi-select)
+        const propertyTypeDropdown = document.getElementById('propertyTypeDropdown');
+        if (propertyTypeDropdown) {
+            const typeItems = propertyTypeDropdown.querySelectorAll('.type-item:not(.all-types)');
+            const allTypesItem = propertyTypeDropdown.querySelector('.type-item.all-types');
+            const toggleText = propertyTypeDropdown.querySelector('.toggle-text');
+            const hiddenInput = document.getElementById('propertyTypeMobileValue');
+            const btnSelectAll = document.getElementById('btnSelectAllTypes');
+            const btnDeselectAll = document.getElementById('btnDeselectAllTypes');
+            const btnClear = document.getElementById('btnClearTypes');
+            const btnApply = document.getElementById('btnApplyTypes');
+
+            typeItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('selected');
+                    if (allTypesItem) allTypesItem.classList.remove('selected');
+                    updatePropertyTypeToggle();
+                });
+            });
+
+            if (allTypesItem) {
+                allTypesItem.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isSelected = this.classList.contains('selected');
+                    if (!isSelected) {
+                        typeItems.forEach(i => i.classList.remove('selected'));
+                        this.classList.add('selected');
+                    } else {
+                        this.classList.remove('selected');
+                    }
+                    updatePropertyTypeToggle();
+                });
+            }
+
+            if (btnSelectAll) {
+                btnSelectAll.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    typeItems.forEach(i => i.classList.add('selected'));
+                    if (allTypesItem) allTypesItem.classList.remove('selected');
+                    updatePropertyTypeToggle();
+                });
+            }
+
+            if (btnDeselectAll) {
+                btnDeselectAll.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    typeItems.forEach(i => i.classList.remove('selected'));
+                    if (allTypesItem) allTypesItem.classList.remove('selected');
+                    updatePropertyTypeToggle();
+                });
+            }
+
+            if (btnClear) {
+                btnClear.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    typeItems.forEach(i => i.classList.remove('selected'));
+                    if (allTypesItem) allTypesItem.classList.remove('selected');
+                    updatePropertyTypeToggle();
+                    propertyTypeDropdown.classList.remove('active');
+                });
+            }
+
+            if (btnApply) {
+                btnApply.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    propertyTypeDropdown.classList.remove('active');
+                });
+            }
+
+            function updatePropertyTypeToggle() {
+                const selectedItems = propertyTypeDropdown.querySelectorAll('.type-item.selected');
+                
+                if (allTypesItem && allTypesItem.classList.contains('selected')) {
+                    hiddenInput.value = '';
+                    toggleText.innerText = 'All Types';
+                    return;
+                }
+
+                const values = Array.from(selectedItems).map(i => i.getAttribute('data-value'));
+                hiddenInput.value = values.join(',');
+                
+                if (selectedItems.length === 0) {
+                    toggleText.innerText = 'Property Type';
+                } else if (selectedItems.length === 1) {
+                    toggleText.innerText = selectedItems[0].getAttribute('data-text');
+                } else if (selectedItems.length === typeItems.length) {
+                    toggleText.innerText = 'All Types Selected';
+                } else {
+                    toggleText.innerText = selectedItems.length + ' Types Selected';
+                }
+            }
+        }
+
+        // Location Picker Logic
+        const locationDropdown = document.getElementById('locationDropdown');
+        if (locationDropdown) {
+            const locItems = locationDropdown.querySelectorAll('.type-item');
+            const locToggleText = locationDropdown.querySelector('.toggle-text');
+            const locHiddenInput = document.getElementById('locationMobileValue');
+
+            locItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    locItems.forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const val = this.getAttribute('data-value');
+                    const text = this.getAttribute('data-text');
+                    locHiddenInput.value = val;
+                    locToggleText.innerText = text;
+                    locationDropdown.classList.remove('active');
+                });
+            });
+        }
+
+        // On refresh or back, ensure mobile/desktop inputs are exclusive
+        function syncInputs() {
+            const locSelect = document.getElementById('locationSelect');
+            const locMobile = document.getElementById('locationMobileValue');
+            const typeSelect = document.getElementById('propertyTypeSelect');
+            const typeMobile = document.getElementById('propertyTypeMobileValue');
+            
+            if (window.innerWidth <= 991) {
+                if (locSelect) locSelect.name = '';
+                if (locMobile) locMobile.name = 'location';
+                if (typeSelect) typeSelect.name = '';
+                if (typeMobile) typeMobile.name = 'property_category_id';
+            } else {
+                if (locSelect) locSelect.name = 'location';
+                if (locMobile) locMobile.name = '';
+                if (typeSelect) typeSelect.name = 'property_category_id';
+                if (typeMobile) typeMobile.name = '';
+            }
+        }
+        syncInputs();
+        window.addEventListener('resize', syncInputs);
 
         // Bed button selection
         const bedBtns = document.querySelectorAll('.bed-btn');

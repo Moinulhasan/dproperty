@@ -1,6 +1,6 @@
 /* articles.css - Styles for Helpful Real Estate Articles section */
 .articles-section {
-    padding: 80px 0;
+    padding: 20px 0;
     background-color: #fdfdfd;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .articles-slider {
-    padding: 40px 0 80px;
+    padding: 40px 0 20px;
 }
 
 .article-card {
@@ -199,4 +199,4 @@
     .article-content {
         padding: 20px;
     }
-}
+}

@@ -1,0 +1,313 @@
+/* Post Property Page */
+.post-property-hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark, #004d3a) 100%);
+    color: #fff;
+    padding: 40px 0 30px;
+    margin-top: -10px;
+}
+
+.post-property-hero h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.post-property-hero .breadcrumb {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.post-property-hero .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.post-property-hero .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.post-property-hero .breadcrumb-item+.breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.post-property-section {
+    background: #f8f9fa;
+}
+
+.post-property-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+    border: 1px solid #eee;
+}
+
+.card-header-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.card-header-badge .badge-highlight {
+    background: var(--primary-color, #006A50);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 28px;
+}
+
+.section-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.section-label.required::after {
+    content: ' *';
+    color: #e74c3c;
+}
+
+/* Radio Cards (Sale/Rent) */
+.radio-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.radio-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #555;
+    background: #fafafa;
+}
+
+.radio-card input[type="radio"] {
+    display: none;
+}
+
+.radio-card i {
+    font-size: 1.1rem;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.radio-card:hover {
+    border-color: var(--primary-color, #006A50);
+    background: #f0faf7;
+}
+
+.radio-card.active {
+    border-color: var(--primary-color, #006A50);
+    background: linear-gradient(135deg, #e8f5e9 0%, #f0faf7 100%);
+    color: var(--primary-color, #006A50);
+    box-shadow: 0 4px 12px rgba(0, 106, 80, 0.15);
+}
+
+.radio-card.active i {
+    color: var(--primary-color, #006A50);
+}
+
+/* Tab Group (Residential/Commercial, Furnished) */
+.tab-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 22px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #666;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+.tab-btn i {
+    margin-right: 6px;
+    color: #999;
+}
+
+.tab-btn:hover {
+    border-color: var(--primary-color, #006A50);
+    color: var(--primary-color, #006A50);
+}
+
+.tab-btn.active {
+    border-color: var(--primary-color, #006A50);
+    background: var(--primary-color, #006A50);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 106, 80, 0.2);
+}
+
+.tab-btn.active i {
+    color: #fff;
+}
+
+/* Category Pills */
+.category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-set {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pill-btn {
+    padding: 8px 18px;
+    border: 1.5px solid #ddd;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #555;
+    background: #fff;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.pill-btn:hover {
+    border-color: var(--primary-color, #006A50);
+    color: var(--primary-color, #006A50);
+    background: #f0faf7;
+}
+
+.pill-btn.active {
+    border-color: var(--primary-color, #006A50);
+    background: var(--primary-color, #006A50);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 106, 80, 0.2);
+}
+
+/* Input Fields */
+.input-icon-group {
+    position: relative;
+}
+
+.input-icon-group i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #333;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color, #006A50);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 106, 80, 0.1);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #333;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    outline: none;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.form-textarea:focus {
+    border-color: var(--primary-color, #006A50);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 106, 80, 0.1);
+}
+
+/* Submit Button */
+.btn-submit-property {
+    background: linear-gradient(135deg, var(--primary-color, #006A50) 0%, #004d3a 100%);
+    color: #fff;
+    border: none;
+    padding: 14px 50px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 106, 80, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.btn-submit-property:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 106, 80, 0.4);
+}
+
+.btn-submit-property:active {
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .post-property-card {
+        padding: 24px 18px;
+    }
+
+    .radio-card {
+        padding: 12px 20px;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .tab-btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+
+    .pill-btn {
+        padding: 6px 14px;
+        font-size: 0.78rem;
+    }
+
+    .btn-submit-property {
+        width: 100%;
+        padding: 14px 30px;
+    }
+
+    .post-property-hero h1 {
+        font-size: 1.4rem;
+    }
+}

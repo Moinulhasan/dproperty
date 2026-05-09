@@ -61,7 +61,8 @@ class PropertyController extends Controller
         $amenities = \App\Models\Amenity::all();
         $locations = Location::where('status', 1)->orderBy('name')->get();
         $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
-        return view('admin.property.add', compact('amenities', 'locations', 'propertyDetails'));
+        $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
+        return view('admin.property.add', compact('amenities', 'locations', 'propertyDetails', 'categories'));
     }
 
     public function addPost(Request $request)
@@ -69,8 +70,7 @@ class PropertyController extends Controller
         $validator = \Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'category' => 'required|string',
-            'property_type' => 'required|string',
+            'property_category_id' => 'required|exists:property_categories,id',
             'property_status' => 'required|string|in:Buy,Rent,Sell',
             'route' => 'nullable|string',
             'sub_route' => 'nullable|string',
@@ -99,6 +99,13 @@ class PropertyController extends Controller
             $data['is_home_featured'] = $request->has('is_home_featured') ? 1 : 0;
             $data['is_location_featured'] = $request->has('is_location_featured') ? 1 : 0;
             $data['created_by'] = auth()->id();
+
+            // Set old category and property_type strings for backward compatibility
+            $categoryModel = \App\Models\PropertyCategory::with('parent')->find($request->property_category_id);
+            if ($categoryModel) {
+                $data['property_type'] = $categoryModel->name;
+                $data['category'] = $categoryModel->parent ? $categoryModel->parent->name : $categoryModel->name;
+            }
 
             // Handle Gallery Images
             if ($request->hasFile('images')) {
@@ -169,7 +176,8 @@ class PropertyController extends Controller
         $amenities = Amenity::all();
         $locations = Location::where('status', 1)->orderBy('name')->get();
         $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
-        return view('admin.property.edit', compact('property', 'amenities', 'locations', 'propertyDetails'));
+        $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
+        return view('admin.property.edit', compact('property', 'amenities', 'locations', 'propertyDetails', 'categories'));
     }
 
     public function editPost(Request $request, Property $property)
@@ -190,8 +198,7 @@ class PropertyController extends Controller
         $validator = \Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'category' => 'required|string',
-            'property_type' => 'required|string',
+            'property_category_id' => 'required|exists:property_categories,id',
             'property_status' => 'required|string',
             'route' => 'nullable|string',
             'sub_route' => 'nullable|string',
@@ -218,6 +225,13 @@ class PropertyController extends Controller
             $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
             $data['is_home_featured'] = $request->has('is_home_featured') ? 1 : 0;
             $data['is_location_featured'] = $request->has('is_location_featured') ? 1 : 0;
+
+            // Update old category and property_type strings
+            $categoryModel = \App\Models\PropertyCategory::with('parent')->find($request->property_category_id);
+            if ($categoryModel) {
+                $data['property_type'] = $categoryModel->name;
+                $data['category'] = $categoryModel->parent ? $categoryModel->parent->name : $categoryModel->name;
+            }
 
             // Handle Gallery Images
             if ($request->hasFile('images')) {

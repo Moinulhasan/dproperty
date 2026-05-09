@@ -1,13 +1,10 @@
-<section id="projects" class="py-2" style="margin-top: 15px;">
+<section id="projects" class="py-1 bg-light" style="margin-top: 15px;">
     <div class="container-fluid px-md-5 px-3">
         <div class="section-header text-center w-100">
             <h2 class="text-primary">Featured Properties</h2>
-            <p>
-                {{$tags->where('service_type','featured_project')->first()->tag_line ??'Discover our exclusive selection of premium properties'}}
-            </p>
         </div>
 
-        <div class="custom-card-slider swiper px-4" id="featuredPropertiesSlider">
+        <div class="custom-card-slider swiper" id="featuredPropertiesSlider">
             <div class="swiper-wrapper">
                 @if(isset($featured_properties) && count($featured_properties) > 0)
                     @foreach($featured_properties as $property)
@@ -15,7 +12,13 @@
                             <div class="property-card-global h-100">
                                 <div class="card-image-box">
                                     <div class="status-badge-container">
-                                        <div class="status-badge" style="background: {{ $property->property_status == 'Rent' || $property->property_status == 'For Rent' ? '#00A699' : '#FF385C' }} !important;">
+                                        @php
+                                            $statusLower = strtolower($property->property_status);
+                                            $statusClass = 'status-sell'; // Default
+                                            if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                                            elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                                        @endphp
+                                        <div class="status-badge {{ $statusClass }}">
                                             <span class="badge-dot left"></span>
                                             <span class="badge-dot right"></span>
                                             @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
@@ -24,8 +27,8 @@
                                                 For {{ $property->property_status }}
                                             @endif
                                         </div>
+                                        <span class="type-badge">{{ $property->category }}</span>
                                     </div>
-                                    <span class="type-badge">{{ $property->category }}</span>
                                     
                                     @php
                                         $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
@@ -38,7 +41,7 @@
                                         <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
                                             <i class="fas fa-bookmark"></i>
                                         </button>
-                                        <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                                        <button class="action-btn gallery-btn" title="View All Image" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
                                             <i class="fas fa-camera"></i>
                                         </button>
                                     </div>
@@ -54,7 +57,7 @@
                                 </div>
                                 <div class="card-body-global">
                                     <h3 class="card-title-global">
-                                        <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                                        <a href="{{ route('property-details', $property->id) }}" target="_blank">{{ $property->title }}</a>
                                     </h3>
                                     <div class="info-grid">
                                         <h4 class="price-text">৳ {{ number_format($property->price, 0) }}</h4>

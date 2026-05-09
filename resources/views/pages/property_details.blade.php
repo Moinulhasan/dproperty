@@ -87,18 +87,19 @@
 
                 <!-- Mobile Title (shown only on mobile, after image) -->
                 <div class="mobile-title-section d-lg-none mt-3">
-                    <div class="badge bg-primary mb-2">
-                        @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
-                            {{ $property->property_status }}
-                        @else
-                            For {{ $property->property_status }}
-                        @endif
+                    <h2 class="mobile-property-title mb-2">{{ $property->title }}</h2>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3 class="mobile-price m-0">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h3>
+                        <span class="text-muted small fw-bold">ID: {{ $property->project_id }}</span>
                     </div>
-                    <h2 class="mobile-property-title">{{ $property->title }}</h2>
-                    <div class="mobile-location">
-                        <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->location ? ', ' : '' }}{{ $property->location ? $property->location->name : '' }}
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="mobile-location m-0">
+                            <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $property->sub_route ?: $property->route }}
+                        </div>
+                        <span class="badge bg-light text-dark border small">{{ $property->is_furnished }}</span>
                     </div>
-                    <h3 class="mobile-price">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h3>
                 </div>
 
                 <!-- Lower Content (Ref Image 2 details) -->
@@ -106,7 +107,13 @@
                     <div class="property-main-header">
                         <div class="price-box">
                             <h2 class="m-0">৳ {{ number_format($property->price, 2) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? ' / mo' : '' }}</h2>
-                            <div class="badge bg-primary mt-2">
+                            @php
+                                $statusLower = strtolower($property->property_status);
+                                $statusBadgeClass = 'bg-danger'; // Sell
+                                if (str_contains($statusLower, 'rent')) $statusBadgeClass = 'bg-success';
+                                elseif (str_contains($statusLower, 'buy')) $statusBadgeClass = 'bg-warning text-dark';
+                            @endphp
+                            <div class="badge {{ $statusBadgeClass }} mt-2">
                                 @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
                                     {{ $property->property_status }}
                                 @else
@@ -186,8 +193,10 @@
                             }
                         @endphp
                         <h4 class="detail-section-title">Property Video</h4>
-                        <div class="ratio ratio-16x9 mb-4 rounded overflow-hidden">
-                            <iframe src="https://www.youtube.com/embed/{{ $videoId }}" title="Property Video" allowfullscreen></iframe>
+                        <div class="video-container-half">
+                            <div class="ratio ratio-16x9 rounded overflow-hidden">
+                                <iframe src="https://www.youtube.com/embed/{{ $videoId }}" title="Property Video" allowfullscreen></iframe>
+                            </div>
                         </div>
                     @endif
 
@@ -265,8 +274,16 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="property-card-global">
                         <div class="card-image-box">
-                            <div class="status-badge-container">
-                                <span class="status-badge">For {{ $rp->property_status }}</span>
+                            @php
+                                $statusLower = strtolower($rp->property_status);
+                                $statusClass = 'status-sell'; // Default
+                                if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                                elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                            @endphp
+                            <div class="status-badge {{ $statusClass }}">
+                                <span class="badge-dot left"></span>
+                                <span class="badge-dot right"></span>
+                                For {{ $rp->property_status }}
                             </div>
                             <div class="swiper card-inner-slider">
                                 <div class="swiper-wrapper">
@@ -286,7 +303,7 @@
                         </div>
                         <div class="card-body-global">
                             <h3 class="card-title-global">
-                                <a href="{{ route('property-details', $rp->id) }}">{{ $rp->title }}</a>
+                                <a href="{{ route('property-details', $rp->id) }}" target="_blank">{{ $rp->title }}</a>
                             </h3>
                             <div class="info-grid">
                                 <h4 class="price-text">৳ {{ number_format($rp->price, 0) }}{{ in_array($rp->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h4>

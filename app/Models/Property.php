@@ -34,4 +34,9 @@ class Property extends Model
     {
         return $this->hasMany(PropertyDetailValue::class);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(PropertyCategory::class, 'property_category_id');
+    }
 }

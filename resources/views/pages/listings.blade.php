@@ -33,21 +33,112 @@
                 <form action="{{ url()->current() }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-lg-3 col-md-6">
                         <label class="filter-label">Location</label>
-                        <select name="location" class="filter-control select2-basic">
-                            <option value="">All Locations</option>
-                            @foreach($locations as $loc)
-                                <option value="{{ $loc->id }}" {{ request('location') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
-                            @endforeach
-                        </select>
+                        <!-- Desktop Version -->
+                        <div class="d-none d-lg-block">
+                            <select name="location" id="locationSelectDesktop" class="filter-control">
+                                <option value="">All Locations</option>
+                                @foreach($locations as $loc)
+                                    <option value="{{ $loc->id }}" {{ request('location') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Mobile Version (Custom Picker) -->
+                        <div class="custom-dropdown d-lg-none" id="locationDropdownMobile">
+                            <div class="picker-toggle" id="locationToggleMobile">
+                                <span class="toggle-text">
+                                    @php
+                                        $currentLocId = request('location');
+                                        $currentLocName = 'All Locations';
+                                        if ($currentLocId) {
+                                            foreach($locations as $l) {
+                                                if ($l->id == $currentLocId) { $currentLocName = $l->name; break; }
+                                            }
+                                        }
+                                    @endphp
+                                    {{ $currentLocName }}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-content-custom picker-style">
+                                <div class="dropdown-body-custom scrollable-list">
+                                    <div class="property-type-list">
+                                        <div class="type-item {{ !$currentLocId ? 'selected' : '' }}" data-value="" data-text="All Locations">All Locations</div>
+                                        @foreach($locations as $loc)
+                                            <div class="type-item {{ $currentLocId == $loc->id ? 'selected' : '' }}" data-value="{{ $loc->id }}" data-text="{{ $loc->name }}">
+                                                {{ $loc->name }}
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="location" id="locationMobileValue" class="mobile-input" value="{{ request('location') }}">
+                        </div>
                     </div>
                     <div class="col-lg-2 col-md-6">
-                        <label class="filter-label">Property Type</label>
-                        <select name="property_type" class="filter-control">
-                            <option value="">All Types</option>
-                            @foreach($property_types as $type)
-                                <option value="{{ $type }}" {{ request('property_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                            @endforeach
-                        </select>
+                        <label class="filter-label">Property Category/Type</label>
+                        <!-- Desktop Version -->
+                        <div class="d-none d-lg-block">
+                            <select name="property_category_id" id="propertyTypeSelectDesktop" class="filter-control">
+                                <option value="">All Categories</option>
+                                @foreach($categories as $parent)
+                                    <option value="{{ $parent->id }}" {{ request('property_category_id') == $parent->id ? 'selected' : '' }}>{{ $parent->name }} (All)</option>
+                                    @if(isset($parent->children) && count($parent->children) > 0)
+                                        @foreach($parent->children as $child)
+                                            <option value="{{ $child->id }}" {{ request('property_category_id') == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;{{ $child->name }}</option>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Mobile Version (Custom Picker) -->
+                        <div class="custom-dropdown d-lg-none" id="propertyTypeDropdownMobile">
+                            <div class="picker-toggle" id="propertyTypeToggleMobile">
+                                <span class="toggle-text">
+                                    @php
+                                        $currentCatId = request('property_category_id');
+                                        $currentCatName = 'All Categories';
+                                        if ($currentCatId) {
+                                            foreach($categories as $p) {
+                                                if ($p->id == $currentCatId) { $currentCatName = $p->name; break; }
+                                                if (isset($p->children)) {
+                                                    foreach($p->children as $c) {
+                                                        if ($c->id == $currentCatId) { $currentCatName = $c->name; break; }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    {{ $currentCatName }}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-content-custom picker-style">
+                                <div class="picker-actions">
+                                    <button type="button" class="btn-picker-action btn-select-all">Select All</button>
+                                    <button type="button" class="btn-picker-action btn-deselect-all">Deselect All</button>
+                                </div>
+                                <div class="dropdown-body-custom scrollable-list">
+                                    <div class="property-type-list">
+                                        <div class="type-item {{ !$currentCatId ? 'selected' : '' }}" data-value="" data-text="All Categories">All Categories</div>
+                                        @foreach($categories as $parent)
+                                            <div class="type-item parent {{ $currentCatId == $parent->id ? 'selected' : '' }}" data-value="{{ $parent->id }}" data-text="{{ $parent->name }}">
+                                                {{ $parent->name }}
+                                            </div>
+                                            @if(isset($parent->children) && count($parent->children) > 0)
+                                                @foreach($parent->children as $child)
+                                                    <div class="type-item child {{ $currentCatId == $child->id ? 'selected' : '' }}" data-value="{{ $child->id }}" data-text="{{ $child->name }}">
+                                                        - {{ $child->name }}
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="property_category_id" id="propertyTypeMobileValue" class="mobile-input" value="{{ request('property_category_id') }}">
+                        </div>
                     </div>
                     <div class="col-lg-2 col-md-6">
                         <label class="filter-label">Bedrooms</label>
@@ -85,7 +176,13 @@
             <div class="property-card-global">
                 <div class="card-image-box">
                     <div class="status-badge-container">
-                        <div class="status-badge" style="background: {{ $property->property_status == 'Rent' || $property->property_status == 'For Rent' ? '#00A699' : '#FF385C' }} !important;">
+                        @php
+                            $statusLower = strtolower($property->property_status);
+                            $statusClass = 'status-sell'; // Default
+                            if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                            elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                        @endphp
+                        <div class="status-badge {{ $statusClass }}">
                             <span class="badge-dot left"></span>
                             <span class="badge-dot right"></span>
                             @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
@@ -108,7 +205,7 @@
                         <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
                             <i class="fas fa-bookmark"></i>
                         </button>
-                        <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                        <button class="action-btn gallery-btn" title="View All Image" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
                             <i class="fas fa-camera"></i>
                         </button>
                     </div>
@@ -135,7 +232,7 @@
                 </div>
                 <div class="card-body-global">
                     <h3 class="card-title-global">
-                        <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                        <a href="{{ route('property-details', $property->id) }}" target="_blank">{{ $property->title }}</a>
                     </h3>
 
                     <div class="info-grid">
@@ -191,14 +288,121 @@
             });
         });
 
-        // Initialize Select2 if available
-        if (typeof $('.select2-basic').select2 === 'function') {
-            $('.select2-basic').select2({
-                placeholder: 'Select Location',
-                allowClear: true,
-                width: '100%'
+        // No Select2 initialization needed for standard selects
+        
+        // Custom Dropdown Logic for mobile
+        $(document).on('click', '#locationToggleMobile', function(e) {
+            e.stopPropagation();
+            $('#locationDropdownMobile').toggleClass('active');
+            $('#propertyTypeDropdownMobile').removeClass('active');
+        });
+
+        $(document).on('click', '#propertyTypeToggleMobile', function(e) {
+            e.stopPropagation();
+            $('#propertyTypeDropdownMobile').toggleClass('active');
+            $('#locationDropdownMobile').removeClass('active');
+        });
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#propertyTypeDropdownMobile, #locationDropdownMobile').length) {
+                $('#propertyTypeDropdownMobile, #locationDropdownMobile').removeClass('active');
+            }
+        });
+
+        // Location Picker Logic
+        const locationDropdown = document.getElementById('locationDropdownMobile');
+        if (locationDropdown) {
+            const locItems = locationDropdown.querySelectorAll('.type-item');
+            const locToggleText = locationDropdown.querySelector('.toggle-text');
+            const locHiddenInput = document.getElementById('locationMobileValue');
+            const locSelectAllBtn = locationDropdown.querySelector('.btn-location-select-all');
+            const locDeselectAllBtn = locationDropdown.querySelector('.btn-location-deselect-all');
+
+            locItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    locItems.forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const val = this.getAttribute('data-value');
+                    const text = this.getAttribute('data-text');
+                    locHiddenInput.value = val;
+                    locToggleText.innerText = text;
+                    locationDropdown.classList.remove('active');
+                });
+            });
+
+            locSelectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const firstItem = locItems[0];
+                if (firstItem) firstItem.click();
+            });
+
+            locDeselectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                locItems.forEach(i => i.classList.remove('selected'));
+                locHiddenInput.value = '';
+                locToggleText.innerText = 'All Locations';
+                locationDropdown.classList.remove('active');
             });
         }
+
+        const propertyTypeDropdown = document.getElementById('propertyTypeDropdownMobile');
+        if (propertyTypeDropdown) {
+            const typeItems = propertyTypeDropdown.querySelectorAll('.type-item');
+            const toggleText = propertyTypeDropdown.querySelector('.toggle-text');
+            const hiddenInput = document.getElementById('propertyTypeMobileValue');
+            const selectAllBtn = propertyTypeDropdown.querySelector('.btn-select-all');
+            const deselectAllBtn = propertyTypeDropdown.querySelector('.btn-deselect-all');
+
+            typeItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    typeItems.forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const val = this.getAttribute('data-value');
+                    const text = this.getAttribute('data-text');
+                    hiddenInput.value = val;
+                    toggleText.innerText = text;
+                    propertyTypeDropdown.classList.remove('active');
+                });
+            });
+
+            selectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const firstItem = typeItems[0];
+                if (firstItem) firstItem.click();
+            });
+
+            deselectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                typeItems.forEach(i => i.classList.remove('selected'));
+                hiddenInput.value = '';
+                toggleText.innerText = 'All Categories';
+                propertyTypeDropdown.classList.remove('active');
+            });
+        }
+
+        // On refresh or back, ensure mobile/desktop inputs are exclusive
+        function syncInputs() {
+            const propertyTypeDesktop = document.getElementById('propertyTypeSelectDesktop');
+            const propertyTypeMobile = document.getElementById('propertyTypeMobileValue');
+            const locationDesktop = document.getElementById('locationSelectDesktop');
+            const locationMobile = document.getElementById('locationMobileValue');
+
+            if (window.innerWidth <= 991) {
+                if (propertyTypeDesktop) propertyTypeDesktop.name = '';
+                if (propertyTypeMobile) propertyTypeMobile.name = 'property_category_id';
+                if (locationDesktop) locationDesktop.name = '';
+                if (locationMobile) locationMobile.name = 'location';
+            } else {
+                if (propertyTypeDesktop) propertyTypeDesktop.name = 'property_category_id';
+                if (propertyTypeMobile) propertyTypeMobile.name = '';
+                if (locationDesktop) locationDesktop.name = 'location';
+                if (locationMobile) locationMobile.name = '';
+            }
+        }
+        syncInputs();
+        window.addEventListener('resize', syncInputs);
     });
 </script>
 @endpush

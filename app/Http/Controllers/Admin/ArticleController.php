@@ -42,7 +42,21 @@ class ArticleController extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $name = time() . '.' . $image->extension();
-                $image->move(public_path('uploads/articles'), $name);
+                $destinationPath = public_path('uploads/articles');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                $targetPath = $destinationPath . '/' . $name;
+                
+                // Process image with watermark and compression
+                try {
+                    $imageService = new \App\Services\ImageProcessingService();
+                    $imageService->process($image->getPathname(), $targetPath, 75);
+                } catch (\Exception $e) {
+                    // Fallback: just move the file normally
+                    $image->move($destinationPath, $name);
+                }
+                
                 $data['image'] = 'uploads/articles/' . $name;
             }
 
@@ -86,7 +100,21 @@ class ArticleController extends Controller
                 
                 $image = $request->file('image');
                 $name = time() . '.' . $image->extension();
-                $image->move(public_path('uploads/articles'), $name);
+                $destinationPath = public_path('uploads/articles');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                $targetPath = $destinationPath . '/' . $name;
+                
+                // Process image with watermark and compression
+                try {
+                    $imageService = new \App\Services\ImageProcessingService();
+                    $imageService->process($image->getPathname(), $targetPath, 75);
+                } catch (\Exception $e) {
+                    // Fallback: just move the file normally
+                    $image->move($destinationPath, $name);
+                }
+                
                 $data['image'] = 'uploads/articles/' . $name;
             }
 

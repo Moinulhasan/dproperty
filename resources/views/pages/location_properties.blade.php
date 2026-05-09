@@ -41,13 +41,69 @@
                         </select>
                     </div>
                     <div class="col-lg-2 col-md-6">
-                        <label class="filter-label">Property Type</label>
-                        <select name="property_type" class="filter-control">
-                            <option value="">All Types</option>
-                            @foreach($property_types as $type)
-                                <option value="{{ $type }}" {{ request('property_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                            @endforeach
-                        </select>
+                        <label class="filter-label">Property Category/Type</label>
+                        <!-- Desktop Version -->
+                        <div class="d-none d-lg-block">
+                            <select name="property_category_id" id="propertyTypeSelectDesktop" class="filter-control">
+                                <option value="">All Categories</option>
+                                @foreach($categories as $parent)
+                                    <optgroup label="{{ $parent->name }}">
+                                        <option value="{{ $parent->id }}" {{ request('property_category_id') == $parent->id ? 'selected' : '' }}>{{ $parent->name }} (All)</option>
+                                        @foreach($parent->children as $child)
+                                            <option value="{{ $child->id }}" {{ request('property_category_id') == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Mobile Version (Custom Picker) -->
+                        <div class="custom-dropdown d-lg-none" id="propertyTypeDropdownMobile">
+                            <div class="picker-toggle" id="propertyTypeToggleMobile">
+                                <span class="toggle-text">
+                                    @php
+                                        $currentCatId = request('property_category_id');
+                                        $currentCatName = 'All Categories';
+                                        if ($currentCatId) {
+                                            foreach($categories as $p) {
+                                                if ($p->id == $currentCatId) { $currentCatName = $p->name; break; }
+                                                if (isset($p->children)) {
+                                                    foreach($p->children as $c) {
+                                                        if ($c->id == $currentCatId) { $currentCatName = $c->name; break; }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    {{ $currentCatName }}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="dropdown-content-custom picker-style">
+                                <div class="picker-actions">
+                                    <button type="button" class="btn-picker-action btn-select-all">Select All</button>
+                                    <button type="button" class="btn-picker-action btn-deselect-all">Deselect All</button>
+                                </div>
+                                <div class="dropdown-body-custom scrollable-list">
+                                    <div class="property-type-list">
+                                        <div class="type-item {{ !$currentCatId ? 'selected' : '' }}" data-value="" data-text="All Categories">All Categories</div>
+                                        @foreach($categories as $parent)
+                                            <div class="type-item parent {{ $currentCatId == $parent->id ? 'selected' : '' }}" data-value="{{ $parent->id }}" data-text="{{ $parent->name }}">
+                                                {{ $parent->name }}
+                                            </div>
+                                            @if(isset($parent->children) && count($parent->children) > 0)
+                                                @foreach($parent->children as $child)
+                                                    <div class="type-item child {{ $currentCatId == $child->id ? 'selected' : '' }}" data-value="{{ $child->id }}" data-text="{{ $child->name }}">
+                                                        - {{ $child->name }}
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="property_category_id" id="propertyTypeMobileValue" class="mobile-input" value="{{ request('property_category_id') }}">
+                        </div>
                     </div>
                     <div class="col-lg-2 col-md-6">
                         <label class="filter-label">Bedrooms</label>
@@ -85,7 +141,13 @@
             <div class="property-card-global">
                 <div class="card-image-box">
                     <div class="status-badge-container">
-                        <div class="status-badge" style="background: {{ $property->property_status == 'Rent' || $property->property_status == 'For Rent' ? '#00A699' : '#FF385C' }} !important;">
+                        @php
+                            $statusLower = strtolower($property->property_status);
+                            $statusClass = 'status-sell'; // Default
+                            if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                            elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                        @endphp
+                        <div class="status-badge {{ $statusClass }}">
                             <span class="badge-dot left"></span>
                             <span class="badge-dot right"></span>
                             @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
@@ -108,7 +170,7 @@
                         <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
                             <i class="fas fa-bookmark"></i>
                         </button>
-                        <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                        <button class="action-btn gallery-btn" title="View All Image" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
                             <i class="fas fa-camera"></i>
                         </button>
                     </div>
@@ -132,7 +194,7 @@
                 </div>
                 <div class="card-body-global">
                     <h3 class="card-title-global">
-                        <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                        <a href="{{ route('property-details', $property->id) }}" target="_blank">{{ $property->title }}</a>
                     </h3>
 
                     <div class="info-grid">
@@ -187,6 +249,97 @@
                 },
             });
         });
+
+        // Custom Dropdown Logic for mobile
+        $(document).on('click', '#propertyTypeToggleMobile', function(e) {
+            e.stopPropagation();
+            $('#propertyTypeDropdownMobile').toggleClass('active');
+        });
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#propertyTypeDropdownMobile').length) {
+                $('#propertyTypeDropdownMobile').removeClass('active');
+            }
+        });
+
+        const propertyTypeDropdown = document.getElementById('propertyTypeDropdownMobile');
+        if (propertyTypeDropdown) {
+            const typeItems = propertyTypeDropdown.querySelectorAll('.type-item');
+            const toggleText = propertyTypeDropdown.querySelector('.toggle-text');
+            const hiddenInput = document.getElementById('propertyTypeMobileValue');
+            const selectAllBtn = propertyTypeDropdown.querySelector('.btn-select-all');
+            const deselectAllBtn = propertyTypeDropdown.querySelector('.btn-deselect-all');
+
+            typeItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    typeItems.forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const val = this.getAttribute('data-value');
+                    const text = this.getAttribute('data-text');
+                    hiddenInput.value = val;
+                    toggleText.innerText = text;
+                    propertyTypeDropdown.classList.remove('active');
+                });
+            });
+
+            selectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const firstItem = typeItems[0];
+                if (firstItem) firstItem.click();
+            });
+
+            deselectAllBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                typeItems.forEach(i => i.classList.remove('selected'));
+                hiddenInput.value = '';
+                toggleText.innerText = 'All Categories';
+                propertyTypeDropdown.classList.remove('active');
+            });
+        }
+
+        // On refresh or back, ensure mobile/desktop inputs are exclusive
+        function syncInputs() {
+            if (window.innerWidth <= 991) {
+                const desk = document.getElementById('propertyTypeSelectDesktop');
+                if (desk) desk.name = '';
+                const mob = document.getElementById('propertyTypeMobileValue');
+                if (mob) mob.name = 'property_category_id';
+            } else {
+                const desk = document.getElementById('propertyTypeSelectDesktop');
+                if (desk) desk.name = 'property_category_id';
+                const mob = document.getElementById('propertyTypeMobileValue');
+                if (mob) mob.name = '';
+            }
+        }
+        syncInputs();
+        window.addEventListener('resize', syncInputs);
+
+        function formatSearchOption(state) {
+            if (!state.id) return state.text;
+            const isChild = state.element && state.element.parentElement && state.element.parentElement.tagName === 'OPTGROUP';
+            const padding = isChild ? '20px' : '0';
+            const $state = $(
+                '<div style="display: flex; align-items: center; padding-left: ' + padding + ';">' +
+                    '<span style="color: inherit; font-weight: inherit;">' + state.text + '</span>' +
+                '</div>'
+            );
+            return $state;
+        }
+
+        if (typeof $().select2 === 'function') {
+            $('.filter-control select').not('[name="bedrooms"], [name="property_status"]').select2({
+                templateResult: formatSearchOption,
+                width: '100%',
+                allowClear: true,
+                minimumResultsForSearch: Infinity,
+                dropdownCssClass: 'premium-search-dropdown'
+            });
+            $('.filter-control select[name="bedrooms"], .filter-control select[name="property_status"]').select2({
+                width: '100%',
+                minimumResultsForSearch: Infinity
+            });
+        }
     });
 </script>
 @endpush

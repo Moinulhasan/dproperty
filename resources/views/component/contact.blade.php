@@ -5,7 +5,6 @@
                 <span class="badge rounded-pill bg-light text-primary px-3 py-2 mb-2 fw-bold text-uppercase">Contact Us</span>
                 <h2 class="display-6 fw-bold">Get In Touch</h2>
                 <div class="header-line mx-auto"></div>
-                <p class="text-muted mt-3 mb-0">{{$tags->where('service_type','contact_us')->first()->tag_line ??'We are here to help you with your property needs'}}</p>
             </div>
         </div>
 
@@ -67,23 +66,39 @@
             <div class="col-lg-5">
                 <div class="inquiry-form-card shadow-sm">
                     <h4 class="fw-bold mb-4">Send us an inquiry</h4>
-                    <form action="#" method="POST">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                    @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                    <form action="{{ route('contact.submit') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-muted">FULL NAME</label>
-                            <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+                            <input type="text" name="name" class="form-control" placeholder="Enter your name" value="{{ old('name') }}" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-muted">EMAIL ADDRESS</label>
-                            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                            <input type="email" name="email" class="form-control" placeholder="Enter your email" value="{{ old('email') }}" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-muted">PHONE NUMBER</label>
-                            <input type="tel" name="phone" class="form-control" placeholder="Enter your phone number">
+                            <input type="tel" name="phone" class="form-control" placeholder="Enter your phone number" value="{{ old('phone') }}">
                         </div>
                         <div class="mb-4">
                             <label class="form-label small fw-bold text-muted">MESSAGE</label>
-                            <textarea name="message" class="form-control" rows="4" placeholder="Write your message here..." required></textarea>
+                            <textarea name="message" class="form-control" rows="4" placeholder="Write your message here..." required>{{ old('message') }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Send Message</button>
                     </form>

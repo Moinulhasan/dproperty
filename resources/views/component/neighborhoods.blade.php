@@ -2,7 +2,6 @@
     <div class="container-fluid px-5">
         <div class="section-header">
             <h2 class="text-primary">Explore The Neighborhoods</h2>
-            <p>Find your dream apartment with our listing</p>
         </div>
 
         <div class="neighborhood-slider swiper">
@@ -41,6 +40,8 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth <= 768) return;
+
         const swiper = new Swiper('.neighborhood-slider', {
             slidesPerView: 1,
             spaceBetween: 30,

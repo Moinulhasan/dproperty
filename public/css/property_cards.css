@@ -87,21 +87,26 @@
 .status-badge-container {
     position: absolute;
     top: 0;
-    left: 20px;
+    left: 0;
+    right: 0;
     z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 15px;
 }
 
 .status-badge {
     background: var(--accent-red);
     color: #fff;
-    padding: 8px 18px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 0.65rem;
     font-weight: 700;
     position: relative;
-    top: 25px; /* space for the strings */
+    top: 22px; /* space for the strings */
     display: inline-block;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
 /* The strings */
@@ -109,10 +114,10 @@
 .status-badge::after {
     content: '';
     position: absolute;
-    top: -24px;
+    top: -20px;
     left: 50%;
     width: 2px;
-    height: 26px;
+    height: 22px;
     background: #fff;
     z-index: 10;
 }
@@ -133,14 +138,33 @@
     height: 6px;
     background: #fff;
     border-radius: 50%;
-    border: 1px solid var(--accent-red);
+    border: 1px solid inherit; /* Will be set by parent or specific class */
     z-index: 15;
 }
+
+.status-badge.status-rent .badge-dot { border-color: #00A699; }
+.status-badge.status-buy .badge-dot { border-color: #FFD700; }
+.status-badge.status-sell .badge-dot { border-color: #FF385C; }
+
 .badge-dot.left {
     left: calc(50% - 15px);
 }
 .badge-dot.right {
     right: calc(50% - 14px);
+}
+
+/* Status Specific Badge Colors */
+.status-badge.status-rent {
+    background: #00A699 !important;
+}
+
+.status-badge.status-buy {
+    background: #FFD700 !important;
+    color: #333 !important; /* Darker text for visibility on yellow */
+}
+
+.status-badge.status-sell {
+    background: #FF385C !important;
 }
 
 /* Hover Actions */
@@ -185,17 +209,15 @@
 }
 
 .type-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
     background: #fff;
     color: #444;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.7rem;
     font-weight: 600;
     z-index: 5;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 28px;
 }
 
 /* Redesigned Content Layout */
@@ -205,12 +227,12 @@
 }
 
 .card-title-global {
-    font-size: 1.15rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: #1a1a1a;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     line-height: 1.4;
-    height: 3.2rem;
+    height: 2.5rem;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -236,8 +258,8 @@
 }
 
 .price-text {
-    font-size: 1.4rem;
-    font-weight: 800;
+    font-size: 1.0rem;
+    font-weight: 700;
     color: var(--accent-teal);
     margin: 0;
 }
@@ -304,6 +326,34 @@
     font-weight: 600;
     color: #ffffff;
     margin-left: 0;
+}
+
+/* Alternating card footer colors using :nth-child on the wrapper div */
+.col-lg-3:nth-of-type(4n+1) .card-footer-global,
+.col-lg-3:nth-of-type(4n+3) .card-footer-global {
+    background: #006A50; /* Green */
+}
+.col-lg-3:nth-of-type(4n+2) .card-footer-global,
+.col-lg-3:nth-of-type(4n+4) .card-footer-global {
+    background: #E8A317; /* Yellow */
+}
+
+/* Mobile/Tablet adjustments */
+@media (max-width: 991px) {
+    .col-md-6:nth-of-type(odd) .card-footer-global {
+        background: #006A50;
+    }
+    .col-md-6:nth-of-type(even) .card-footer-global {
+        background: #E8A317;
+    }
+}
+
+/* For swiper slides */
+.swiper-slide:nth-child(odd) .card-footer-global {
+    background: #006A50;
+}
+.swiper-slide:nth-child(even) .card-footer-global {
+    background: #E8A317;
 }
 
 @media (max-width: 1200px) {

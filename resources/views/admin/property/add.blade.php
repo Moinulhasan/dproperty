@@ -29,25 +29,20 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label" for="property-category">Category</label>
-                                <select class="form-select" id="property-category" name="category" required>
-                                    <option value="">Select Category</option>
-                                    <option value="Residential" {{ old('category') == 'Residential' ? 'selected' : '' }}>Residential</option>
-                                    <option value="Commercial" {{ old('category') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label" for="property-category">Property Category & Type</label>
+                                <select class="form-select select2-categories" id="property-category" name="property_category_id" required>
+                                    <option value="">Select Category/Type</option>
+                                    @foreach($categories as $parent)
+                                        <optgroup label="{{ $parent->name }}">
+                                            <option value="{{ $parent->id }}" {{ old('property_category_id') == $parent->id ? 'selected' : '' }}>{{ $parent->name }} (All)</option>
+                                            @foreach($parent->children as $child)
+                                                <option value="{{ $child->id }}" {{ old('property_category_id') == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;{{ $child->name }}</option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endforeach
                                 </select>
-                                @error('category')<div class="text-danger mt-1">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label" for="property-type">Property Type</label>
-                                <select class="form-select" id="property-type" name="property_type" required>
-                                    <option value="">Select Type</option>
-                                    <option value="Apartment" {{ old('property_type') == 'Apartment' ? 'selected' : '' }}>Apartment</option>
-                                    <option value="House" {{ old('property_type') == 'House' ? 'selected' : '' }}>House</option>
-                                    <option value="Land" {{ old('property_type') == 'Land' ? 'selected' : '' }}>Land</option>
-                                    <option value="Office" {{ old('property_type') == 'Office' ? 'selected' : '' }}>Office</option>
-                                </select>
-                                @error('property_type')<div class="text-danger mt-1">{{ $message }}</div>@enderror
+                                @error('property_category_id')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label" for="property-status">Property Status</label>

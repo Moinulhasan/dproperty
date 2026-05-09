@@ -38,12 +38,12 @@ class ImageProcessingService
             if (file_exists($this->logoPath)) {
                 $logo = $this->manager->read($this->logoPath);
 
-                // Scale logo to 20% of image width
-                $logoWidth = (int)($image->width() * 0.2);
+                // Scale logo to 60% of image width for better visibility
+                $logoWidth = (int)($image->width() * 0.5);
                 $logo->scale(width: $logoWidth);
 
-                // Place logo at bottom-right with padding
-                $image->place($logo, 'top-left', 20, 20);
+                // Set logo opacity to 50% for better visibility
+                $image->place($logo, 'center', 0, 0, 30);
             }
 
             // 3. Save and Compress (Quality 75 by default to reach ~200KB target)

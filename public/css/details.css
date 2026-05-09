@@ -63,7 +63,7 @@
 }
 
 .gallery-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #1a1a2e;
     margin: 0 0 6px 0;
@@ -93,6 +93,13 @@
     overflow: hidden;
     position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: #f0f0f0;
+}
+
+.main-image-swiper .swiper-slide {
+    width: 100%;
+    height: 100%;
+    background: #f0f0f0;
 }
 
 .main-image-swiper img {
@@ -108,11 +115,12 @@
 }
 
 .thumb-image-swiper .swiper-slide {
-    width: 25%;
-    height: 100%;
+    width: 80px !important;
+    height: 80px;
+    flex-shrink: 0;
     opacity: 0.4;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
     transition: opacity 0.3s ease;
 }
@@ -246,7 +254,7 @@
 }
 
 .price-box h2 {
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--primary-color, #00A699);
     letter-spacing: -0.5px;
@@ -257,13 +265,13 @@
 }
 
 .meta-info h3 {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: #444;
 }
 
 .location-tag {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #777;
     margin-top: 4px;
 }
@@ -335,12 +343,12 @@
 
 /* Section Headlines */
 .detail-section-title {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     color: #222;
     position: relative;
-    padding-bottom: 12px;
+    padding-bottom: 10px;
 }
 
 .detail-section-title::after {
@@ -358,6 +366,19 @@
     line-height: 1.8;
     color: #555;
     margin-bottom: 40px;
+    font-size: 0.9rem;
+}
+
+/* Video Container - 50% width */
+.video-container-half {
+    width: 50%;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .video-container-half {
+        width: 100%;
+    }
 }
 
 /* ========== Mobile Title Section ========== */
@@ -516,6 +537,43 @@
     .specs-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .spec-item {
+        padding: 12px 8px;
+    }
+
+    .spec-icon {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+
+    .spec-value {
+        font-size: 0.85rem;
+    }
+
+    .spec-label {
+        font-size: 0.7rem;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .feature-check {
+        font-size: 0.85rem;
+    }
+
+    .detail-section-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .description-text {
+        font-size: 0.85rem;
+        line-height: 1.6;
     }
 }
 
@@ -526,13 +584,47 @@
 }
 
 .recommended-section .detail-section-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     text-align: center;
-    margin-bottom: 40px !important;
+    margin-bottom: 30px !important;
 }
 
 .recommended-section .detail-section-title::after {
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
+}
+
+.recommended-section .property-card-global {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.recommended-section .property-card-global:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.recommended-section .card-title-global {
+    font-size: 0.9rem;
+    height: auto;
+    -webkit-line-clamp: 2;
+}
+
+.recommended-section .price-text {
+    font-size: 1rem;
+}
+
+.recommended-section .card-body-global {
+    padding: 15px;
+}
+
+.recommended-section .feature-item-global {
+    font-size: 0.8rem;
+}
+
+.recommended-section .card-footer-global {
+    padding: 10px 12px;
 }

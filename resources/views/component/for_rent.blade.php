@@ -1,9 +1,11 @@
 @if(count($rent_properties))
-    <section class="py-2" id="for-rent">
+    <section class="py-1" id="for-rent">
         <div class="container-fluid px-md-5 px-3">
-            <div class="section-header text-center mb-3">
+            <div class="section-header-modern mb-3">
                 <h2 class="text-primary">Properties For Rent</h2>
-                <p>Discover our best selection of properties available for rent</p>
+                <a href="{{ route('rent') }}" class="view-all-btn">
+                    View All &rarr;
+                </a>
             </div>
 
             <div class="row d-none d-lg-flex">
@@ -12,7 +14,13 @@
                         <div class="property-card-global">
                             <div class="card-image-box">
                                 <div class="status-badge-container">
-                                    <div class="status-badge">
+                                    @php
+                                        $statusLower = strtolower($property->property_status);
+                                        $statusClass = 'status-sell'; // Default
+                                        if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                                        elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                                    @endphp
+                                    <div class="status-badge {{ $statusClass }}">
                                         <span class="badge-dot left"></span>
                                         <span class="badge-dot right"></span>
                                         @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
@@ -21,8 +29,8 @@
                                             For {{ $property->property_status }}
                                         @endif
                                     </div>
+                                    <span class="type-badge">{{ $property->category }}</span>
                                 </div>
-                                <span class="type-badge">{{ $property->category }}</span>
                                 
                                 @php
                                     $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
@@ -34,7 +42,7 @@
                                     <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
                                         <i class="fas fa-bookmark"></i>
                                     </button>
-                                    <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                                    <button class="action-btn gallery-btn" title="View All Image" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
                                         <i class="fas fa-camera"></i>
                                     </button>
                                 </div>
@@ -58,7 +66,7 @@
                             </div>
                             <div class="card-body-global">
                                 <h3 class="card-title-global">
-                                    <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                                    <a href="{{ route('property-details', $property->id) }}" target="_blank">{{ $property->title }}</a>
                                 </h3>
 
                                 <div class="info-grid">
@@ -92,7 +100,13 @@
                                 <div class="property-card-global">
                                     <div class="card-image-box">
                                         <div class="status-badge-container">
-                                            <div class="status-badge">
+                                            @php
+                                                $statusLower = strtolower($property->property_status);
+                                                $statusClass = 'status-sell'; // Default
+                                                if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                                                elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                                            @endphp
+                                            <div class="status-badge {{ $statusClass }}">
                                                 <span class="badge-dot left"></span>
                                                 <span class="badge-dot right"></span>
                                                 @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
@@ -101,8 +115,8 @@
                                                     For {{ $property->property_status }}
                                                 @endif
                                             </div>
+                                            <span class="type-badge">{{ $property->category }}</span>
                                         </div>
-                                        <span class="type-badge">{{ $property->category }}</span>
                                         
                                         @php
                                             $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
@@ -114,7 +128,7 @@
                                             <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
                                                 <i class="fas fa-bookmark"></i>
                                             </button>
-                                            <button class="action-btn gallery-btn" title="View Gallery" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                                            <button class="action-btn gallery-btn" title="View All Image" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
                                                 <i class="fas fa-camera"></i>
                                             </button>
                                         </div>
@@ -138,7 +152,7 @@
                                     </div>
                                     <div class="card-body-global">
                                         <h3 class="card-title-global">
-                                            <a href="{{ route('property-details', $property->id) }}">{{ $property->title }}</a>
+                                            <a href="{{ route('property-details', $property->id) }}" target="_blank">{{ $property->title }}</a>
                                         </h3>
 
                                         <div class="info-grid">
@@ -166,9 +180,9 @@
                 </div>
             </div>
 
-            <div class="text-center mt-lg-5 mt-3">
-                <a href="{{ route('rent') }}" class="btn btn-outline-primary px-lg-5 py-lg-3 px-4 py-2 rounded-pill fw-bold">View All Rental Properties</a>
-            </div>
+
+
+
         </div>
     </section>
 @endif

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Location;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,5 +23,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
+        // Share neighborhoods data with footer on all pages
+        View::composer('component.footer', function ($view) {
+            $footerNeighborhoods = Location::where('status', 1)
+                ->orderBy('name')
+                ->get();
+            $view->with('footerNeighborhoods', $footerNeighborhoods);
+        });
     }
 }
