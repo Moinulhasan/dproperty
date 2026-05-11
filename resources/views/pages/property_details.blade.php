@@ -274,28 +274,52 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="property-card-global">
                         <div class="card-image-box">
-                            @php
-                                $statusLower = strtolower($rp->property_status);
-                                $statusClass = 'status-sell'; // Default
-                                if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
-                                elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
-                            @endphp
-                            <div class="status-badge {{ $statusClass }}">
-                                <span class="badge-dot left"></span>
-                                <span class="badge-dot right"></span>
-                                For {{ $rp->property_status }}
+                            <div class="status-badge-container">
+                                @php
+                                    $statusLower = strtolower($rp->property_status);
+                                    $statusClass = 'status-sell'; // Default
+                                    if (str_contains($statusLower, 'rent')) $statusClass = 'status-rent';
+                                    elseif (str_contains($statusLower, 'buy')) $statusClass = 'status-buy';
+                                @endphp
+                                <div class="status-badge {{ $statusClass }}">
+                                    <span class="badge-dot left"></span>
+                                    <span class="badge-dot right"></span>
+                                    @if(str_starts_with($rp->property_status, 'For') || $rp->property_status == 'Buy')
+                                        {{ $rp->property_status }}
+                                    @else
+                                        For {{ $rp->property_status }}
+                                    @endif
+                                </div>
+                                <span class="type-badge">{{ $rp->category }}</span>
                             </div>
+                            
+                            @php
+                                $gallery = is_array($rp->images) ? $rp->images : (json_decode($rp->images) ?? []);
+                                $allImages = [];
+                                if ($rp->feature_image) $allImages[] = asset($rp->feature_image);
+                                foreach ($gallery as $img) $allImages[] = asset($img);
+                                if (empty($allImages)) $allImages[] = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80';
+                            @endphp
+                            <div class="card-image-hover-actions">
+                                <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $rp->id) }}'); alert('Link copied to clipboard!');">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                                <button class="action-btn gallery-btn" title="View All Image" data-images="{{ json_encode($allImages) }}" onclick="event.preventDefault(); openGallery(this);">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+
                             <div class="swiper card-inner-slider">
                                 <div class="swiper-wrapper">
                                     @if($rp->feature_image)
                                         <div class="swiper-slide"><img src="{{ asset($rp->feature_image) }}" alt="{{ $rp->title }}"></div>
                                     @endif
-                                    @php
-                                        $gallery = is_array($rp->images) ? $rp->images : (json_decode($rp->images) ?? []);
-                                    @endphp
                                     @foreach($gallery as $img)
                                         <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $rp->title }}"></div>
                                     @endforeach
+                                    @if(!$rp->feature_image && count($gallery) == 0)
+                                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
+                                    @endif
                                 </div>
                                 <div class="swiper-button-next"></div>
                                 <div class="swiper-button-prev"></div>
@@ -306,10 +330,13 @@
                                 <a href="{{ route('property-details', $rp->id) }}" target="_blank">{{ $rp->title }}</a>
                             </h3>
                             <div class="info-grid">
-                                <h4 class="price-text">৳ {{ number_format($rp->price, 0) }}{{ in_array($rp->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h4>
+                                <h4 class="price-text">৳ {{ number_format($rp->price, 0) }}{{ in_array($rp->property_status, ['Rent', 'For Rent']) ? ' / mo' : '' }}</h4>
+                                <div class="detail-item"><span class="info-label">ID:</span> {{ $rp->project_id }}</div>
+                                
                                 <div class="location-text">
-                                    <i class="fas fa-map-marker-alt"></i> {{ $rp->location ? $rp->location->name : ($rp->sub_route ?: $rp->route) }}
+                                    <i class="fas fa-map-marker-alt"></i> {{ $rp->sub_route ?: $rp->route }}
                                 </div>
+                                <div class="detail-item"><span class="info-label">Type:</span> {{ $rp->is_furnished }}</div>
                             </div>
                         </div>
                         <div class="card-footer-global">

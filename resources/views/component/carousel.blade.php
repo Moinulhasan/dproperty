@@ -99,7 +99,7 @@
                                         <!-- Mobile Version (Custom Picker) -->
                                         <div class="custom-dropdown d-lg-none" id="propertyTypeDropdown">
                                             <div class="dropdown-toggle-custom picker-toggle" id="propertyTypeToggle">
-                                                <span class="toggle-text">Property Type</span>
+                                                <span class="toggle-text">Select Type</span>
                                                 <i class="fas fa-chevron-down"></i>
                                             </div>
                                             <div class="dropdown-content-custom picker-style">
@@ -596,7 +596,7 @@
                 hiddenInput.value = values.join(',');
                 
                 if (selectedItems.length === 0) {
-                    toggleText.innerText = 'Property Type';
+                    toggleText.innerText = 'Select Type';
                 } else if (selectedItems.length === 1) {
                     toggleText.innerText = selectedItems[0].getAttribute('data-text');
                 } else if (selectedItems.length === typeItems.length) {

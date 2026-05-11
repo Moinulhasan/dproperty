@@ -22,6 +22,7 @@ Route::get('location/{id}', [HomePageController::class, 'locationProperties'])->
 Route::get('contact-us', [HomePageController::class, 'contact'])->name('contact');
 Route::post('contact-us', [HomePageController::class, 'contactInquirySubmit'])->name('contact.submit');
 Route::get('service', [HomePageController::class, 'service'])->name('service');
+Route::get('about-us', [HomePageController::class, 'aboutUs'])->name('about-us');
 Route::get('blog', [HomePageController::class, 'blog'])->name('blog');
 Route::get('post-property', [HomePageController::class, 'postProperty'])->name('post-property');
 Route::post('post-property', [HomePageController::class, 'postPropertySubmit'])->name('post-property.submit');

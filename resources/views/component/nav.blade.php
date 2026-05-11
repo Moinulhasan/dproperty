@@ -31,7 +31,7 @@
                     <a class="nav-link {{ request()->routeIs('service') ? 'active' : '' }}" href="{{ route('service') }}">Service</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ Request::is('/') ? '#about' : route('home').'/#about' }}">About</a>
+                    <a class="nav-link {{ request()->routeIs('about-us') ? 'active' : '' }}" href="{{ route('about-us') }}">About Us</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('blog') ? 'active' : '' }}" href="{{ route('blog') }}">Blog</a>
@@ -62,7 +62,7 @@
             <li><a href="{{route('rent')}}" class="mobile-nav-link">Rent</a></li>
             <li><a href="{{ route('post-property') }}" class="mobile-nav-link {{ request()->routeIs('post-property') ? 'active' : '' }}">Post Property</a></li>
             <li><a href="{{ route('service') }}" class="mobile-nav-link">Service</a></li>
-            <li><a href="{{ Request::is('/') ? '#about' : route('home').'/#about' }}" class="mobile-nav-link">About</a></li>
+            <li><a href="{{ route('about-us') }}" class="mobile-nav-link {{ request()->routeIs('about-us') ? 'active' : '' }}">About Us</a></li>
             <li><a href="{{ route('blog') }}" class="mobile-nav-link {{ Request::is('blog') ? 'active' : '' }}">Blog</a></li>
             <li><a href="{{ route('contact') }}" class="mobile-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact Us</a></li>
         </ul>

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PropertyCategory extends Model
 {
     protected $guarded = [];
+    protected $table = 'property_categories';
 
     public function parent()
     {

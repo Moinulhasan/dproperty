@@ -259,6 +259,18 @@ class HomePageController extends Controller
         return view('pages.service', compact('settings', 'services', 'tags'));
     }
 
+    public function aboutUs()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $abouts = \App\Models\AboutUs::orderBy('created_at', 'desc')
+            ->where('status', 1)
+            ->get();
+        $testimonials = Testimonial::orderBy('created_at', 'desc')
+            ->where('status', 1)
+            ->get();
+        return view('pages.about_us', compact('settings', 'abouts', 'testimonials'));
+    }
+
     public function postProperty()
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();

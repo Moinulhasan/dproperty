@@ -331,6 +331,14 @@ body {
 }
 
 /* Select2 Custom Handling for Cards */
+select.select2-property-type,
+select.select2-location {
+    opacity: 0 !important;
+    position: absolute !important;
+    z-index: -1 !important;
+    height: 54px !important;
+}
+
 .search-card .search-field {
     width: 100%;
     margin-top: -2px;
@@ -486,10 +494,15 @@ body {
 
 /* Multi-select Pills for Select2 */
 .search-card .select2-container--default .select2-selection--multiple {
-    border: none !important;
-    background: transparent !important;
-    min-height: auto !important;
-    padding: 0 !important;
+    border: 2px solid #006A50 !important;
+    background: #ffffff !important;
+    padding: 8px 12px !important;
+    min-height: 54px !important;
+    display: flex !important;
+    align-items: center;
+    border-radius: 8px !important;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 106, 80, 0.1) !important;
 }
 
 .search-card .select2-container--default .select2-selection--multiple .select2-selection__rendered {
@@ -715,6 +728,28 @@ body {
     display: flex;
     align-items: center;
     line-height: 1.2;
+    justify-content: space-between;
+}
+
+.dropdown-toggle-custom.picker-toggle {
+    border: 2px solid #006A50 !important;
+    background: #ffffff !important;
+    padding: 12px 18px !important;
+    height: 54px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0, 106, 80, 0.1) !important;
+    width: 100%;
+}
+
+.dropdown-toggle-custom.picker-toggle .toggle-text {
+    flex-grow: 1;
+    text-align: left;
+    color: #555;
+    font-weight: 500;
+}
+
+.dropdown-toggle-custom.picker-toggle i {
+    color: #777;
 }
 
 .dropdown-content-custom {

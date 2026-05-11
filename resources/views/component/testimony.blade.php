@@ -1,3 +1,4 @@
+  @if(count($testimonials))
 <section id="reviews" class="py-5 bg-light">
     <div class="container">
         <div class="row">
@@ -50,3 +51,4 @@
         </div>
     </div>
 </section>
+@endif

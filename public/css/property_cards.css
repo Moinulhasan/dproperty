@@ -104,7 +104,8 @@
     font-size: 0.65rem;
     font-weight: 700;
     position: relative;
-    top: 22px; /* space for the strings */
+    top: 22px;
+    /* space for the strings */
     display: inline-block;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
@@ -121,10 +122,12 @@
     background: #fff;
     z-index: 10;
 }
+
 .status-badge::before {
     transform-origin: top center;
     transform: rotate(35deg);
 }
+
 .status-badge::after {
     transform-origin: top center;
     transform: rotate(-35deg);
@@ -138,17 +141,27 @@
     height: 6px;
     background: #fff;
     border-radius: 50%;
-    border: 1px solid inherit; /* Will be set by parent or specific class */
+    border: 1px solid inherit;
+    /* Will be set by parent or specific class */
     z-index: 15;
 }
 
-.status-badge.status-rent .badge-dot { border-color: #00A699; }
-.status-badge.status-buy .badge-dot { border-color: #FFD700; }
-.status-badge.status-sell .badge-dot { border-color: #FF385C; }
+.status-badge.status-rent .badge-dot {
+    border-color: #00A699;
+}
+
+.status-badge.status-buy .badge-dot {
+    border-color: #FFD700;
+}
+
+.status-badge.status-sell .badge-dot {
+    border-color: #FF385C;
+}
 
 .badge-dot.left {
     left: calc(50% - 15px);
 }
+
 .badge-dot.right {
     right: calc(50% - 14px);
 }
@@ -160,7 +173,8 @@
 
 .status-badge.status-buy {
     background: #FFD700 !important;
-    color: #333 !important; /* Darker text for visibility on yellow */
+    color: #333 !important;
+    /* Darker text for visibility on yellow */
 }
 
 .status-badge.status-sell {
@@ -198,7 +212,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
 }
 
@@ -300,7 +314,8 @@
 /* Footer Section - Redesigned as per reference image */
 .card-footer-global {
     padding: 12px 15px;
-    background: #006A50; /* Primary Green */
+    background: #006A50;
+    /* Primary Green */
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -331,11 +346,14 @@
 /* Alternating card footer colors using :nth-child on the wrapper div */
 .col-lg-3:nth-of-type(4n+1) .card-footer-global,
 .col-lg-3:nth-of-type(4n+3) .card-footer-global {
-    background: #006A50; /* Green */
+    background: #006A50;
+    /* Green */
 }
+
 .col-lg-3:nth-of-type(4n+2) .card-footer-global,
 .col-lg-3:nth-of-type(4n+4) .card-footer-global {
-    background: #E8A317; /* Yellow */
+    background: #E8A317;
+    /* Yellow */
 }
 
 /* Mobile/Tablet adjustments */
@@ -343,6 +361,7 @@
     .col-md-6:nth-of-type(odd) .card-footer-global {
         background: #006A50;
     }
+
     .col-md-6:nth-of-type(even) .card-footer-global {
         background: #E8A317;
     }
@@ -352,6 +371,7 @@
 .swiper-slide:nth-child(odd) .card-footer-global {
     background: #006A50;
 }
+
 .swiper-slide:nth-child(even) .card-footer-global {
     background: #E8A317;
 }
@@ -368,10 +388,12 @@
     }
 
     .card-body-global {
-        padding: 10px 15px; /* Reduced from 15px */
+        padding: 10px 15px;
+        /* Reduced from 15px */
     }
 
     .card-footer-global {
-        padding: 10px 12px; /* Slightly more compact */
+        padding: 10px 12px;
+        /* Slightly more compact */
     }
 }

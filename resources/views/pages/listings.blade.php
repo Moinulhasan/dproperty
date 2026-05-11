@@ -191,8 +191,8 @@
                                 For {{ $property->property_status }}
                             @endif
                         </div>
+                        <span class="type-badge">{{ $property->category }}</span>
                     </div>
-                    <span class="type-badge">{{ $property->category }}</span>
                     
                     @php
                         $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
@@ -237,7 +237,7 @@
 
                     <div class="info-grid">
                         <h4 class="price-text">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? ' / mo' : '' }}</h4>
-                        <div class="detail-item"><span class="info-label">Project ID:</span> {{ $property->project_id }}</div>
+                        <div class="detail-item"><span class="info-label">ID:</span> {{ $property->project_id }}</div>
                         
                         <div class="location-text">
                             <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}

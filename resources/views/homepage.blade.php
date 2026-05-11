@@ -7,8 +7,6 @@
     @include('component.for_sale')
     @include('component.neighborhoods')
     @include('component.articles')
-    @include('component.why_us')
-    @include('component.testimony')
 
 @endsection
 

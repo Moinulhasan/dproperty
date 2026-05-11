@@ -52,7 +52,13 @@
                 <span class="menu-header-text">Property Management</span>
             </li>
             @canany(['manage-properties','manage-amenities'])
-                <li class="menu-item {{request()->routeIs('admin.property*')? 'active' : ''}}">
+                <li class="menu-item {{request()->routeIs('admin.property_category*')? 'active' : ''}}">
+                    <a href="{{route('admin.property_category.list')}}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-category"></i>
+                        <div data-i18n="Property Category">Property Category</div>
+                    </a>
+                </li>
+                <li class="menu-item {{(request()->routeIs('admin.property.*') || request()->routeIs('admin.property.list') || request()->routeIs('admin.property.add') || request()->routeIs('admin.property.edit'))? 'active' : ''}}">
                     <a href="{{route('admin.property.list')}}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-home"></i>
                         <div data-i18n="Property">Property</div>
@@ -124,8 +130,14 @@
             @can('manage-client-review')
                 <li class="menu-item {{request()->routeIs('admin.testimonial*')? 'active' : ''}}">
                     <a href="{{route('admin.testimonial.list')}}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-message"></i>
-                        <div data-i18n="Client Review">Client Review</div>
+                        <i class="menu-icon tf-icons ti ti-messages"></i>
+                        <div data-i18n="Testimonial">Testimonial</div>
+                    </a>
+                </li>
+                <li class="menu-item {{request()->routeIs('admin.about_us*')? 'active' : ''}}">
+                    <a href="{{route('admin.about_us.list')}}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-info-circle"></i>
+                        <div data-i18n="About Us">About Us</div>
                     </a>
                 </li>
             @endcan

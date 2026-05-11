@@ -62,6 +62,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('delete/{testimonial}', [TestimonialController::class, 'delete'])->name('testimonial.delete');
     });
 
+    Route::group(['prefix' => 'about-us'], function () {
+        Route::get('list', [\App\Http\Controllers\Admin\AboutUsController::class, 'index'])->name('about_us.list');
+        Route::get('add', [\App\Http\Controllers\Admin\AboutUsController::class, 'add'])->name('about_us.add');
+        Route::post('add', [\App\Http\Controllers\Admin\AboutUsController::class, 'addPost'])->name('about_us.add.post');
+        Route::get('edit/{aboutUs}', [\App\Http\Controllers\Admin\AboutUsController::class, 'edit'])->name('about_us.edit');
+        Route::post('edit/{aboutUs}', [\App\Http\Controllers\Admin\AboutUsController::class, 'editPost'])->name('about_us.edit.post');
+        Route::get('delete/{aboutUs}', [\App\Http\Controllers\Admin\AboutUsController::class, 'delete'])->name('about_us.delete');
+    });
+
     Route::group(['prefix' => 'properties'], function () {
         Route::get('list', [PropertyController::class, 'index'])->name('property.list');
         Route::get('add', [PropertyController::class, 'add'])->name('property.add');
@@ -93,6 +102,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit/{location}', [LocationController::class, 'edit'])->name('location.edit');
         Route::post('edit/{location}', [LocationController::class, 'editPost'])->name('location.edit.post');
         Route::get('delete/{location}', [LocationController::class, 'delete'])->name('location.delete');
+    });
+
+    Route::group(['prefix' => 'property-categories'], function () {
+        Route::get('list', [\App\Http\Controllers\Admin\PropertyCategoryController::class, 'index'])->name('property_category.list');
+        Route::get('add', [\App\Http\Controllers\Admin\PropertyCategoryController::class, 'add'])->name('property_category.add');
+        Route::post('add', [\App\Http\Controllers\Admin\PropertyCategoryController::class, 'addPost'])->name('property_category.add.post');
+        Route::get('edit/{propertyCategory}', [\App\Http\Controllers\Admin\PropertyCategoryController::class, 'edit'])->name('property_category.edit');
+        Route::post('edit/{propertyCategory}', [\App\Http\Controllers\Admin\PropertyCategoryController::class, 'editPost'])->name('property_category.edit.post');
+        Route::get('delete/{propertyCategory}', [\App\Http\Controllers\Admin\PropertyCategoryController::class, 'delete'])->name('property_category.delete');
     });
 
     Route::group(['prefix' => 'property-details'], function () {

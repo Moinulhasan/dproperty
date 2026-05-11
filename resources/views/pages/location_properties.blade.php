@@ -156,8 +156,8 @@
                                 For {{ $property->property_status }}
                             @endif
                         </div>
+                        <span class="type-badge">{{ $property->category }}</span>
                     </div>
-                    <span class="type-badge">{{ $property->category }}</span>
                     
                     @php
                         $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
