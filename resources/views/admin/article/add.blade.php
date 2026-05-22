@@ -53,10 +53,17 @@
                         <textarea class="form-control" id="meta-description" name="meta_description" rows="2">{{ old('meta_description') }}</textarea>
                     </div>
 
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="status" name="status" checked>
-                            <label class="form-check-input" for="status">Active Status</label>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label" for="article-order">Order</label>
+                            <input type="number" min="0" class="form-control" id="article-order" name="order" value="{{ old('order', 0) }}">
+                            <div class="form-text">Lower number = shown first.</div>
+                        </div>
+                        <div class="col-md-9 mb-3 d-flex align-items-end">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="status" name="status" checked>
+                                <label class="form-check-input" for="status">Active Status</label>
+                            </div>
                         </div>
                     </div>
 

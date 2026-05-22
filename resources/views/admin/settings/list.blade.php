@@ -113,6 +113,21 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-6 form-password-toggle">
+                                            <label class="form-label" for="og-image">Social Share Image (og:image)</label>
+                                            <input
+                                                type="file"
+                                                id="og-image"
+                                                class="form-control"
+                                                name="og_image"
+                                                aria-label="og-image"/>
+                                            <div class="form-text">Recommended: 1200&times;630 px. Used as the default preview when pages are shared on Facebook, LinkedIn, Twitter, etc.</div>
+                                            <div class="mt-2">
+                                                @if(isset($settings->og_image))
+                                                    <img src="{{ asset($settings->og_image) }}" alt="og:image preview" style="height: 60px;width: auto;">
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 form-password-toggle">
                                             <label class="form-label" for="password60">Short Description</label>
 
                                             <textarea name="site_description" id=""

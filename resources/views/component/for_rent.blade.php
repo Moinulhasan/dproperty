@@ -51,13 +51,13 @@
                                 <div class="swiper card-inner-slider">
                                     <div class="swiper-wrapper">
                                         @if($property->feature_image)
-                                            <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} for Rent in {{ $property->sub_route ?: $property->route }}" title="{{ $property->title }}"></div>
+                                            <div class="swiper-slide"><img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} for Rent in {{ $property->sub_route ?: $property->route }}" title="{{ $property->title }}"></div>
                                         @endif
                                         @php
                                             $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
                                         @endphp
                                         @foreach($gallery as $img)
-                                            <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
+                                            <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
                                         @endforeach
                                     </div>
                                     <div class="swiper-button-next"></div>
@@ -79,11 +79,7 @@
                                     <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                 </div>
                             </div>
-                            <div class="card-footer-global">
-                                <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
-                                <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
-                                <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
-                            </div>
+                            @include('component._card_footer', ['p' => $property])
                         </div>
                     </div>
                 @empty
@@ -137,13 +133,13 @@
                                         <div class="swiper card-inner-slider">
                                             <div class="swiper-wrapper">
                                                 @if($property->feature_image)
-                                                    <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                                                    <div class="swiper-slide"><img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
                                                 @endif
                                                 @php
                                                     $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
                                                 @endphp
                                                 @foreach($gallery as $img)
-                                                    <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                                                    <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
                                                 @endforeach
                                             </div>
                                             <div class="swiper-button-next"></div>
@@ -165,11 +161,7 @@
                                             <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                                         </div>
                                     </div>
-                                    <div class="card-footer-global">
-                                        <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
-                                        <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
-                                        <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
-                                    </div>
+                                    @include('component._card_footer', ['p' => $property])
                                 </div>
                             </div>
                         @endforeach

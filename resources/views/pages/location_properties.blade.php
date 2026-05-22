@@ -1,5 +1,16 @@
 @extends('master')
 
+@section('title', $title . ' — DProperty')
+@section('meta_description', 'Discover properties for sale and rent in ' . $location->name . '. Verified listings, photos, and full details on DProperty.')
+@section('canonical_url', route('location.properties', $location->id))
+
+@section('seo')
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home',           'url' => route('home')],
+        ['name' => $location->name,  'url' => route('location.properties', $location->id)],
+    ]])
+@endsection
+
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/listings.css') }}">
     <link rel="stylesheet" href="{{ asset('css/property_cards.css') }}">
@@ -179,10 +190,10 @@
                     <div class="swiper card-inner-slider">
                         <div class="swiper-wrapper">
                             @if($property->feature_image)
-                                <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->sub_route ?: ($property->location ? $property->location->name : '') }}" title="{{ $property->title }}"></div>
+                                <div class="swiper-slide"><img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->sub_route ?: ($property->location ? $property->location->name : '') }}" title="{{ $property->title }}"></div>
                             @endif
                             @foreach($gallery as $img)
-                                <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
+                                <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
                             @endforeach
                             @if(!$property->feature_image && count($gallery) == 0)
                                 <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
@@ -207,11 +218,7 @@
                         <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                     </div>
                 </div>
-                <div class="card-footer-global">
-                    <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
-                    <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
-                    <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
-                </div>
+                @include('component._card_footer', ['p' => $property])
             </div>
         </div>
         @empty

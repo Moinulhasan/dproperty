@@ -1,5 +1,8 @@
 @extends('master')
 
+@section('title', 'Privacy Policy — DProperty')
+@section('meta_description', 'How DProperty collects, uses, and protects your personal information when you use our property listings and services.')
+
 @section('content')
     <main class="py-5 ">
         <div class="container">

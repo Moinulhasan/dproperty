@@ -1,5 +1,6 @@
 @extends('master')
 
+@section('title', $property->title . ' — DProperty')
 @section('meta_description', Str::limit(strip_tags($property->description), 160))
 
 @section('seo')
@@ -9,11 +10,75 @@
     <meta property="og:image:alt" content="{{ $property->title }} - {{ $property->property_type }} in {{ $property->sub_route ?? $property->route }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $property->title }}">
     <meta name="twitter:description" content="{{ Str::limit(strip_tags($property->description), 160) }}">
     <meta name="twitter:image" content="{{ asset($property->feature_image) }}">
+
+    @php
+        $isRental    = in_array($property->property_status, ['Rent', 'For Rent']);
+        $addressLine = trim(implode(', ', array_filter([
+            $property->lane,
+            $property->road,
+            $property->sub_route,
+            $property->route,
+            optional($property->location)->name,
+        ])));
+        $propertyImages = collect([$property->feature_image])
+            ->merge(is_array($property->images) ? $property->images : [])
+            ->filter()
+            ->map(fn ($i) => asset($i))
+            ->values();
+    @endphp
+
+    @php
+        $statusForCrumb = strtolower($property->property_status);
+        $crumbRoute = 'buy';
+        if (str_contains($statusForCrumb, 'rent')) $crumbRoute = 'rent';
+        elseif (str_contains($statusForCrumb, 'sell') || str_contains($statusForCrumb, 'sale')) $crumbRoute = 'sell';
+    @endphp
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home',                       'url' => route('home')],
+        ['name' => $property->property_status,   'url' => route($crumbRoute)],
+        ['name' => $property->title,             'url' => url()->current()],
+    ]])
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "{{ $isRental ? 'RentAction' : 'Product' }}",
+        "name": "{{ addslashes($property->title) }}",
+        "description": "{{ addslashes(Str::limit(strip_tags($property->description), 300)) }}",
+        "url": "{{ url()->current() }}",
+        @if($propertyImages->count())
+        "image": {!! json_encode($propertyImages->all()) !!},
+        @endif
+        "offers": {
+            "@type": "Offer",
+            "price": "{{ $property->price }}",
+            "priceCurrency": "BDT",
+            "availability": "https://schema.org/InStock",
+            "url": "{{ url()->current() }}",
+            "businessFunction": "{{ $isRental ? 'http://purl.org/goodrelations/v1#LeaseOut' : 'http://purl.org/goodrelations/v1#Sell' }}"
+        },
+        "category": "{{ addslashes($property->category ?? $property->property_type ?? 'Real Estate') }}",
+        @if($addressLine)
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ addslashes($addressLine) }}",
+            "addressCountry": "BD"
+        },
+        @endif
+        "additionalProperty": [
+            @if($property->bedrooms) { "@type": "PropertyValue", "name": "Bedrooms",  "value": "{{ $property->bedrooms }}"  } @endif
+            @if($property->bedrooms && ($property->bathrooms || $property->area)),@endif
+            @if($property->bathrooms){ "@type": "PropertyValue", "name": "Bathrooms", "value": "{{ $property->bathrooms }}" } @endif
+            @if($property->bathrooms && $property->area),@endif
+            @if($property->area)     { "@type": "PropertyValue", "name": "Area (SFT)","value": "{{ $property->area }}"      } @endif
+        ]
+    }
+    </script>
 @endsection
 
 @section('styles')
@@ -60,7 +125,7 @@
                             @endphp
                             @foreach($gallery as $img)
                             <div class="swiper-slide">
-                                <img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}">
+                                <img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}">
                             </div>
                             @endforeach
                         </div>
@@ -73,12 +138,12 @@
                         <div class="swiper-wrapper">
                             @if($property->feature_image)
                             <div class="swiper-slide">
-                                <img src="{{ asset($property->feature_image) }}" alt="Thumb">
+                                <img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} thumbnail">
                             </div>
                             @endif
                             @foreach($gallery as $img)
                             <div class="swiper-slide">
-                                <img src="{{ asset($img) }}" alt="Thumb">
+                                <img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} thumbnail">
                             </div>
                             @endforeach
                         </div>
@@ -86,19 +151,29 @@
                 </div>
 
                 <!-- Mobile Title (shown only on mobile, after image) -->
+                @php
+                    $fullAddressParts = array_filter([
+                        $property->lane,
+                        $property->road,
+                        $property->sub_route,
+                        $property->route,
+                        optional($property->location)->name,
+                    ]);
+                    $fullAddress = implode(', ', $fullAddressParts);
+                @endphp
                 <div class="mobile-title-section d-lg-none mt-3">
                     <h2 class="mobile-property-title mb-2">{{ $property->title }}</h2>
-                    
+
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h3 class="mobile-price m-0">৳ {{ number_format($property->price, 0) }}{{ in_array($property->property_status, ['Rent', 'For Rent']) ? '/mo' : '' }}</h3>
-                        <span class="text-muted small fw-bold">ID: {{ $property->project_id }}</span>
+                        <span class="mobile-meta-id">ID: {{ $property->project_id }}</span>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="mobile-location m-0">
-                            <i class="fas fa-map-marker-alt text-danger me-1"></i> {{ $property->sub_route ?: $property->route }}
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                        <span class="mobile-furnish-tag">{{ $property->is_furnished }}</span>
+                        <div class="mobile-location m-0 text-end">
+                            <i class="fas fa-map-marker-alt text-danger me-1"></i>{{ $fullAddress ?: '—' }}
                         </div>
-                        <span class="badge bg-light text-dark border small">{{ $property->is_furnished }}</span>
                     </div>
                 </div>
 
@@ -114,11 +189,12 @@
                                 elseif (str_contains($statusLower, 'buy')) $statusBadgeClass = 'bg-warning text-dark';
                             @endphp
                             <div class="badge {{ $statusBadgeClass }} mt-2">
-                                @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
+                                    {{ $property->is_furnished }}
+                                {{-- @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
                                     {{ $property->property_status }}
                                 @else
                                     For {{ $property->property_status }}
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                         <div class="meta-info">
@@ -141,11 +217,6 @@
                                 </div>
                             @endif
                         @endforeach
-                        <div class="spec-item">
-                            <i class="fas fa-couch spec-icon"></i>
-                            <span class="spec-value">{{ $property->is_furnished }}</span>
-                            <span class="spec-label">Type</span>
-                        </div>
                     </div>
 
                     <!-- Features & Amenities -->
@@ -174,7 +245,7 @@
                     @if($property->floor_plan)
                     <h4 class="detail-section-title">Floor Plan</h4>
                     <div class="mb-4 text-center">
-                        <img src="{{ asset($property->floor_plan) }}" class="img-fluid rounded border" alt="Floor Plan for {{ $property->title }} - {{ $property->property_type }}" title="Floor Plan - {{ $property->title }}">
+                        <img loading="lazy" src="{{ asset($property->floor_plan) }}" class="img-fluid rounded border" alt="Floor Plan for {{ $property->title }} - {{ $property->property_type }}" title="Floor Plan - {{ $property->title }}">
                     </div>
                     @endif
 
@@ -209,46 +280,56 @@
                                 <iframe src="{{ $property->map_link }}" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                             @endif
                         </div>
-                    @else
-                        <h4 class="detail-section-title">Location</h4>
-                        <div class="mb-4 rounded overflow-hidden border">
-                             <!-- Placeholder for Google Map if no link provided -->
-                             <div style="height: 400px; background: #eee; display: flex; align-items: center; justify-content: center;">
-                                <span class="text-muted">Interactive Map Placeholder</span>
-                             </div>
-                        </div>
                     @endif
                 </div>
             </div>
 
             <!-- Right Side: Sidebar (Ref Image 1 details) -->
+            @php
+                // Prefer the explicitly-selected property company; otherwise
+                // fall back to the creator's company (legacy behavior).
+                $sellerCompany = $property->company ?? optional($property->user)->company;
+                $useCompany    = (bool) $property->company;
+
+                $sellerName  = $useCompany ? $sellerCompany->name  : ($property->user->name  ?? 'DProperty Agent');
+                $sellerLogo  = $sellerCompany && $sellerCompany->logo ? asset($sellerCompany->logo) : null;
+                $sellerPhone = $useCompany ? ($sellerCompany->phone ?? $property->user->phone ?? '') : ($property->user->phone ?? '');
+                $sellerEmail = $useCompany ? ($sellerCompany->email ?? $property->user->email ?? '') : ($property->user->email ?? '');
+                $sellerBadge = $useCompany ? 'VERIFIED COMPANY' : 'VERIFIED SELLER';
+                $sellerSub   = $useCompany
+                    ? ($sellerCompany->address ?? null)
+                    : 'Agent ID: ' . ($property->user->agent_id ?? 'N/A');
+                $phoneMasked = $sellerPhone ? substr($sellerPhone, 0, 5) . 'XXXXXX' : '01XXXXXXXXX';
+            @endphp
             <div class="col-lg-4">
                 <div class="details-sidebar">
                     <div class="seller-profile">
-                        @if($property->user && $property->user->company && $property->user->company->logo)
-                            <img src="{{ asset($property->user->company->logo) }}" class="seller-logo" alt="{{ $property->user->company->name }}">
+                        @if($sellerLogo)
+                            <img src="{{ $sellerLogo }}" class="seller-logo" alt="{{ $sellerName }}">
                         @else
                             <div class="seller-logo d-flex align-items-center justify-content-center bg-light">
                                 <i class="fas fa-building text-muted"></i>
                             </div>
                         @endif
                         <div class="seller-info">
-                            <h4>{{ $property->user->name ?? 'DProperty Agent' }}</h4>
+                            <h4>{{ $sellerName }}</h4>
                             <div class="verified-badge">
-                                <i class="fas fa-check-circle"></i> VERIFIED SELLER
+                                <i class="fas fa-check-circle"></i> {{ $sellerBadge }}
                             </div>
-                            <p class="text-muted small mt-1">Agent ID: {{ $property->user->agent_id ?? 'N/A' }}</p>
+                            @if($sellerSub)
+                                <p class="text-muted small mt-1">{{ $sellerSub }}</p>
+                            @endif
                         </div>
                     </div>
 
                     <div class="contact-actions">
-                        <button class="contact-btn btn-phone" id="showPhoneBtn">
-                            <i class="fas fa-phone-alt"></i> {{ substr($property->user->phone ?? '01XXXXXXXXX', 0, 5) }}XXXXXX
+                        <button class="contact-btn btn-phone" id="showPhoneBtn" data-full-phone="{{ $sellerPhone }}">
+                            <i class="fas fa-phone-alt"></i> {{ $phoneMasked }}
                         </button>
-                        <a href="mailto:{{ $property->user->email ?? '#' }}" class="contact-btn btn-chat">
-                            <i class="fas fa-envelope"></i> Email Seller
+                        <a href="mailto:{{ $sellerEmail ?: '#' }}" class="contact-btn btn-chat">
+                            <i class="fas fa-envelope"></i> Email {{ $useCompany ? 'Company' : 'Seller' }}
                         </a>
-                        <a href="https://wa.me/{{ $property->user->phone ?? '' }}" target="_blank" class="contact-btn btn-whatsapp">
+                        <a href="https://wa.me/{{ $sellerPhone }}" target="_blank" class="contact-btn btn-whatsapp">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </a>
                     </div>
@@ -312,10 +393,10 @@
                             <div class="swiper card-inner-slider">
                                 <div class="swiper-wrapper">
                                     @if($rp->feature_image)
-                                        <div class="swiper-slide"><img src="{{ asset($rp->feature_image) }}" alt="{{ $rp->title }}"></div>
+                                        <div class="swiper-slide"><img loading="lazy" src="{{ asset($rp->feature_image) }}" alt="{{ $rp->title }}"></div>
                                     @endif
                                     @foreach($gallery as $img)
-                                        <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $rp->title }}"></div>
+                                        <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $rp->title }}"></div>
                                     @endforeach
                                     @if(!$rp->feature_image && count($gallery) == 0)
                                         <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
@@ -339,11 +420,7 @@
                                 <div class="detail-item"><span class="info-label">Type:</span> {{ $rp->is_furnished }}</div>
                             </div>
                         </div>
-                        <div class="card-footer-global">
-                            <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $rp->bedrooms }} Bed</div>
-                            <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $rp->bathrooms }} Bath</div>
-                            <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $rp->area }} SFT</div>
-                        </div>
+                        @include('component._card_footer', ['p' => $rp])
                     </div>
                 </div>
                 @endforeach
@@ -356,19 +433,19 @@
 <!-- Mobile Fixed Bottom Agent Bar -->
 <div class="mobile-agent-bar d-lg-none">
     <div class="mobile-agent-info">
-        @if($property->user && $property->user->company && $property->user->company->logo)
-            <img src="{{ asset($property->user->company->logo) }}" class="mobile-agent-logo" alt="Agent">
+        @if($sellerLogo)
+            <img src="{{ $sellerLogo }}" class="mobile-agent-logo" alt="{{ $sellerName }}">
         @else
             <div class="mobile-agent-logo d-flex align-items-center justify-content-center bg-light">
                 <i class="fas fa-building text-muted"></i>
             </div>
         @endif
-        <span class="mobile-agent-name">{{ $property->user->name ?? 'DProperty Agent' }}</span>
+        <span class="mobile-agent-name">{{ $sellerName }}</span>
     </div>
     <div class="mobile-agent-actions">
-        <a href="mailto:{{ $property->user->email ?? '#' }}" class="mobile-action-btn btn-email-m"><i class="fas fa-envelope"></i></a>
-        <a href="https://wa.me/{{ $property->user->phone ?? '' }}" target="_blank" class="mobile-action-btn btn-wa-m"><i class="fab fa-whatsapp"></i></a>
-        <a href="tel:{{ $property->user->phone ?? '' }}" class="mobile-action-btn btn-phone-m"><i class="fas fa-phone-alt"></i></a>
+        <a href="mailto:{{ $sellerEmail ?: '#' }}" class="mobile-action-btn btn-email-m"><i class="fas fa-envelope"></i></a>
+        <a href="https://wa.me/{{ $sellerPhone }}" target="_blank" class="mobile-action-btn btn-wa-m"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:{{ $sellerPhone }}" class="mobile-action-btn btn-phone-m"><i class="fas fa-phone-alt"></i></a>
     </div>
 </div>
 @endsection
@@ -411,10 +488,13 @@
 
         // Phone Reveal Logic
         const phoneBtn = document.getElementById('showPhoneBtn');
-        phoneBtn.addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-phone-alt"></i> {{ $property->user->phone ?? "Private Number" }}';
-            this.classList.add('bg-light');
-        });
+        if (phoneBtn) {
+            phoneBtn.addEventListener('click', function() {
+                const phone = this.dataset.fullPhone || 'Private Number';
+                this.innerHTML = '<i class="fas fa-phone-alt"></i> ' + phone;
+                this.classList.add('bg-light');
+            });
+        }
     });
 </script>
 @endpush

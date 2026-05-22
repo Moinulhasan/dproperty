@@ -1,7 +1,7 @@
 <header class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
     <div class="container">
         <a class="navbar-brand fw-bold text-dark" href="{{url('/')}}">
-            <img src="{{$settings->logo??asset('images/logo_main.png')}}" alt="DProperty Logo" height="40" class="me-2 headerLogo">
+            <img src="{{$settings->logo??asset('images/logo_main.png')}}" alt="DProperty — Real Estate in Bangladesh" height="40" class="me-2 headerLogo">
         </a>
 
         <div class="d-flex align-items-center">
@@ -48,7 +48,7 @@
        <div>
            <div class="mobile-nav-header">
                <a href="{{url('/')}}">
-                   <img src="{{asset('images/logo_main.png')}}" alt="DProperty" height="25" class="headerLogo">
+                   <img src="{{$settings->logo ?? asset('images/logo_main.png')}}" alt="DProperty — Real Estate in Bangladesh" height="25" class="headerLogo">
                </a>
                <button class="mobile-nav-close" id="mobileNavClose">
                    <i class="bi bi-x"></i>

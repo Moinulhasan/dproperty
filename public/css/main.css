@@ -158,6 +158,20 @@ body {
     z-index: 10;
 }
 
+/* Mid-desktop guard: shorter hero windows could let the vertically-centered
+   search box extend above the hero and overlap the fixed nav. Anchor to the
+   bottom of the hero in that range so the top edge always stays inside. */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .hero-slide {
+        min-height: 60vh;
+    }
+    .search-section-wrapper {
+        top: auto;
+        bottom: 30px;
+        transform: none;
+    }
+}
+
 .search-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -553,12 +567,21 @@ select.select2-location {
     min-width: 300px !important;
 }
 
+/* Constrain the property-type / location dropdown so a long list scrolls
+   instead of pushing the dropdown off-screen. Tuned to ~6 rows. */
+.premium-search-dropdown .select2-results__options {
+    max-height: 260px !important;
+    overflow-y: auto !important;
+}
+
 /* Mobile Responsiveness for Premium Search */
 @media (max-width: 991px) {
     .search-section-wrapper {
         padding: 0 10px;
-        top: 65%;
-        /* Move it down slightly more for better visibility on mobile */
+        top: 10px;
+        bottom: auto;
+        transform: none;
+        /* Anchor to the very top of the hero, ~10px below the fixed nav. */
     }
 
     .search-container {
@@ -958,17 +981,15 @@ select.select2-location {
 
 @media (max-width: 850px) {
     .search-section-wrapper {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
+        position: absolute;
+        top: 10px;
+        left: 0;
+        right: 0;
         transform: none;
         z-index: 100 !important;
         padding: 0 15px;
-        margin-top: -80px;
-        /* Pull it up to overlap the slider */
-        margin-bottom: 40px;
-        /* Push the next section down */
+        margin-top: 0;
+        margin-bottom: 0;
         overflow: visible !important;
     }
 
@@ -1006,8 +1027,9 @@ select.select2-location {
 
 @media (max-width: 576px) {
     .search-section-wrapper {
-        margin-top: -400px;
-        /* Adjusted to ensure a safe gap from the fixed header */
+        margin-top: 0;
+        top: 10px;
+        /* Sits ~10px below the fixed nav, anchored to top of the hero. */
     }
 
     .compact-search-grid {
@@ -2119,7 +2141,7 @@ html {
 }
 
 .scrollable-list {
-    max-height: 450px;
+    max-height: 240px;
     overflow-y: auto;
     padding: 5px 0 !important;
 }

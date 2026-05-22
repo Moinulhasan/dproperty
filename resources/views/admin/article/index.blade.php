@@ -11,6 +11,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>Order</th>
                     <th>Image</th>
                     <th>Title</th>
                     <th>Status</th>
@@ -22,6 +23,7 @@
             <tbody class="table-border-bottom-0">
                 @forelse($articles as $article)
                 <tr>
+                    <td><span class="badge bg-label-secondary">{{ $article->order }}</span></td>
                     <td>
                         @if($article->image)
                             <img src="{{ asset($article->image) }}" alt="Article" class="rounded" width="50">
@@ -55,7 +57,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center">No articles found.</td>
+                    <td colspan="7" class="text-center">No articles found.</td>
                 </tr>
                 @endforelse
             </tbody>

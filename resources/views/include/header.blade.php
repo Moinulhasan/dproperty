@@ -9,16 +9,21 @@
 <meta name="robots" content="index, follow">
 
 <!-- Open Graph Meta Tags -->
+<meta property="og:site_name" content="DProperty">
 <meta property="og:title" content="DProperty - Professional Property Solutions">
 <meta property="og:description" content="{{$settings->site_description??'Leading property solutions company in Bangladesh offering comprehensive real estate services.'}}">
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{env('APP_URL')}}">
-<meta property="og:image" content="{{$settings->favicon??asset('images/logo_main.png')}}">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:image" content="{{ ($settings->og_image ?? null) ? asset($settings->og_image) : ($settings->logo ?? asset('images/logo_main.png')) }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_BD">
 
 <!-- Twitter Card Meta Tags -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="DProperty - Professional Property Solutions">
 <meta name="twitter:description" content="{{$settings->site_description??'Leading property solutions company in Bangladesh offering comprehensive real estate services.'}}">
+<meta name="twitter:image" content="{{ ($settings->og_image ?? null) ? asset($settings->og_image) : ($settings->logo ?? asset('images/logo_main.png')) }}">
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="{{$settings->favicon??asset('images/logo_main.png')}}">

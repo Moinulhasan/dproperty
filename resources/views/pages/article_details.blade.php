@@ -12,6 +12,31 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="{{ url()->current() }}" />
     <meta name="twitter:card" content="summary_large_image">
+
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home',           'url' => route('home')],
+        ['name' => 'Blog',           'url' => route('blog')],
+        ['name' => $article->title,  'url' => url()->current()],
+    ]])
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{{ addslashes($article->title) }}",
+        "datePublished": "{{ $article->created_at->toAtomString() }}",
+        "dateModified": "{{ $article->updated_at->toAtomString() }}",
+        @if($article->image)
+        "image": ["{{ asset($article->image) }}"],
+        @endif
+        "mainEntityOfPage": "{{ url()->current() }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "DProperty",
+            "logo": { "@type": "ImageObject", "url": "{{ asset(($settings->logo ?? 'images/logo_main.png')) }}" }
+        }
+    }
+    </script>
 @endsection
 
 @section('content')
@@ -91,7 +116,7 @@
                                         <div class="recent-article-item d-flex gap-3 mb-4">
                                             <div class="flex-shrink-0">
                                                 @if($recent->image)
-                                                    <img src="{{ asset($recent->image) }}" alt="{{ $recent->title }}" class="rounded-3 shadow-sm" style="width: 70px; height: 70px; object-fit: cover;">
+                                                    <img loading="lazy" src="{{ asset($recent->image) }}" alt="{{ $recent->title }}" class="rounded-3 shadow-sm" style="width: 70px; height: 70px; object-fit: cover;">
                                                 @else
                                                     <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="{{ $recent->title }}" class="rounded-3 shadow-sm" style="width: 70px; height: 70px; object-fit: cover;">
                                                 @endif

@@ -55,6 +55,21 @@
                             </div>
                         </div>
 
+                        @if(auth()->user()->hasRole('Super Admin'))
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="property-company">Company</label>
+                                    <select class="form-select" id="property-company" name="company_id">
+                                        <option value="">Select Company</option>
+                                        @foreach($companies as $company)
+                                            <option value="{{ $company->id }}" {{ old('company_id', $property->company_id) == $company->id ? 'selected' : '' }}>{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('company_id')<div class="text-danger mt-1">{{ $message }}</div>@enderror
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- Description -->
                         <div class="divider divider-primary">
                             <div class="divider-text">Property Description</div>

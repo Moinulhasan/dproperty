@@ -66,11 +66,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer-global">
-                                    <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
-                                    <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
-                                    <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
-                                </div>
+                                @include('component._card_footer', ['p' => $property])
                             </div>
                         </div>
                     @endforeach

@@ -86,10 +86,10 @@
                                         <div class="d-none d-lg-block">
                                             <select class="form-select select2-property-type" name="property_category_id[]" id="propertyTypeSelect" multiple="multiple">
                                                 @foreach($categories as $parent)
-                                                    <option value="{{ $parent->id }}" data-level="0">{{ $parent->name }} (All)</option>
+                                                    <option value="{{ $parent->id }}" data-level="0" data-parent-id="{{ $parent->id }}">{{ $parent->name }} (All)</option>
                                                     @if(isset($parent->children) && count($parent->children) > 0)
                                                         @foreach($parent->children as $child)
-                                                            <option value="{{ $child->id }}" data-level="1">&nbsp;&nbsp;&nbsp;- {{ $child->name }}</option>
+                                                            <option value="{{ $child->id }}" data-level="1" data-parent="{{ $parent->id }}">&nbsp;&nbsp;&nbsp;- {{ $child->name }}</option>
                                                         @endforeach
                                                     @endif
                                                 @endforeach
@@ -112,18 +112,18 @@
                                                 </div>
                                                 <div class="dropdown-body-custom scrollable-list p-0">
                                                     <div class="property-type-list">
-                                                        <div class="type-item all-types d-flex align-items-center justify-content-between" data-value="all" data-text="All Types">
+                                                        {{-- <div class="type-item all-types d-flex align-items-center justify-content-between" data-value="all" data-text="All Types">
                                                             <span>All Types</span>
                                                             <i class="fas fa-check check-icon"></i>
-                                                        </div>
+                                                        </div> --}}
                                                         @foreach($categories as $parent)
-                                                            <div class="type-item parent d-flex align-items-center justify-content-between" data-value="{{ $parent->id }}" data-text="{{ $parent->name }}">
+                                                            <div class="type-item parent d-flex align-items-center justify-content-between" data-value="{{ $parent->id }}" data-text="{{ $parent->name }}" data-parent-id="{{ $parent->id }}">
                                                                 <span>{{ $parent->name }}</span>
                                                                 <i class="fas fa-check check-icon"></i>
                                                             </div>
                                                             @if(isset($parent->children) && count($parent->children) > 0)
                                                                 @foreach($parent->children as $child)
-                                                                    <div class="type-item child d-flex align-items-center justify-content-between" data-value="{{ $child->id }}" data-text="{{ $child->name }}">
+                                                                    <div class="type-item child d-flex align-items-center justify-content-between" data-value="{{ $child->id }}" data-text="{{ $child->name }}" data-parent="{{ $parent->id }}">
                                                                         <span>- {{ $child->name }}</span>
                                                                         <i class="fas fa-check check-icon"></i>
                                                                     </div>
@@ -301,6 +301,17 @@
                 dropdownCssClass: 'premium-search-dropdown'
             };
 
+            // Add custom CSS to hide native choices for property type to prevent layout stretching
+            if (!$('style#select2-property-type-fixes').length) {
+                $('head').append(`
+                    <style id="select2-property-type-fixes">
+                        .property-type-select2 .select2-selection__choice {
+                            display: none !important;
+                        }
+                    </style>
+                `);
+            }
+
             $('.select2-location, .select2-property-type').each(function() {
                 const $el = $(this);
                 const isPropertyType = $el.hasClass('select2-property-type');
@@ -308,11 +319,112 @@
                 $el.select2({
                     ...baseOptions,
                     placeholder: $el.hasClass('select2-location') ? 'All Locations' : 'Select Type',
-                    dropdownParent: $el.closest('.search-card')
+                    dropdownParent: $el.closest('.search-card'),
+                    closeOnSelect: !isPropertyType
                 });
 
                 // Custom "Select All" for Select2 Property Type
                 if (isPropertyType) {
+                    $el.next('.select2-container').addClass('property-type-select2');
+
+                    // Parent <-> child cascade. Selecting a parent option (data-level="0")
+                    // auto-selects all its children (data-parent matches parent's id).
+                    // Deselecting a parent deselects its children. Toggling a child
+                    // keeps the parent in sync (parent selected only when ALL children are).
+                    let __ptPrev = new Set(($el.val() || []).map(String));
+                    let __ptCascading = false;
+                    $el.on('change.cascade', function() {
+                        if (__ptCascading) return;
+                        __ptCascading = true;
+
+                        const curr = new Set(($el.val() || []).map(String));
+                        const added = [...curr].filter(v => !__ptPrev.has(v));
+                        const removed = [...__ptPrev].filter(v => !curr.has(v));
+                        let mutated = false;
+
+                        const setOpt = (opt, on) => {
+                            if (opt.selected !== on) {
+                                opt.selected = on;
+                                if (on) curr.add(String(opt.value)); else curr.delete(String(opt.value));
+                                mutated = true;
+                            }
+                        };
+
+                        added.forEach(id => {
+                            const $opt = $el.find('option[value="' + id + '"]');
+                            const level = $opt.attr('data-level');
+                            if (level === '0') {
+                                const pid = $opt.attr('data-parent-id') || id;
+                                $el.find('option[data-parent="' + pid + '"]').each(function() { setOpt(this, true); });
+                            } else if (level === '1') {
+                                const pid = $opt.attr('data-parent');
+                                const $parent = $el.find('option[data-parent-id="' + pid + '"]');
+                                const $siblings = $el.find('option[data-parent="' + pid + '"]');
+                                const allOn = $siblings.toArray().every(o => o.selected);
+                                if (allOn && $parent.length) setOpt($parent[0], true);
+                            }
+                        });
+
+                        removed.forEach(id => {
+                            const $opt = $el.find('option[value="' + id + '"]');
+                            const level = $opt.attr('data-level');
+                            if (level === '0') {
+                                const pid = $opt.attr('data-parent-id') || id;
+                                $el.find('option[data-parent="' + pid + '"]').each(function() { setOpt(this, false); });
+                            } else if (level === '1') {
+                                const pid = $opt.attr('data-parent');
+                                const $parent = $el.find('option[data-parent-id="' + pid + '"]');
+                                if ($parent.length && $parent[0].selected) setOpt($parent[0], false);
+                            }
+                        });
+
+                        __ptPrev = new Set([...curr].map(String));
+                        __ptCascading = false;
+                        if (mutated) $el.trigger('change');
+                    });
+
+                    $el.on('change', function() {
+                        setTimeout(function() {
+                            const selectedOptions = $el.val() || [];
+                            const $container = $el.next('.select2-container');
+                            const $rendered = $container.find('.select2-selection__rendered');
+                            
+                            // Remove any existing custom summary text
+                            $rendered.find('.custom-summary-text').remove();
+                            
+                            if (selectedOptions.length > 0) {
+                                // We don't need to hide .select2-selection__choice via JS anymore (CSS does it)
+                                
+                                // Hide the inline search field placeholder to prevent overlap
+                                $rendered.find('.select2-search__field').attr('placeholder', '').css('width', '0');
+                                
+                                // Determine the summary text
+                                const totalOptions = $el.find('option').length;
+                                let summaryText = '';
+                                
+                                if (selectedOptions.length === 1) {
+                                    // If only 1, show its name cleanly
+                                    summaryText = $el.find('option:selected').text().replace(/&nbsp;|-/g, '').trim();
+                                } else if (selectedOptions.length === totalOptions) {
+                                    summaryText = 'All types selected';
+                                } else {
+                                    summaryText = selectedOptions.length + ' types selected';
+                                }
+                                
+                                // Add our custom summary text
+                                const summaryHTML = `
+                                    <li class="custom-summary-text" style="list-style: none; display: flex; align-items: center; padding-left: 8px; margin-top: 6px; color: #6c757d; font-size: 14px;">
+                                        ${summaryText}
+                                    </li>
+                                `;
+                                $rendered.prepend(summaryHTML);
+                            } else {
+                                // Restore placeholder if empty
+                                $rendered.find('.select2-search__field').attr('placeholder', 'Select Type').css('width', '');
+                            }
+                        }, 0);
+                    });
+
                     $el.on('select2:open', function() {
                         const $dropdown = $('.select2-dropdown--below, .select2-dropdown--above');
                         if (!$dropdown.find('.select2-all-actions').length) {
@@ -327,12 +439,10 @@
                             $dropdown.find('.btn-select-all-s2').on('click', function() {
                                 $el.find('option').prop('selected', 'selected');
                                 $el.trigger('change');
-                                $el.select2('close');
                             });
                             
                             $dropdown.find('.btn-deselect-all-s2').on('click', function() {
                                 $el.val(null).trigger('change');
-                                $el.select2('close');
                             });
                         }
                     });
@@ -525,10 +635,30 @@
             const btnClear = document.getElementById('btnClearTypes');
             const btnApply = document.getElementById('btnApplyTypes');
 
+            // Helper: keep parent <-> children in sync inside the mobile picker.
+            function cascadeMobileType(clicked, becameSelected) {
+                if (clicked.classList.contains('parent')) {
+                    const pid = clicked.getAttribute('data-parent-id') || clicked.getAttribute('data-value');
+                    propertyTypeDropdown.querySelectorAll('.type-item.child[data-parent="' + pid + '"]').forEach(c => {
+                        c.classList.toggle('selected', becameSelected);
+                    });
+                } else if (clicked.classList.contains('child')) {
+                    const pid = clicked.getAttribute('data-parent');
+                    if (!pid) return;
+                    const parent = propertyTypeDropdown.querySelector('.type-item.parent[data-parent-id="' + pid + '"]');
+                    if (!parent) return;
+                    const siblings = propertyTypeDropdown.querySelectorAll('.type-item.child[data-parent="' + pid + '"]');
+                    const allSelected = Array.from(siblings).every(s => s.classList.contains('selected'));
+                    parent.classList.toggle('selected', allSelected);
+                }
+            }
+
             typeItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.stopPropagation();
                     this.classList.toggle('selected');
+                    const becameSelected = this.classList.contains('selected');
+                    cascadeMobileType(this, becameSelected);
                     if (allTypesItem) allTypesItem.classList.remove('selected');
                     updatePropertyTypeToggle();
                 });

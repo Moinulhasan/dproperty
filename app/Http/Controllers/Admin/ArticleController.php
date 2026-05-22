@@ -12,7 +12,9 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
+        $articles = Article::orderBy('order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('admin.article.index', compact('articles'));
     }
 
@@ -29,6 +31,7 @@ class ArticleController extends Controller
             'content' => 'required',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'order' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -81,6 +84,7 @@ class ArticleController extends Controller
             'content' => 'required',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'order' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {

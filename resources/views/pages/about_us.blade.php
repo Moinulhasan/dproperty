@@ -1,8 +1,21 @@
 @extends('master')
 
-@section('content')
+@section('title', 'About Us — DProperty')
+@section('meta_description', 'Learn about DProperty, our mission, and how we help thousands of clients buy, sell, and rent properties across Bangladesh with confidence.')
 
-<div class="pt-5 mt-4"></div> <!-- Spacer for fixed navbar -->
+@section('content')
+<div class="service-page-hero">
+    <div class="container px-md-5 px-3">
+        <nav aria-label="breadcrumb" class="breadcrumb-listing mb-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">About Us</li>
+            </ol>
+        </nav>
+        <h1>About Us</h1>
+        <p class="mb-0 text-white-50">Who we are, what we believe in, and how we help you find the right property.</p>
+    </div>
+</div>
 
 <section class="py-5 bg-white">
     <div class="container py-4">
@@ -22,7 +35,7 @@
                         </div>
                         @if($about->image)
                         <div class="col-lg-6 text-center">
-                            <img src="{{ asset($about->image) }}" class="img-fluid" alt="{{ $about->title }}" style="max-height: 450px; object-fit: contain;">
+                            <img loading="lazy" src="{{ asset($about->image) }}" class="img-fluid" alt="{{ $about->title }}" style="max-height: 450px; object-fit: contain;">
                         </div>
                         @endif
                     </div>
@@ -41,6 +54,6 @@
 </section>
 
 <!-- What People Think About Us -->
-@include('component.testimony')
+{{-- @include('component.testimony') --}}
 
 @endsection

@@ -5,11 +5,11 @@
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold mb-3">
                     <a href="{{url('/')}}">
-                        <img src="{{$settings->logo??asset('images/logo_main.png')}}" alt="logo" class="mb-2"
+                        <img src="{{$settings->logo??asset('images/logo_main.png')}}" alt="DProperty — Real Estate in Bangladesh" class="mb-2"
                              style="height: 40px;">
                     </a>
                 </h5>
-                <p class="text-light mb-3">{{$settings->site_description}}</p>
+                <p class="text-light mb-3" style="text-align: justify;">{{$settings->site_description}}</p>
                 <!-- Social Media Icons -->
                 <div class="d-flex gap-2 mt-3 footer-social-icons">
                     @if($settings->facebook)

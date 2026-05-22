@@ -9,17 +9,17 @@
     data-template="horizontal-menu-template-no-customizer">
 <head>
     <meta charset="utf-8"/>
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#006A50"/>
 
     <title>@yield('title', 'Dproperty')</title>
 
     <meta name="description" content="@yield('meta_description', 'Your premium real estate partner')"/>
+    <link rel="canonical" href="@yield('canonical_url', url()->current())"/>
     @yield('seo')
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon/favicon.ico')}}"/>
+    <link rel="icon" type="image/png" href="{{$settings->favicon ?? asset('images/logo_main.png')}}"/>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com"/>

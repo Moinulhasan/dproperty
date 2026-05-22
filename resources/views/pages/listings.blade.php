@@ -1,5 +1,21 @@
 @extends('master')
 
+@section('title', $title . ' — DProperty')
+@section('meta_description', 'Browse ' . strtolower($title) . ' on DProperty. Verified apartments, houses, and commercial spaces across Bangladesh with photos, floor plans, and pricing.')
+@php
+    // Canonical without filter query string so filtered variants
+    // don't fragment ranking signals.
+    $canonicalListing = url()->current();
+@endphp
+@section('canonical_url', $canonicalListing)
+
+@section('seo')
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home',  'url' => route('home')],
+        ['name' => $title,  'url' => $canonicalListing],
+    ]])
+@endsection
+
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/listings.css') }}">
     <link rel="stylesheet" href="{{ asset('css/property_cards.css') }}">
@@ -140,7 +156,7 @@
                             <input type="hidden" name="property_category_id" id="propertyTypeMobileValue" class="mobile-input" value="{{ request('property_category_id') }}">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-6">
+                    <div class="col-lg-1 col-md-6">
                         <label class="filter-label">Bedrooms</label>
                         <select name="bedrooms" class="filter-control">
                             <option value="any">Any</option>
@@ -152,15 +168,22 @@
                         </select>
                     </div>
                     <div class="col-lg-2 col-md-6">
+                        <label class="filter-label">Property Size (SFT)</label>
+                        <div class="d-flex gap-1">
+                            <input type="number" name="min_area" class="form-control filter-control" placeholder="Min" value="{{ request('min_area') }}">
+                            <input type="number" name="max_area" class="form-control filter-control" placeholder="Max" value="{{ request('max_area') }}">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
                         <label class="filter-label">Price Range</label>
                         <div class="d-flex gap-1">
                             <input type="number" name="min_price" class="form-control filter-control" placeholder="Min" value="{{ request('min_price') }}">
                             <input type="number" name="max_price" class="form-control filter-control" placeholder="Max" value="{{ request('max_price') }}">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-12">
+                    <div class="col-lg-2 col-md-12">
                         <button type="submit" class="btn-filter-apply py-3 w-100">
-                            <i class="fas fa-search me-2"></i> Find properties
+                            <i class="fas fa-search me-2"></i> Find
                         </button>
                     </div>
                 </form>
@@ -214,13 +237,13 @@
                     <div class="swiper card-inner-slider">
                         <div class="swiper-wrapper">
                             @if($property->feature_image)
-                                <div class="swiper-slide"><img src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->sub_route ?: $property->route }}" title="{{ $property->title }}"></div>
+                                <div class="swiper-slide"><img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->sub_route ?: $property->route }}" title="{{ $property->title }}"></div>
                             @endif
                             @php
                                 $gallery = $property->images ?? [];
                             @endphp
                             @foreach($gallery as $img)
-                                <div class="swiper-slide"><img src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
+                                <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
                             @endforeach
                             @if(!$property->feature_image && count($gallery) == 0)
                                 <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
@@ -245,11 +268,7 @@
                         <div class="detail-item"><span class="info-label">Type:</span> {{ $property->is_furnished }}</div>
                     </div>
                 </div>
-                <div class="card-footer-global">
-                    <div class="feature-item-global"><i class="fas fa-bed"></i> {{ $property->bedrooms }} Bed</div>
-                    <div class="feature-item-global"><i class="fas fa-bath"></i> {{ $property->bathrooms }} Bath</div>
-                    <div class="feature-item-global"><i class="fas fa-ruler-combined"></i> {{ $property->area }} SFT</div>
-                </div>
+                @include('component._card_footer', ['p' => $property])
             </div>
         </div>
         @empty

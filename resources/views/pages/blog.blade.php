@@ -3,70 +3,18 @@
 @section('title', 'Expert Real Estate Insights & News | DProperty Blog')
 @section('meta_description', 'Discover the latest trends, expert tips, and comprehensive guides on real estate in Bangladesh. Stay informed with DProperty.')
 
+@section('seo')
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home', 'url' => route('home')],
+        ['name' => 'Blog', 'url' => route('blog')],
+    ]])
+@endsection
+
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/articles.css') }}">
 <style>
-    .blog-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #004d3a 100%);
-        padding: 100px 0 80px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .blog-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('https://www.transparenttextures.com/patterns/cubes.png');
-        opacity: 0.1;
-    }
-
-    .blog-header h1 {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: #fff;
-        margin-bottom: 20px;
-        letter-spacing: -1px;
-    }
-
-    .blog-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.2rem;
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-    .premium-breadcrumb-wrapper {
-        margin-top: -30px;
-        position: relative;
-        z-index: 10;
-    }
-
-    .blog-breadcrumb {
-        background: #fff;
-        padding: 12px 30px;
-        border-radius: 50px;
-        display: inline-flex;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border: 1px solid #f0f0f0;
-    }
-
-    .blog-breadcrumb .breadcrumb-item a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .blog-breadcrumb .breadcrumb-item.active {
-        color: #666;
-        font-weight: 500;
-    }
-
     .articles-grid {
-        padding: 80px 0;
+        padding: 40px 0 80px;
         background-color: #fdfdfd;
     }
 
@@ -95,39 +43,20 @@
         background-color: #f8f9fa;
         color: var(--primary-color);
     }
-
-    @media (max-width: 768px) {
-        .blog-header {
-            padding: 80px 0 60px;
-        }
-        .blog-header h1 {
-            font-size: 2.5rem;
-        }
-        .blog-header p {
-            font-size: 1rem;
-        }
-    }
 </style>
 @endsection
 
 @section('content')
-<!-- Blog Header -->
-<div class="blog-header text-center">
-    <div class="container">
-        <h1>Our Blog</h1>
-        <p>Insights, trends, and expert advice to help you navigate the real estate market with confidence.</p>
-    </div>
-</div>
-
-<!-- Breadcrumb -->
-<div class="premium-breadcrumb-wrapper text-center">
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb blog-breadcrumb">
+<div class="service-page-hero">
+    <div class="container px-md-5 px-3">
+        <nav aria-label="breadcrumb" class="breadcrumb-listing mb-2">
+            <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Blog</li>
             </ol>
         </nav>
+        <h1>Our Blog</h1>
+        <p class="mb-0 text-white-50">Insights, trends, and expert advice to help you navigate the real estate market with confidence.</p>
     </div>
 </div>
 
@@ -142,7 +71,7 @@
                         <span class="article-badge">{{ $article->meta_title ?? 'Real Estate' }}</span>
                         <a href="{{ route('article-details', $article->slug) }}">
                             @if($article->image)
-                                <img src="{{ asset($article->image) }}" alt="{{ $article->title }}" class="img-fluid">
+                                <img loading="lazy" src="{{ asset($article->image) }}" alt="{{ $article->title }}" class="img-fluid">
                             @else
                                 <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="{{ $article->title }}" class="img-fluid">
                             @endif

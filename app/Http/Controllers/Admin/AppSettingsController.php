@@ -25,6 +25,7 @@ class AppSettingsController extends Controller
             'site_google_map' => 'nullable|string|max:500',
             'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'og_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
            'contact_image' => 'nullable|mimes:jpeg,png,jpg,gif,svg,svg+xml|max:2048',
             'site_description' => 'nullable|string|max:500',
             'facebook_link' => 'nullable|url|max:255',
@@ -56,6 +57,12 @@ class AppSettingsController extends Controller
                 $faviconPath = $current ? ltrim(preg_replace('/^.*?favicons/', 'favicons', $current->favicon), '/') : null;
             }
 
+            if ($request->hasFile('og_image')) {
+                $ogImagePath = $request->file('og_image')->store('og_images', 'public');
+            } else {
+                $ogImagePath = $current ? ($current->og_image ?? null) : null;
+            }
+
             if ($request->hasFile('contact_image')) {
                 $contactPath = $request->file('contact_image')->store('contact_image', 'public');
             } else {
@@ -76,6 +83,7 @@ class AppSettingsController extends Controller
                 'pinterest' => $request->input('pinterest_link'),
                 'logo' => $logoPath,
                 'favicon' => $faviconPath,
+                'og_image' => $ogImagePath,
                 'contact_image' => $contactPath,
             ];
 

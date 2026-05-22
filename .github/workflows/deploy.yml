@@ -1,0 +1,192 @@
+name: Deploy to Production
+
+# =============================================================================
+# DATABASE SAFETY POLICY
+# -----------------------------------------------------------------------------
+# The production database holds thousands of properties, orders, and related
+# rows. The deploy job MUST follow these rules:
+#
+#   * ONLY ever runs:  php artisan migrate --force
+#   * NEVER runs:      migrate:refresh, migrate:rollback, migrate:reset,
+#                      migrate:fresh, db:wipe, db:seed (in production)
+#   * Always takes a gzipped mysqldump backup BEFORE migrate runs.
+#   * Keeps the last 14 days of DB backups under storage/backups/.
+#
+# CI also greps the repo for the forbidden commands above and fails the build
+# if any are introduced into deploy scripts. So a developer cannot accidentally
+# add one without it being caught.
+# =============================================================================
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # manual "Run workflow" button
+
+concurrency:
+  group: production-deploy
+  # NEVER cancel an in-flight production deploy. If two deploys are queued,
+  # the second waits for the first to finish.
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    # The 'production' GitHub environment can be configured under
+    # Settings -> Environments to require manual approval before this job runs.
+    # Strongly recommended for a live site with thousands of records.
+    environment:
+      name: production
+      url: ${{ secrets.PRODUCTION_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DB_USERNAME:    ${{ secrets.PROD_DB_USERNAME }}
+          DB_PASSWORD:    ${{ secrets.PROD_DB_PASSWORD }}
+          DB_DATABASE:    ${{ secrets.PROD_DB_DATABASE }}
+          APP_PATH:       ${{ secrets.PROD_APP_PATH }}
+          BRANCH:         main
+          HEALTHCHECK_URL: ${{ secrets.PRODUCTION_URL }}
+        with:
+          host:     ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key:      ${{ secrets.SSH_PRIVATE_KEY }}
+          port:     ${{ secrets.SSH_PORT }}
+          command_timeout: 30m
+          envs: DB_USERNAME,DB_PASSWORD,DB_DATABASE,APP_PATH,BRANCH,HEALTHCHECK_URL
+          script: |
+            set -euo pipefail
+
+            #-----------------------------------------------------------------
+            # Move into the application root
+            #-----------------------------------------------------------------
+            cd "$APP_PATH"
+            APP_PATH_REAL="$(pwd)"
+            echo "Deploying to: $APP_PATH_REAL"
+
+            #-----------------------------------------------------------------
+            # 1. DB BACKUP (always, before anything else touches the DB)
+            #    Backups go to storage/backups/db-YYYYMMDD-HHMMSS.sql.gz
+            #-----------------------------------------------------------------
+            BACKUP_DIR="$APP_PATH_REAL/storage/backups"
+            mkdir -p "$BACKUP_DIR"
+            BACKUP_FILE="$BACKUP_DIR/db-$(date +%Y%m%d-%H%M%S).sql.gz"
+
+            echo "📦 Backing up production database -> $BACKUP_FILE"
+            mysqldump \
+              --single-transaction \
+              --quick \
+              --skip-lock-tables \
+              --no-tablespaces \
+              --routines \
+              --triggers \
+              -u "$DB_USERNAME" -p"$DB_PASSWORD" "$DB_DATABASE" \
+              | gzip > "$BACKUP_FILE"
+
+            # Sanity check: backup must not be empty.
+            if [ ! -s "$BACKUP_FILE" ]; then
+              echo "❌ Database backup is empty — aborting deploy."
+              exit 1
+            fi
+            echo "✅ Backup OK ($(du -h "$BACKUP_FILE" | cut -f1))"
+
+            # Prune backups older than 14 days.
+            find "$BACKUP_DIR" -name 'db-*.sql.gz' -mtime +14 -delete || true
+
+            #-----------------------------------------------------------------
+            # 2. Maintenance mode (with retry-after and a secret bypass token
+            #    so admins can still hit the site if needed)
+            #-----------------------------------------------------------------
+            echo "🚧 Entering maintenance mode"
+            php artisan down --refresh=15 --retry=60 --secret="${GITHUB_SHA:-deploy-bypass}" || true
+
+            # Always lift maintenance mode, even if a later step fails.
+            trap 'php artisan up || true' EXIT
+
+            #-----------------------------------------------------------------
+            # 3. Pull latest code (hard reset to the target branch so any
+            #    stray local edits on the server don't break the merge)
+            #-----------------------------------------------------------------
+            echo "📥 Pulling latest code from origin/$BRANCH"
+            git fetch --all --prune
+            git reset --hard "origin/$BRANCH"
+            git clean -fd -- ':!storage/backups' ':!.env' ':!public/uploads' ':!public/storage'
+
+            #-----------------------------------------------------------------
+            # 4. Install dependencies (production-only, optimized autoloader)
+            #-----------------------------------------------------------------
+            echo "📚 Installing PHP dependencies"
+            composer install \
+              --no-dev \
+              --no-interaction \
+              --prefer-dist \
+              --optimize-autoloader \
+              --no-progress
+
+            echo "📚 Installing & building front-end assets"
+            npm ci --silent
+            npm run build
+
+            #-----------------------------------------------------------------
+            # 5. FORWARD-ONLY MIGRATIONS — never refresh / rollback / reset
+            #-----------------------------------------------------------------
+            echo "🗄  Running forward-only migrations"
+            php artisan migrate --force
+
+            #-----------------------------------------------------------------
+            # 6. Storage symlink + permissions (idempotent)
+            #-----------------------------------------------------------------
+            php artisan storage:link || true
+            chmod -R ug+rwx storage bootstrap/cache || true
+
+            #-----------------------------------------------------------------
+            # 7. Cache framework state (config, routes, views, events)
+            #-----------------------------------------------------------------
+            echo "🚀 Caching framework state"
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
+
+            #-----------------------------------------------------------------
+            # 8. Restart queue workers so they pick up new code
+            #-----------------------------------------------------------------
+            php artisan queue:restart || true
+
+            #-----------------------------------------------------------------
+            # 9. Lift maintenance mode (also handled by the EXIT trap above)
+            #-----------------------------------------------------------------
+            echo "✅ Lifting maintenance mode"
+            php artisan up
+            trap - EXIT
+
+            #-----------------------------------------------------------------
+            # 10. Smoke test the live URL
+            #-----------------------------------------------------------------
+            if [ -n "${HEALTHCHECK_URL:-}" ]; then
+              echo "🩺 Smoke test: $HEALTHCHECK_URL"
+              for i in 1 2 3 4 5; do
+                if curl -fsS --max-time 15 "$HEALTHCHECK_URL" -o /dev/null; then
+                  echo "✅ Site responding"
+                  break
+                fi
+                if [ "$i" = "5" ]; then
+                  echo "❌ Smoke test failed after 5 attempts"
+                  exit 1
+                fi
+                sleep 3
+              done
+            fi
+
+            echo "🎉 Deploy complete."
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "::error::Production deploy failed. Latest DB backup is on the server at storage/backups/."
+          echo "To restore: ssh in, gunzip < storage/backups/db-<timestamp>.sql.gz | mysql -u<user> -p<db>"

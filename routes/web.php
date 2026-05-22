@@ -9,6 +9,7 @@ Route::get('privacy-policy', [HomePageController::class, 'privacy'])->name('priv
 Route::get('terms-of-use', [HomePageController::class, 'terms'])->name('terms-of-use');
 
 Route::get('site-map', [HomePageController::class, 'sitemap'])->name('site-map');
+Route::get('sitemap.xml', [HomePageController::class, 'sitemapXml'])->name('sitemap.xml');
 
 Route::get('property-details/{id}', [HomePageController::class, 'property_details'])->name('property-details');
 

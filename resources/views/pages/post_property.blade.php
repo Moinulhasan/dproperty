@@ -1,5 +1,15 @@
 @extends('master')
 
+@section('title', 'Post Your Property for Sale or Rent — DProperty')
+@section('meta_description', 'List your property with DProperty for free. Reach thousands of verified buyers and tenants across Bangladesh. Submit your details and our team will follow up shortly.')
+
+@section('seo')
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home',          'url' => route('home')],
+        ['name' => 'Post Property', 'url' => route('post-property')],
+    ]])
+@endsection
+
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/post-property.css') }}">
 @endsection

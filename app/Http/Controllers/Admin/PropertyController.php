@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Amenity;
+use App\Models\Company;
 use App\Models\Location;
 use App\Models\Property;
 use App\Models\PropertyDetail;
@@ -52,7 +53,7 @@ class PropertyController extends Controller
             $query->where('created_by', $user->id);
         }
 
-        $properties = $query->paginate(3)->withQueryString();
+        $properties = $query->paginate(20)->withQueryString();
         return view('admin.property.index', compact('properties'));
     }
 
@@ -62,7 +63,10 @@ class PropertyController extends Controller
         $locations = Location::where('status', 1)->orderBy('name')->get();
         $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
-        return view('admin.property.add', compact('amenities', 'locations', 'propertyDetails', 'categories'));
+        $companies = auth()->user()->hasRole('Super Admin')
+            ? Company::where('status', 'active')->orderBy('name')->get()
+            : collect();
+        return view('admin.property.add', compact('amenities', 'locations', 'propertyDetails', 'categories', 'companies'));
     }
 
     public function addPost(Request $request)
@@ -72,6 +76,7 @@ class PropertyController extends Controller
             'price' => 'required|numeric',
             'property_category_id' => 'required|exists:property_categories,id',
             'property_status' => 'required|string|in:Buy,Rent,Sell',
+            'company_id' => 'nullable|exists:companies,id',
             'route' => 'nullable|string',
             'sub_route' => 'nullable|string',
             'road' => 'nullable|string',
@@ -99,6 +104,13 @@ class PropertyController extends Controller
             $data['is_home_featured'] = $request->has('is_home_featured') ? 1 : 0;
             $data['is_location_featured'] = $request->has('is_location_featured') ? 1 : 0;
             $data['created_by'] = auth()->id();
+
+            // Super Admin picks the company from the dropdown; everyone else
+            // inherits it from their own user record.
+            $user = auth()->user();
+            $data['company_id'] = $user->hasRole('Super Admin')
+                ? ($request->filled('company_id') ? $request->company_id : null)
+                : $user->company_id;
 
             // Set old category and property_type strings for backward compatibility
             $categoryModel = \App\Models\PropertyCategory::with('parent')->find($request->property_category_id);
@@ -177,7 +189,10 @@ class PropertyController extends Controller
         $locations = Location::where('status', 1)->orderBy('name')->get();
         $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
-        return view('admin.property.edit', compact('property', 'amenities', 'locations', 'propertyDetails', 'categories'));
+        $companies = $user->hasRole('Super Admin')
+            ? Company::where('status', 'active')->orderBy('name')->get()
+            : collect();
+        return view('admin.property.edit', compact('property', 'amenities', 'locations', 'propertyDetails', 'categories', 'companies'));
     }
 
     public function editPost(Request $request, Property $property)
@@ -200,6 +215,7 @@ class PropertyController extends Controller
             'price' => 'required|numeric',
             'property_category_id' => 'required|exists:property_categories,id',
             'property_status' => 'required|string',
+            'company_id' => 'nullable|exists:companies,id',
             'route' => 'nullable|string',
             'sub_route' => 'nullable|string',
             'road' => 'nullable|string',
@@ -225,6 +241,15 @@ class PropertyController extends Controller
             $data['is_featured'] = $request->has('is_featured') ? 1 : 0;
             $data['is_home_featured'] = $request->has('is_home_featured') ? 1 : 0;
             $data['is_location_featured'] = $request->has('is_location_featured') ? 1 : 0;
+
+            // Only Super Admin can re-assign the company on edit. Other roles
+            // cannot change company ownership of a property — strip it so the
+            // existing value is preserved.
+            if ($user->hasRole('Super Admin')) {
+                $data['company_id'] = $request->filled('company_id') ? $request->company_id : null;
+            } else {
+                unset($data['company_id']);
+            }
 
             // Update old category and property_type strings
             $categoryModel = \App\Models\PropertyCategory::with('parent')->find($request->property_category_id);

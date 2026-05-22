@@ -30,20 +30,23 @@ class HomePageController extends Controller
             ->get();
         $settings = AppSettings::where('site_name', 'dproperty')->first();
 
-        // Dynamic Properties for sections
-        $rent_properties = Property::where('status', 1)
+        // Dynamic Properties for sections (latest 4 each)
+        $rent_properties = Property::with(['detailValues.detail'])
+            ->where('status', 1)
             ->where('property_status', 'Rent')
             ->orderBy('created_at', 'desc')
-            ->take(8)
+            ->take(4)
             ->get();
 
-        $sale_properties = Property::where('status', 1)
+        $sale_properties = Property::with(['detailValues.detail'])
+            ->where('status', 1)
             ->where('property_status', 'Sell')
             ->orderBy('created_at', 'desc')
-            ->take(8)
+            ->take(4)
             ->get();
 
-        $featured_properties = Property::where('status', 1)
+        $featured_properties = Property::with(['detailValues.detail'])
+            ->where('status', 1)
             ->where('is_home_featured', 1)
             ->orderBy('created_at', 'desc')
             ->take(8)
@@ -66,6 +69,7 @@ class HomePageController extends Controller
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
         
         $articles = Article::where('status', 1)
+            ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
             ->take(6)
             ->get();
@@ -112,7 +116,8 @@ class HomePageController extends Controller
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
 
-        $query = Property::where('status', 1)
+        $query = Property::with(['detailValues.detail'])
+            ->where('status', 1)
             ->where('property_status', $property_status)
             ->orderBy('created_at', 'desc');
 
@@ -172,7 +177,8 @@ class HomePageController extends Controller
         $settings = AppSettings::where('site_name', 'dproperty')->first();
         $location = Location::findOrFail($id);
 
-        $query = Property::where('status', 1)
+        $query = Property::with(['detailValues.detail'])
+            ->where('status', 1)
             ->where('location_id', $id)
             ->orderBy('created_at', 'desc');
 
@@ -219,10 +225,114 @@ class HomePageController extends Controller
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
         $articles = Article::where('status', 1)
+            ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(9);
 
         return view('pages.blog', compact('settings', 'articles'));
+    }
+
+    public function privacy()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        return view('pages.privacy_policy', compact('settings'));
+    }
+
+    public function terms()
+    {
+        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        return view('pages.tc', compact('settings'));
+    }
+
+    public function sitemap()
+    {
+        $settings  = AppSettings::where('site_name', 'dproperty')->first();
+        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $articles  = Article::where('status', 1)
+            ->orderBy('order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->take(20)
+            ->get();
+        return view('pages.sitemap', compact('settings', 'locations', 'articles'));
+    }
+
+    /**
+     * XML sitemap consumed by search engines. Streams the response so the
+     * controller doesn't materialize the whole document in memory.
+     */
+    public function sitemapXml()
+    {
+        $staticRoutes = [
+            ['loc' => route('home'),           'priority' => '1.0', 'changefreq' => 'daily'],
+            ['loc' => route('buy'),            'priority' => '0.9', 'changefreq' => 'daily'],
+            ['loc' => route('sell'),           'priority' => '0.9', 'changefreq' => 'daily'],
+            ['loc' => route('rent'),           'priority' => '0.9', 'changefreq' => 'daily'],
+            ['loc' => route('blog'),           'priority' => '0.7', 'changefreq' => 'weekly'],
+            ['loc' => route('about-us'),       'priority' => '0.5', 'changefreq' => 'monthly'],
+            ['loc' => route('service'),        'priority' => '0.6', 'changefreq' => 'monthly'],
+            ['loc' => route('contact'),        'priority' => '0.5', 'changefreq' => 'monthly'],
+            ['loc' => route('post-property'),  'priority' => '0.6', 'changefreq' => 'monthly'],
+            ['loc' => route('privacy-policy'), 'priority' => '0.3', 'changefreq' => 'yearly'],
+            ['loc' => route('terms-of-use'),   'priority' => '0.3', 'changefreq' => 'yearly'],
+            ['loc' => route('site-map'),       'priority' => '0.3', 'changefreq' => 'monthly'],
+        ];
+
+        $properties = Property::where('status', 1)
+            ->select('id', 'updated_at')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $locations = Location::where('status', 1)
+            ->select('id', 'updated_at')
+            ->orderBy('name')
+            ->get();
+
+        $articles = Article::where('status', 1)
+            ->select('slug', 'updated_at')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+        foreach ($staticRoutes as $r) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>" . htmlspecialchars($r['loc'], ENT_XML1) . "</loc>\n";
+            $xml .= "    <changefreq>{$r['changefreq']}</changefreq>\n";
+            $xml .= "    <priority>{$r['priority']}</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        foreach ($properties as $p) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>" . htmlspecialchars(route('property-details', $p->id), ENT_XML1) . "</loc>\n";
+            $xml .= "    <lastmod>" . $p->updated_at->toAtomString() . "</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.8</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        foreach ($locations as $loc) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>" . htmlspecialchars(route('location.properties', $loc->id), ENT_XML1) . "</loc>\n";
+            $xml .= "    <lastmod>" . $loc->updated_at->toAtomString() . "</lastmod>\n";
+            $xml .= "    <changefreq>weekly</changefreq>\n";
+            $xml .= "    <priority>0.6</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        foreach ($articles as $a) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>" . htmlspecialchars(route('article-details', $a->slug), ENT_XML1) . "</loc>\n";
+            $xml .= "    <lastmod>" . $a->updated_at->toAtomString() . "</lastmod>\n";
+            $xml .= "    <changefreq>monthly</changefreq>\n";
+            $xml .= "    <priority>0.6</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        $xml .= '</urlset>';
+
+        return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
     }
 
     public function article_details($slug)

@@ -1,5 +1,15 @@
 @extends('master')
 
+@section('title', 'Our Services — DProperty')
+@section('meta_description', 'Professional property services from DProperty: buying, selling, renting, property management, valuation, and legal advisory across Bangladesh.')
+
+@section('seo')
+    @include('component._breadcrumb_jsonld', ['crumbs' => [
+        ['name' => 'Home',         'url' => route('home')],
+        ['name' => 'Our Services', 'url' => route('service')],
+    ]])
+@endsection
+
 @section('content')
 <div class="service-page-hero">
     <div class="container px-md-5 px-3">

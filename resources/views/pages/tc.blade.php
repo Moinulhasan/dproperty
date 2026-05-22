@@ -1,5 +1,8 @@
 @extends('master')
 
+@section('title', 'Terms of Service — DProperty')
+@section('meta_description', 'The terms and conditions that govern your use of DProperty\'s website and real-estate services.')
+
 @section('content')
     <main class="py-5">
         <div class="container">

@@ -12,7 +12,7 @@
                         <div class="article-image">
                             <span class="article-badge">{{ $article->meta_title ?? 'Real Estate' }}</span>
                             @if($article->image)
-                                <img src="{{ asset($article->image) }}" alt="{{ $article->title }}">
+                                <img loading="lazy" src="{{ asset($article->image) }}" alt="{{ $article->title }}">
                             @else
                                 <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="{{ $article->title }}">
                             @endif

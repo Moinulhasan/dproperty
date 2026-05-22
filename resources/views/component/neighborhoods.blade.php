@@ -11,7 +11,7 @@
                     <a href="{{ route('location.properties', $neighborhood->id) }}" class="neighborhood-card-link text-decoration-none">
                         <div class="neighborhood-card">
                             @if($neighborhood->image)
-                                <img src="{{ asset($neighborhood->image) }}" alt="Explore properties in {{ $neighborhood->name }} - DProperty Neighborhoods" title="Properties in {{ $neighborhood->name }}">
+                                <img loading="lazy" src="{{ asset($neighborhood->image) }}" alt="Explore properties in {{ $neighborhood->name }} - DProperty Neighborhoods" title="Properties in {{ $neighborhood->name }}">
                             @else
                                 <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="{{ $neighborhood->name }} Neighborhood - DProperty" title="{{ $neighborhood->name }}">
                             @endif
