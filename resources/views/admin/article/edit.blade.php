@@ -66,8 +66,8 @@
                         </div>
                         <div class="col-md-9 mb-3 d-flex align-items-end">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="status" name="status" {{ $article->status ? 'checked' : '' }}>
-                                <label class="form-check-input" for="status">Active Status</label>
+                                <input class="form-check-input" type="checkbox" id="status" name="status" value="1" {{ $article->status ? 'checked' : '' }}>
+                                <label class="form-check-label" for="status">Active Status</label>
                             </div>
                         </div>
                     </div>

@@ -28,7 +28,7 @@ class CompanyController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'status' => 'required|in:active,inactive',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -62,7 +62,7 @@ class CompanyController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'status' => 'required|in:active,inactive',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
 
         if ($validator->fails()) {

@@ -58,10 +58,16 @@
                         <div data-i18n="Property Category">Property Category</div>
                     </a>
                 </li>
-                <li class="menu-item {{(request()->routeIs('admin.property.*') || request()->routeIs('admin.property.list') || request()->routeIs('admin.property.add') || request()->routeIs('admin.property.edit'))? 'active' : ''}}">
+                <li class="menu-item {{ (request()->routeIs('admin.property.list') || request()->routeIs('admin.property.add') || request()->routeIs('admin.property.edit')) && !request()->routeIs('admin.property.featured.*') ? 'active' : '' }}">
                     <a href="{{route('admin.property.list')}}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-home"></i>
                         <div data-i18n="Property">Property</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.property.featured.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.property.featured.list') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-award"></i>
+                        <div data-i18n="Featured Properties">Featured Properties</div>
                     </a>
                 </li>
                 @can('manage-amenities')

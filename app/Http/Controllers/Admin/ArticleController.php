@@ -27,7 +27,7 @@ class ArticleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'content' => 'required',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
@@ -80,7 +80,7 @@ class ArticleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'content' => 'required',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',

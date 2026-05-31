@@ -13,6 +13,7 @@ class Property extends Model
         'is_featured' => 'boolean',
         'is_home_featured' => 'boolean',
         'is_location_featured' => 'boolean',
+        'apply_watermark' => 'boolean',
     ];
 
     public function amenities()
@@ -43,6 +44,37 @@ class Property extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Short location label for property cards. Prefers the new locations
+     * table (location_id FK) since that's the source of truth chosen in
+     * the admin dropdown. Falls back to the legacy free-text sub_route /
+     * route columns for historic rows that never picked a location.
+     */
+    public function displayLocation(): ?string
+    {
+        if ($this->location_id && $this->location) {
+            return $this->location->name;
+        }
+        return $this->sub_route ?: $this->route ?: null;
+    }
+
+    /**
+     * Full address line, used in detail pages and meta descriptions.
+     * Skips the legacy sub_route/route when they duplicate location->name.
+     */
+    public function fullAddress(): string
+    {
+        $locName = optional($this->location)->name;
+        $parts = [
+            $this->lane,
+            $this->road,
+            $this->sub_route !== $locName ? $this->sub_route : null,
+            $this->route !== $locName ? $this->route : null,
+            $locName,
+        ];
+        return implode(', ', array_filter($parts, fn ($p) => $p !== null && $p !== ''));
     }
 
     /**

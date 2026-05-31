@@ -156,59 +156,136 @@
             return swiper;
         }
 
-        // Rent Slider (Right to Left - Standard)
-        initConditionalSlider('.rent-slider', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-                reverseDirection: false
-            },
-            navigation: {
-                nextEl: '.rent-slider .section-slider-next',
-                prevEl: '.rent-slider .section-slider-prev',
-            },
-            breakpoints: {
-                640: { slidesPerView: 2 },
-                768: { slidesPerView: 2.5 }
-            }
-        });
+        // Detect iOS Safari — its per-tab memory ceiling is roughly half of
+        // Chrome/Firefox on the same device, so we calm the homepage carousels
+        // down: slower autoplay (less GC pressure), fewer simultaneous Swiper
+        // instances. Without this, scrolling between For-Sell and For-Rent on
+        // iPhone Safari triggers "A problem repeatedly occurred" (tab kill).
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        const lowMem = isIOS || isSafari;
+        const autoplayDelay = lowMem ? 6000 : 3000;
 
-        // Sell Slider (Left to Right)
-        initConditionalSlider('.sell-slider', {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-                reverseDirection: true
-            },
-            navigation: {
-                nextEl: '.sell-slider .section-slider-next',
-                prevEl: '.sell-slider .section-slider-prev',
-            },
-            breakpoints: {
-                640: { slidesPerView: 2 },
-                768: { slidesPerView: 2.5 }
-            }
-        });
+        // Rent Slider — visible on every screen size, scrolls horizontally
+        // through every active rent listing. NOT routed through
+        // initConditionalSlider (which would destroy it on desktop).
+        //
+        // observer/observeParents were removed: Swiper was re-running its
+        // re-layout pass every time an inner card slider mutated the DOM
+        // (which happens constantly with autoplay), producing a feedback
+        // loop that exhausted Safari's memory.
+        let rentSwiper = null;
+        if (document.querySelector('.rent-slider')) {
+            rentSwiper = new Swiper('.rent-slider', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                watchOverflow: true,
+                autoplay: {
+                    delay: autoplayDelay,
+                    disableOnInteraction: false,
+                    reverseDirection: false,
+                    pauseOnMouseEnter: true
+                },
+                navigation: {
+                    nextEl: '.rent-slider .section-slider-next',
+                    prevEl: '.rent-slider .section-slider-prev',
+                },
+                breakpoints: {
+                    640:  { slidesPerView: 2 },
+                    768:  { slidesPerView: 2.5 },
+                    1024: { slidesPerView: 3 },
+                    1280: { slidesPerView: 4 }
+                }
+            });
+        }
 
-        // Inner Card Sliders
-        const innerSliders = document.querySelectorAll('.card-inner-slider');
-        innerSliders.forEach(slider => {
+        // Sell Slider — same responsive behaviour, autoplay reversed.
+        let sellSwiper = null;
+        if (document.querySelector('.sell-slider')) {
+            sellSwiper = new Swiper('.sell-slider', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                watchOverflow: true,
+                autoplay: {
+                    delay: autoplayDelay,
+                    disableOnInteraction: false,
+                    reverseDirection: true,
+                    pauseOnMouseEnter: true
+                },
+                navigation: {
+                    nextEl: '.sell-slider .section-slider-next',
+                    prevEl: '.sell-slider .section-slider-prev',
+                },
+                breakpoints: {
+                    640:  { slidesPerView: 2 },
+                    768:  { slidesPerView: 2.5 },
+                    1024: { slidesPerView: 3 },
+                    1280: { slidesPerView: 4 }
+                }
+            });
+        }
+
+        // Inner Card Sliders — lazy-initialized when the card scrolls into
+        // view, NOT eagerly at page load. Before: ~48 Swiper instances were
+        // created upfront with `loop: true`, which clones each slide 2-3x
+        // and produces hundreds of duplicate <img> DOM nodes. That's what
+        // pushed Safari past its memory ceiling. Now each card's Swiper is
+        // only created on first scroll-in; loop is OFF so no slide cloning.
+        const initInnerSlider = (slider) => {
+            if (slider.dataset.swiperReady) return;
+            slider.dataset.swiperReady = '1';
             new Swiper(slider, {
                 slidesPerView: 1,
                 spaceBetween: 0,
-                loop: true,
+                loop: false,
+                watchOverflow: true,
                 navigation: {
                     nextEl: slider.querySelector('.swiper-button-next'),
                     prevEl: slider.querySelector('.swiper-button-prev'),
                 },
             });
-        });
+        };
+
+        const innerSliders = document.querySelectorAll('.card-inner-slider');
+        if ('IntersectionObserver' in window) {
+            const innerObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        initInnerSlider(entry.target);
+                        innerObserver.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '300px 0px' });
+            innerSliders.forEach((slider) => innerObserver.observe(slider));
+        } else {
+            // Fallback for ancient browsers — eager init as before.
+            innerSliders.forEach(initInnerSlider);
+        }
+
+        // Pause outer slider autoplay when the section scrolls off-screen.
+        // Cuts Safari background JS work and keeps autoplay from "catching up"
+        // in a burst when the user scrolls back.
+        const observeAutoplay = (swiper, selector) => {
+            if (!swiper || !('IntersectionObserver' in window)) return;
+            const el = document.querySelector(selector);
+            if (!el) return;
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!swiper.autoplay) return;
+                    if (entry.isIntersecting) {
+                        swiper.autoplay.start();
+                    } else {
+                        swiper.autoplay.stop();
+                    }
+                });
+            }, { threshold: 0.1 });
+            obs.observe(el);
+        };
+        observeAutoplay(rentSwiper, '.rent-slider');
+        observeAutoplay(sellSwiper, '.sell-slider');
     });
 
 

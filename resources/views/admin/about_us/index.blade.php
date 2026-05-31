@@ -24,6 +24,7 @@
                     <thead class="border-top">
                     <tr>
                         <th>#</th>
+                        <th>Order</th>
                         <th>Title</th>
                         <th>Image</th>
                         <th>Status</th>
@@ -36,6 +37,7 @@
                             @foreach($abouts as $key => $about)
                                 <tr>
                                     <td>{{ $abouts->firstItem() + $key }}</td>
+                                    <td><span class="badge bg-label-secondary">{{ $about->order }}</span></td>
                                     <td>{{ $about->title }}</td>
                                     <td>
                                         @if($about->image)
@@ -66,7 +68,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">No sections found.</td>
+                                <td colspan="7" class="text-center text-muted py-4">No sections found.</td>
                             </tr>
                         @endif
                     </tbody>

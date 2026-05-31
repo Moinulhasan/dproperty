@@ -9,6 +9,10 @@ class AppSettings extends Model
     //
     protected $guarded = [];
 
+    protected $casts = [
+        'why_us_items' => 'array',
+    ];
+
     public function getLogoAttribute($value)
     {
         return asset('storage/' . $value ?? 'logo.png');

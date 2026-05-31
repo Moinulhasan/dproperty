@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr /i \"property\")",
+      "Bash(php -l app/Http/Controllers/Admin/PropertyController.php)",
+      "Bash(php -l app/Services/ImageProcessingService.php)",
+      "Bash(php -l database/migrations/2026_05_31_120000_add_apply_watermark_to_properties_table.php)",
+      "Bash(php -l app/Models/Property.php)",
+      "Bash(php -l app/Http/Controllers/Admin/AppSettingsController.php)",
+      "Bash(php -l app/Models/AppSettings.php)",
+      "Bash(php -l database/migrations/2026_05_31_140000_add_why_us_to_app_settings_table.php)"
+    ]
+  }
+}

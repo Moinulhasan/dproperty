@@ -1,3 +1,12 @@
+<style>
+    /* On mobile the articles slider is auto-only — no nav buttons. */
+    @media (max-width: 991px) {
+        #articlesSlider .articles-slider-next,
+        #articlesSlider .articles-slider-prev {
+            display: none !important;
+        }
+    }
+</style>
 <section class="articles-section" id="articles">
     <div class="container-fluid px-md-5 px-3">
         <div class="section-header text-center">
@@ -31,35 +40,39 @@
                 @endforeach
             </div>
 
-            <!-- Add Swiper Navigation -->
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
+            {{-- Scoped nav classes so other swipers on the page can't hijack
+                 these buttons (and vice-versa). --}}
+            <div class="swiper-button-next articles-slider-next"></div>
+            <div class="swiper-button-prev articles-slider-prev"></div>
         </div>
     </div>
 </section>
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const articlesSwiper = new Swiper('#articlesSlider', {
+    document.addEventListener('DOMContentLoaded', function () {
+        const el = document.getElementById('articlesSlider');
+        if (!el) return;
+
+        new Swiper(el, {
             slidesPerView: 1,
             spaceBetween: 30,
             loop: true,
+            watchOverflow: true,
+            // Faster autoplay on mobile since the nav buttons are hidden.
             autoplay: {
-                delay: 7000,
+                delay: window.innerWidth <= 991 ? 4000 : 7000,
                 disableOnInteraction: false,
             },
+            // Scope nav to THIS slider; otherwise Swiper picks up the first
+            // .swiper-button-next in the DOM (which may be inside a card).
             navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+                nextEl: el.querySelector('.articles-slider-next'),
+                prevEl: el.querySelector('.articles-slider-prev'),
             },
             breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                }
+                640:  { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
             }
         });
     });

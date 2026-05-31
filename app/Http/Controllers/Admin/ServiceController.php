@@ -30,7 +30,7 @@ class ServiceController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'status' => 'required|in:active,inactive',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -66,7 +66,7 @@ class ServiceController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'status' => 'required|in:active,inactive',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
         if ($validator->fails()) {
             return redirect()->back()

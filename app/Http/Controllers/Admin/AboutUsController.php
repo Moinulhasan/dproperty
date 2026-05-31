@@ -11,7 +11,9 @@ class AboutUsController extends Controller
 {
     public function index()
     {
-        $abouts = AboutUs::orderBy('created_at', 'desc')->paginate(10);
+        $abouts = AboutUs::orderBy('order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('admin.about_us.index', compact('abouts'));
     }
 
@@ -25,8 +27,9 @@ class AboutUsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'status' => 'required|in:active,inactive',
+            'order' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -46,6 +49,7 @@ class AboutUsController extends Controller
                 'description' => $request->description,
                 'image' => $imagePath,
                 'status' => $request->status == 'active' ? 1 : 0,
+                'order' => (int) $request->input('order', 0),
             ]);
 
             return redirect()->route('admin.about_us.list')->with('success', 'About Us section added successfully.');
@@ -64,8 +68,9 @@ class AboutUsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'status' => 'required|in:active,inactive',
+            'order' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +90,7 @@ class AboutUsController extends Controller
             $aboutUs->title = $request->title;
             $aboutUs->description = $request->description;
             $aboutUs->status = $request->status == 'active' ? 1 : 0;
+            $aboutUs->order = (int) $request->input('order', $aboutUs->order ?? 0);
             $aboutUs->save();
 
             return redirect()->route('admin.about_us.list')->with('success', 'About Us section updated successfully.');

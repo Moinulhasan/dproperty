@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         // Share neighborhoods data with footer on all pages
         View::composer('component.footer', function ($view) {
             $footerNeighborhoods = Location::where('status', 1)
+                ->orderBy('order')
                 ->orderBy('name')
                 ->get();
             $view->with('footerNeighborhoods', $footerNeighborhoods);

@@ -73,12 +73,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'properties'], function () {
         Route::get('list', [PropertyController::class, 'index'])->name('property.list');
+        Route::get('featured', [PropertyController::class, 'featuredIndex'])->name('property.featured.list');
         Route::get('add', [PropertyController::class, 'add'])->name('property.add');
         Route::post('add', [PropertyController::class, 'addPost'])->name('property.add.post');
         Route::get('edit/{property}', [PropertyController::class, 'edit'])->name('property.edit');
         Route::post('edit/{property}', [PropertyController::class, 'editPost'])->name('property.edit.post');
         Route::get('delete/{property}', [PropertyController::class, 'delete'])->name('property.delete');
         Route::post('image-delete/{property}', [PropertyController::class, 'deleteImage'])->name('property.image.delete');
+        Route::post('image-reorder/{property}', [PropertyController::class, 'reorderImages'])->name('property.image.reorder');
+        Route::post('toggle-status/{property}', [PropertyController::class, 'toggleStatus'])->name('property.toggle-status');
     });
 
     Route::group(['prefix' => 'property-requests'], function () {

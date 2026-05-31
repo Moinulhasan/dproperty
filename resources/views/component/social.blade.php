@@ -1,4 +1,54 @@
-<section id="projects" class="py-1 bg-light" style="margin-top: 15px;">
+<style>
+    /* Pre-init layout: stop the lone Featured slide from stretching to full
+       width during the brief window before Swiper applies its inline widths.
+       Mirrors the post-init slidesPerView breakpoints. */
+    #featuredPropertiesSlider:not(.swiper-initialized) .swiper-wrapper {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 20px;
+    }
+    #featuredPropertiesSlider:not(.swiper-initialized) .swiper-slide {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    @media (min-width: 640px) {
+        #featuredPropertiesSlider:not(.swiper-initialized) .swiper-slide {
+            flex: 0 0 calc(50% - 10px);
+            max-width: calc(50% - 10px);
+        }
+    }
+    @media (min-width: 1024px) {
+        #featuredPropertiesSlider:not(.swiper-initialized) .swiper-slide {
+            flex: 0 0 calc(25% - 15px);
+            max-width: calc(25% - 15px);
+        }
+    }
+    /* Hide the nav arrows until Swiper has wired them up. */
+    #featuredPropertiesSlider:not(.swiper-initialized) .swiper-navBtn {
+        visibility: hidden;
+    }
+
+    /* Mobile search box now flows in document order with its own bottom
+       margin, so we only need a small extra breath here. Desktop still has
+       the absolutely-positioned search box and gets a tighter gap. */
+    #projects {
+        margin-top: 8px;
+    }
+    @media (min-width: 992px) {
+        #projects {
+            margin-top: 15px;
+        }
+    }
+    #projects .section-header h2 {
+        margin-bottom: 12px;
+    }
+    @media (max-width: 576px) {
+        #projects .section-header h2 {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+<section id="projects" class="py-1 bg-light">
     <div class="container-fluid px-md-5 px-3">
         <div class="section-header text-center w-100">
             <h2 class="text-primary">Featured Properties</h2>
@@ -62,7 +112,7 @@
                                     <div class="info-grid">
                                         <h4 class="price-text">৳ {{ number_format($property->price, 0) }}</h4>
                                         <div class="location-text">
-                                            <i class="fas fa-map-marker-alt"></i> {{ $property->sub_route ?: $property->route }}
+                                            <i class="fas fa-map-marker-alt"></i> {{ $property->displayLocation() }}
                                         </div>
                                     </div>
                                 </div>
@@ -77,9 +127,10 @@
                 @endif
             </div>
 
-            <!-- Add Swiper Navigation -->
-            <div class="swiper-button-next swiper-navBtn"></div>
-            <div class="swiper-button-prev swiper-navBtn"></div>
+            <!-- Outer carousel navigation. Use a unique class so the inner
+                 card-image carousels don't hijack the buttons. -->
+            <div class="swiper-button-next swiper-navBtn featured-next"></div>
+            <div class="swiper-button-prev swiper-navBtn featured-prev"></div>
         </div>
     </div>
 </section>
@@ -87,29 +138,72 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const slideCount = {{ isset($featured_properties) ? count($featured_properties) : 0 }};
-        const featuredSwiper = new Swiper('#featuredPropertiesSlider', {
+        const featuredEl = document.getElementById('featuredPropertiesSlider');
+        if (!featuredEl) return;
+
+        // 1) Initialize the inner per-card image sliders FIRST. Their nav
+        //    buttons must be wired up before the outer Swiper looks at the
+        //    DOM, otherwise loop mode clones unwired buttons and the layout
+        //    breaks after the first set.
+        featuredEl.querySelectorAll('.card-inner-slider').forEach(function (slider) {
+            new Swiper(slider, {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: false,
+                watchOverflow: true,
+                navigation: {
+                    nextEl: slider.querySelector('.swiper-button-next'),
+                    prevEl: slider.querySelector('.swiper-button-prev'),
+                },
+            });
+        });
+
+        // 2) Outer carousel. Loop disabled when there isn't enough content to
+        //    fill the visible area (Swiper's clone logic mis-renders below
+        //    that threshold on mobile and can crash on scroll-back).
+        const slideCount = featuredEl.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length;
+        const enableLoop = slideCount >= 5;
+
+        // observer/observeParents were removed. On Safari they fed into a
+        // feedback loop with the per-card inner Swipers' DOM mutations and
+        // exhausted the tab's memory ceiling, killing the page.
+        const featuredSwiper = new Swiper(featuredEl, {
             slidesPerView: 1,
             spaceBetween: 20,
-            loop: slideCount > 4,
+            loop: enableLoop,
+            loopAdditionalSlides: enableLoop ? 2 : 0,
             watchOverflow: true,
             autoplay: slideCount > 1 ? {
                 delay: 6000,
                 disableOnInteraction: false,
+                pauseOnMouseEnter: true,
             } : false,
             navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+                nextEl: featuredEl.querySelector('.featured-next'),
+                prevEl: featuredEl.querySelector('.featured-prev'),
             },
             breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 4,
-                }
-            }
+                640:  { slidesPerView: 2, loop: enableLoop && slideCount >= 5 },
+                1024: { slidesPerView: 4, loop: enableLoop && slideCount >= 8 },
+            },
         });
+
+        // Pause autoplay when this section scrolls off-screen — keeps Safari
+        // from burning cycles on a background animation and stops autoplay
+        // from "catching up" in a burst when the user scrolls back.
+        if (featuredSwiper && featuredSwiper.autoplay && 'IntersectionObserver' in window) {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!featuredSwiper.autoplay) return;
+                    if (entry.isIntersecting) {
+                        featuredSwiper.autoplay.start();
+                    } else {
+                        featuredSwiper.autoplay.stop();
+                    }
+                });
+            }, { threshold: 0.1 });
+            obs.observe(featuredEl);
+        }
     });
 </script>
 @endpush

@@ -12,7 +12,9 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Location::orderBy('created_at', 'desc')->paginate(10);
+        $locations = Location::orderBy('order', 'asc')
+            ->orderBy('name', 'asc')
+            ->paginate(10);
         return view('admin.location.index', compact('locations'));
     }
 
@@ -25,8 +27,9 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'status' => 'required|in:active,inactive',
+            'order' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -45,6 +48,7 @@ class LocationController extends Controller
                 'name' => $request->name,
                 'image' => $imagePath,
                 'status' => $request->status == 'active' ? 1 : 0,
+                'order' => (int) $request->input('order', 0),
             ]);
 
             return redirect()->route('admin.location.list')->with('success', 'Location added successfully.');
@@ -62,8 +66,9 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'status' => 'required|in:active,inactive',
+            'order' => 'nullable|integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -83,6 +88,7 @@ class LocationController extends Controller
 
             $location->name = $request->name;
             $location->status = $request->status == 'active' ? 1 : 0;
+            $location->order = (int) $request->input('order', $location->order ?? 0);
             $location->save();
 
             return redirect()->route('admin.location.list')->with('success', 'Location updated successfully.');

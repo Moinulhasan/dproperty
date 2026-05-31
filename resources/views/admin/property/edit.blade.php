@@ -86,13 +86,14 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label class="form-label" for="loc-location">Location</label>
-                                <select class="form-select" id="loc-location" name="location_id">
+                                <label class="form-label" for="loc-location">Location <span class="text-danger">*</span></label>
+                                <select class="form-select" id="loc-location" name="location_id" required>
                                     <option value="">Select Location</option>
                                     @foreach($locations as $location)
                                         <option value="{{ $location->id }}" {{ old('location_id', $property->location_id) == $location->id ? 'selected' : '' }}>{{ $location->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('location_id')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label" for="loc-sub-route">Sub Route</label>
@@ -152,7 +153,7 @@
                                     <option value="Furnished" {{ old('is_furnished', $property->is_furnished) == 'Furnished' ? 'selected' : '' }}>Furnished</option>
                                 </select>
                             </div>
-                            <div class="col-md-8 d-flex align-items-center gap-4 mt-3">
+                            <div class="col-md-8 d-flex align-items-center gap-4 mt-3 flex-wrap">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="is-featured" name="is_featured" value="1" {{ old('is_featured', $property->is_featured) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is-featured">General Featured</label>
@@ -164,6 +165,10 @@
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="is-location-featured" name="is_location_featured" value="1" {{ old('is_location_featured', $property->is_location_featured) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is-location-featured">Location Featured</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="apply-watermark" name="apply_watermark" value="1" {{ old('apply_watermark', $property->apply_watermark) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="apply-watermark" title="Stamps the company logo over newly uploaded images. Skipped if the property has no company or the company has no logo.">Apply Watermark</label>
                                 </div>
                             </div>
                         </div>
@@ -203,11 +208,17 @@
                                 <input type="file" class="d-none" id="feature-image-input" name="feature_image">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Gallery Images</label>
+                                <label class="form-label d-flex justify-content-between align-items-center">
+                                    <span>Gallery Images</span>
+                                    @if($property->images && count($property->images) > 0)
+                                        <small class="text-muted fw-normal"><i class="ti ti-arrows-move me-1"></i>Drag to reorder</small>
+                                    @endif
+                                </label>
                                 @if($property->images && count($property->images) > 0)
-                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                    <div class="d-flex flex-wrap gap-2 mb-2" id="gallery-sortable">
                                         @foreach($property->images as $image)
-                                            <div class="gallery-image-wrapper">
+                                            <div class="gallery-image-wrapper" data-path="{{ $image }}">
+                                                <span class="drag-handle" title="Drag to reorder"><i class="ti ti-grip-vertical"></i></span>
                                                 <img src="{{ asset($image) }}" alt="Gallery" width="80" height="60" style="object-fit: cover" class="rounded border">
                                                 <button type="button" class="delete-image-btn" data-path="{{ $image }}" title="Delete">
                                                     <i class="ti ti-x"></i>
@@ -292,12 +303,37 @@
             font-size: 12px;
             box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
+        .gallery-image-wrapper .drag-handle {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            background: #696cff;
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: grab;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+        .gallery-image-wrapper .drag-handle:active { cursor: grabbing; }
+        #gallery-sortable .sortable-ghost {
+            opacity: 0.4;
+        }
+        #gallery-sortable .sortable-chosen img {
+            box-shadow: 0 0 0 2px #696cff;
+        }
     </style>
 @endsection
 
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/sortablejs/sortable.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Summernote
@@ -389,6 +425,41 @@
                     });
                 }
             });
+
+            // Sortable gallery: persist new order after each drag. The card
+            // gallery on the public site iterates property->images in JSON
+            // order, so reordering here is the order visitors will see.
+            const galleryEl = document.getElementById('gallery-sortable');
+            if (galleryEl && typeof Sortable !== 'undefined') {
+                Sortable.create(galleryEl, {
+                    animation: 150,
+                    handle: '.drag-handle',
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    onEnd: function() {
+                        const order = Array.from(galleryEl.querySelectorAll('.gallery-image-wrapper'))
+                            .map(el => el.dataset.path);
+                        $.ajax({
+                            url: "{{ route('admin.property.image.reorder', $property->id) }}",
+                            type: 'POST',
+                            data: {
+                                order: order,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                if (response.success && typeof toastr !== 'undefined') {
+                                    toastr.success(response.message);
+                                }
+                            },
+                            error: function() {
+                                if (typeof Swal !== 'undefined') {
+                                    Swal.fire('Error!', 'Could not save the new order.', 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
 
             // Delete Image AJAX
             $('.delete-image-btn').on('click', function(e) {

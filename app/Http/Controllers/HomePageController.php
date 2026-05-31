@@ -30,22 +30,25 @@ class HomePageController extends Controller
             ->get();
         $settings = AppSettings::where('site_name', 'dproperty')->first();
 
-        // Dynamic Properties for sections (latest 4 each)
-        $rent_properties = Property::with(['detailValues.detail'])
+        // Homepage rent / sell sections — scrollable carousels showing all
+        // active items in each status. Soft-cap at 20 so the homepage stays
+        // performant even when the catalogue has hundreds of properties; the
+        // "View All" link on each section still routes to the full listing.
+        $rent_properties = Property::with(['detailValues.detail', 'location'])
             ->where('status', 1)
             ->where('property_status', 'Rent')
             ->orderBy('created_at', 'desc')
-            ->take(4)
+            ->take(20)
             ->get();
 
-        $sale_properties = Property::with(['detailValues.detail'])
+        $sale_properties = Property::with(['detailValues.detail', 'location'])
             ->where('status', 1)
             ->where('property_status', 'Sell')
             ->orderBy('created_at', 'desc')
-            ->take(4)
+            ->take(20)
             ->get();
 
-        $featured_properties = Property::with(['detailValues.detail'])
+        $featured_properties = Property::with(['detailValues.detail', 'location'])
             ->where('status', 1)
             ->where('is_home_featured', 1)
             ->orderBy('created_at', 'desc')
@@ -54,6 +57,7 @@ class HomePageController extends Controller
 
         // Neighborhoods from Location table
         $neighborhoods = Location::where('status', 1)
+            ->orderBy('order')
             ->orderBy('name')
             ->get()
             ->map(function ($location) {
@@ -65,7 +69,7 @@ class HomePageController extends Controller
                 ];
             });
         $tags = Tags::where('status', 1)->get();
-        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
         
         $articles = Article::where('status', 1)
@@ -84,12 +88,12 @@ class HomePageController extends Controller
     public function property_details($id)
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
-        $property = Property::with(['amenities', 'user.company', 'detailValues.detail'])->findOrFail($id);
+        $property = Property::with(['amenities', 'user.company', 'detailValues.detail', 'location'])->findOrFail($id);
 
         $recommended_properties = Property::where('status', 1)
             ->where('location_id', $property->location_id)
             ->where('id', '!=', $id)
-            ->with(['detailValues.detail'])
+            ->with(['detailValues.detail', 'location'])
             ->orderBy('created_at', 'desc')
             ->take(4)
             ->get();
@@ -99,12 +103,14 @@ class HomePageController extends Controller
 
     public function buy(Request $request)
     {
-        return $this->handle_property_listing($request, 'Buy', 'Properties For Buy');
+        // Buyers shop the catalogue — admin-tagged 'Sell' properties (the
+        // seller's perspective) are what appears here under "Buy".
+        return $this->handle_property_listing($request, 'Sell', 'Properties to Buy');
     }
 
     public function sell(Request $request)
     {
-        return $this->handle_property_listing($request, 'Sell', 'Properties For Sell');
+        return $this->handle_property_listing($request, 'Sell', 'Properties For Sale');
     }
 
     public function rent(Request $request)
@@ -116,7 +122,7 @@ class HomePageController extends Controller
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
 
-        $query = Property::with(['detailValues.detail'])
+        $query = Property::with(['detailValues.detail', 'location'])
             ->where('status', 1)
             ->where('property_status', $property_status)
             ->orderBy('created_at', 'desc');
@@ -164,7 +170,7 @@ class HomePageController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
 
         $properties = $query->paginate(12)->withQueryString();
@@ -177,7 +183,7 @@ class HomePageController extends Controller
         $settings = AppSettings::where('site_name', 'dproperty')->first();
         $location = Location::findOrFail($id);
 
-        $query = Property::with(['detailValues.detail'])
+        $query = Property::with(['detailValues.detail', 'location'])
             ->where('status', 1)
             ->where('location_id', $id)
             ->orderBy('created_at', 'desc');
@@ -205,6 +211,12 @@ class HomePageController extends Controller
                 $query->where('bedrooms', $request->bedrooms);
             }
         }
+        if ($request->filled('min_area')) {
+            $query->where('area', '>=', $request->min_area);
+        }
+        if ($request->filled('max_area')) {
+            $query->where('area', '<=', $request->max_area);
+        }
         if ($request->filled('min_price')) {
             $query->where('price', '>=', $request->min_price);
         }
@@ -212,7 +224,7 @@ class HomePageController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
 
         $properties = $query->paginate(12)->withQueryString();
@@ -247,7 +259,7 @@ class HomePageController extends Controller
     public function sitemap()
     {
         $settings  = AppSettings::where('site_name', 'dproperty')->first();
-        $locations = Location::where('status', 1)->orderBy('name')->get();
+        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
         $articles  = Article::where('status', 1)
             ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
@@ -284,6 +296,7 @@ class HomePageController extends Controller
 
         $locations = Location::where('status', 1)
             ->select('id', 'updated_at')
+            ->orderBy('order')
             ->orderBy('name')
             ->get();
 
@@ -372,8 +385,9 @@ class HomePageController extends Controller
     public function aboutUs()
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
-        $abouts = \App\Models\AboutUs::orderBy('created_at', 'desc')
-            ->where('status', 1)
+        $abouts = \App\Models\AboutUs::where('status', 1)
+            ->orderBy('order', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get();
         $testimonials = Testimonial::orderBy('created_at', 'desc')
             ->where('status', 1)

@@ -19,10 +19,10 @@
                     <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="{{url('/')}}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('buy') ? 'active' : '' }}" href="{{ route('buy') }}">Buy</a>
+                    <a class="nav-link {{ request()->routeIs('buy*') ? 'active' : '' }}" href="{{ route('buy') }}">Buy</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('rent') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
+                    <a class="nav-link {{ request()->routeIs('rent*') ? 'active' : '' }}" href="{{ route('rent') }}">Rent</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('post-property') ? 'active' : '' }}" href="{{ route('post-property') }}">Post Property</a>

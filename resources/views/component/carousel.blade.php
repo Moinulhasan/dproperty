@@ -457,7 +457,7 @@
             // Handle form submission based on type
             $('.search-form').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 const type = $('#search_type').val();
                 let targetUrl;
                 if (type === 'rent') {
@@ -466,20 +466,21 @@
                     // "buy" tab is labelled "FOR SELL" - routes to sell page
                     targetUrl = "{{ route('sell') }}";
                 }
-                
-                // Build query params, stripping empty values
-                const formData = new FormData(this);
-                const params = new URLSearchParams();
-                
-                for (const [key, value] of formData.entries()) {
-                    // Skip the search_type hidden field and any empty values
-                    if (key === 'search_type') continue;
-                    if (value && value.trim() !== '' && value !== 'any') {
-                        params.append(key, value.trim());
-                    }
+
+                // Desktop (Select2) and mobile (custom picker) share the same
+                // `name` for each filter. Iterate FormData and KEEP each key
+                // exactly once with its last non-empty value, so the URL has
+                // no duplicate params like `?location=2&location=`.
+                const collected = {};
+                const formData  = new FormData(this);
+                for (const [key, raw] of formData.entries()) {
+                    if (key === 'search_type' || key === '_token' || key === '_method') continue;
+                    const value = (raw ?? '').toString().trim();
+                    if (value === '' || value === 'any') continue;
+                    collected[key] = value;
                 }
-                
-                const queryString = params.toString();
+
+                const queryString = new URLSearchParams(collected).toString();
                 window.location.href = targetUrl + (queryString ? '?' + queryString : '');
             });
         });

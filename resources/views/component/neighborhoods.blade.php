@@ -1,5 +1,5 @@
 <section class="neighborhoods-section">
-    <div class="container-fluid px-5">
+    <div class="container-fluid px-md-5 px-3">
         <div class="section-header">
             <h2 class="text-primary">Explore The Neighborhoods</h2>
         </div>

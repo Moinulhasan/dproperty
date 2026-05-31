@@ -82,7 +82,7 @@ class AuthController extends Controller
             'is_verified' => 'boolean',
             'role' => 'required|exists:roles,name',
             'company_id' => 'nullable|exists:companies,id',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -157,7 +157,7 @@ class AuthController extends Controller
             'status' => 'required|in:active,inactive',
             'role' => 'required|exists:roles,name',
             'company_id' => 'nullable|exists:companies,id',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
 
         if ($validator->fails()) {

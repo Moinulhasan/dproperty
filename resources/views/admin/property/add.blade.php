@@ -87,13 +87,14 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label class="form-label" for="loc-location">Location</label>
-                                <select class="form-select" id="loc-location" name="location_id">
+                                <label class="form-label" for="loc-location">Location <span class="text-danger">*</span></label>
+                                <select class="form-select" id="loc-location" name="location_id" required>
                                     <option value="">Select Location</option>
                                     @foreach($locations as $location)
                                         <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>{{ $location->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('location_id')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label" for="loc-sub-route">Sub Route</label>
@@ -151,18 +152,27 @@
                                     <option value="Furnished" {{ old('is_furnished') == 'Furnished' ? 'selected' : '' }}>Furnished</option>
                                 </select>
                             </div>
-                            <div class="col-md-8 d-flex align-items-center gap-4 mt-3">
+                            @php
+                                // When admin clicks "Add New Feature" from the Featured Properties
+                                // menu we land here with ?featured=1, so pre-check Home Featured.
+                                $fromFeaturedMenu = (bool) request('featured');
+                            @endphp
+                            <div class="col-md-8 d-flex align-items-center gap-4 mt-3 flex-wrap">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="is-featured" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is-featured">General Featured</label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="is-home-featured" name="is_home_featured" value="1" {{ old('is_home_featured') ? 'checked' : '' }}>
+                                    <input type="checkbox" class="form-check-input" id="is-home-featured" name="is_home_featured" value="1" {{ old('is_home_featured', $fromFeaturedMenu ? '1' : '') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is-home-featured">Home Featured</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="is-location-featured" name="is_location_featured" value="1" {{ old('is_location_featured') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is-location-featured">Location Featured</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="apply-watermark" name="apply_watermark" value="1" {{ old('apply_watermark', '1') ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="apply-watermark" title="Stamps the company logo over uploaded images. Skipped if the property has no company or the company has no logo.">Apply Watermark</label>
                                 </div>
                             </div>
                         </div>

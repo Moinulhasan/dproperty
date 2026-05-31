@@ -67,6 +67,14 @@
                                         </div>
                                     </div>
 
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="order">Order</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" min="0" class="form-control" id="order" name="order" value="{{ old('order', $aboutUs->order) }}" />
+                                            <small class="text-muted">Lower number = shown first on the About Us page.</small>
+                                        </div>
+                                    </div>
+
                                     <div class="w-100 text-center">
                                         <button type="submit" class="btn btn-primary w-100">Update Section</button>
                                     </div>

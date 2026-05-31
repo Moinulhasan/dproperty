@@ -4,19 +4,23 @@
     @include('admin.include.alert')
     <div class="card mb-4">
         <div class="card-body">
-            <form action="{{ route('admin.property.list') }}" method="GET" class="row g-3">
+            <form action="{{ url()->current() }}" method="GET" class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">Title</label>
                     <input type="text" name="title" class="form-control" placeholder="Search by title..." value="{{ request('title') }}">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Type</label>
-                    <select name="property_type" class="form-select">
-                        <option value="">All Types</option>
-                        <option value="Apartment" {{ request('property_type') == 'Apartment' ? 'selected' : '' }}>Apartment</option>
-                        <option value="House" {{ request('property_type') == 'House' ? 'selected' : '' }}>House</option>
-                        <option value="Land" {{ request('property_type') == 'Land' ? 'selected' : '' }}>Land</option>
-                        <option value="Office" {{ request('property_type') == 'Office' ? 'selected' : '' }}>Office</option>
+                    <label class="form-label">Category</label>
+                    <select name="property_category_id" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $parent)
+                            <optgroup label="{{ $parent->name }}">
+                                <option value="{{ $parent->id }}" {{ request('property_category_id') == $parent->id ? 'selected' : '' }}>{{ $parent->name }} (All)</option>
+                                @foreach($parent->children as $child)
+                                    <option value="{{ $child->id }}" {{ request('property_category_id') == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -30,20 +34,32 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Location</label>
-                    <input type="text" name="location" class="form-control" placeholder="Search by route/sub-route..." value="{{ request('location') }}">
+                    <select name="location_id" class="form-select">
+                        <option value="">All Locations</option>
+                        @foreach($locations as $loc)
+                            <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100 me-2"><i class="ti ti-search me-1"></i> Filter</button>
-                    <a href="{{ route('admin.property.list') }}" class="btn btn-label-secondary w-100"><i class="ti ti-refresh me-1"></i> Reset</a>
+                    <a href="{{ url()->current() }}" class="btn btn-label-secondary w-100"><i class="ti ti-refresh me-1"></i> Reset</a>
                 </div>
             </form>
         </div>
     </div>
 
+    @php
+        // Same view powers the standard list and the home-featured-only list.
+        $featuredOnly = $featuredOnly ?? false;
+        $addUrl = $featuredOnly
+            ? route('admin.property.add') . '?featured=1'
+            : route('admin.property.add');
+    @endphp
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Property List</h5>
-            <a href="{{ route('admin.property.add') }}" class="btn btn-primary">Add Property</a>
+            <h5 class="mb-0">{{ $featuredOnly ? 'Featured Properties' : 'Property List' }}</h5>
+            <a href="{{ $addUrl }}" class="btn btn-primary">{{ $featuredOnly ? 'Add New Feature' : 'Add Property' }}</a>
         </div>
         <div class="table-responsive text-nowrap">
             <table class="table">
@@ -55,6 +71,7 @@
                         <th>Price</th>
                         <th>Location</th>
                         <th>Creator (Company)</th>
+                        <th>State</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -81,11 +98,24 @@
                                 <span class="badge bg-label-info">{{ $property->property_type }}</span>
                                 <br>
                                 <span class="badge bg-label-{{ $property->property_status == 'Rent' ? 'success' : 'primary' }} mt-1">{{ $property->property_status }}</span>
+                                @if($property->is_featured || $property->is_home_featured || $property->is_location_featured)
+                                    <div class="mt-1 d-flex flex-wrap gap-1">
+                                        @if($property->is_featured)
+                                            <span class="badge bg-label-warning" title="General Featured"><i class="ti ti-star ti-xs me-1"></i>General</span>
+                                        @endif
+                                        @if($property->is_home_featured)
+                                            <span class="badge bg-label-danger" title="Home Featured"><i class="ti ti-home ti-xs me-1"></i>Home</span>
+                                        @endif
+                                        @if($property->is_location_featured)
+                                            <span class="badge bg-label-dark" title="Location Featured"><i class="ti ti-map-pin ti-xs me-1"></i>Location</span>
+                                        @endif
+                                    </div>
+                                @endif
                             </td>
                             <td>{{ number_format($property->price) }} BDT</td>
                             <td style="white-space: normal;">
                                 <i class="ti ti-map-pin me-1 text-danger"></i>
-                                <small>{{ $property->route }}{{ $property->sub_route ? ', ' . $property->sub_route : '' }}</small>
+                                <small>{{ $property->displayLocation() ?? '—' }}</small>
                             </td>
                             <td>
                                 <strong>{{ $property->user?->name ?? 'Deleted User' }}</strong>
@@ -93,7 +123,26 @@
                                 <small class="text-muted">{{ $property->user?->company?->name ?? 'Independent' }}</small>
                             </td>
                             <td>
+                                @if($property->status)
+                                    <span class="badge bg-label-success">Active</span>
+                                @else
+                                    <span class="badge bg-label-secondary">Inactive</span>
+                                @endif
+                            </td>
+                            <td>
                                 <div class="d-flex">
+                                    <form action="{{ route('admin.property.toggle-status', $property->id) }}" method="POST" class="d-inline me-2">
+                                        @csrf
+                                        @if($property->status)
+                                            <button type="submit" class="btn btn-sm btn-icon btn-warning" title="Deactivate" onclick="return confirm('Deactivate this property? It will be hidden from the public site.');">
+                                                <i class="ti ti-eye-off"></i>
+                                            </button>
+                                        @else
+                                            <button type="submit" class="btn btn-sm btn-icon btn-success" title="Activate" onclick="return confirm('Activate this property?');">
+                                                <i class="ti ti-eye"></i>
+                                            </button>
+                                        @endif
+                                    </form>
                                     <a href="{{ route('admin.property.edit', $property->id) }}"
                                         class="btn btn-sm btn-icon btn-primary me-2" title="Edit">
                                         <i class="ti ti-edit"></i>

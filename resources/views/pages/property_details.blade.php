@@ -18,13 +18,8 @@
 
     @php
         $isRental    = in_array($property->property_status, ['Rent', 'For Rent']);
-        $addressLine = trim(implode(', ', array_filter([
-            $property->lane,
-            $property->road,
-            $property->sub_route,
-            $property->route,
-            optional($property->location)->name,
-        ])));
+        // Schema.org streetAddress — same sequence as the on-page address.
+        $addressLine = $property->fullAddress();
         $propertyImages = collect([$property->feature_image])
             ->merge(is_array($property->images) ? $property->images : [])
             ->filter()
@@ -152,14 +147,13 @@
 
                 <!-- Mobile Title (shown only on mobile, after image) -->
                 @php
-                    $fullAddressParts = array_filter([
-                        $property->lane,
-                        $property->road,
-                        $property->sub_route,
-                        $property->route,
-                        optional($property->location)->name,
-                    ]);
-                    $fullAddress = implode(', ', $fullAddressParts);
+                    // Address parts are appended in this order:
+                    //   lane → road → sub_route → route → location->name
+                    // location->name is REQUIRED at the admin level and is the
+                    // last (and most important) segment. The helper drops only
+                    // truly empty optional parts and de-duplicates legacy
+                    // route/sub_route values that already match the location.
+                    $fullAddress = $property->fullAddress();
                 @endphp
                 <div class="mobile-title-section d-lg-none mt-3">
                     <h2 class="mobile-property-title mb-2">{{ $property->title }}</h2>
@@ -172,7 +166,7 @@
                     <div class="d-flex justify-content-between align-items-start gap-2">
                         <span class="mobile-furnish-tag">{{ $property->is_furnished }}</span>
                         <div class="mobile-location m-0 text-end">
-                            <i class="fas fa-map-marker-alt text-danger me-1"></i>{{ $fullAddress ?: '—' }}
+                            <i class="fas fa-map-marker-alt text-danger me-1"></i>{{ $fullAddress  }}
                         </div>
                     </div>
                 </div>
@@ -188,19 +182,17 @@
                                 if (str_contains($statusLower, 'rent')) $statusBadgeClass = 'bg-success';
                                 elseif (str_contains($statusLower, 'buy')) $statusBadgeClass = 'bg-warning text-dark';
                             @endphp
-                            <div class="badge {{ $statusBadgeClass }} mt-2">
-                                    {{ $property->is_furnished }}
-                                {{-- @if(str_starts_with($property->property_status, 'For') || $property->property_status == 'Buy')
-                                    {{ $property->property_status }}
-                                @else
-                                    For {{ $property->property_status }}
-                                @endif --}}
+                              
+                        
+                            <div class="location-tag">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i> {{ $fullAddress }}
                             </div>
                         </div>
                         <div class="meta-info">
                             <h3 class="m-0">ID: {{ $property->project_id }}</h3>
-                            <div class="location-tag">
-                                <i class="fas fa-map-marker-alt text-danger me-2"></i> {{ $property->sub_route }}{{ $property->sub_route && $property->route ? ', ' : '' }}{{ $property->route }}
+                            <div class="badge {{ $statusBadgeClass }} mt-2">
+                                    {{ $property->is_furnished }}
+                        
                             </div>
                         </div>
                     </div>
@@ -208,7 +200,9 @@
                     <!-- Specs Grid -->
                     <h4 class="detail-section-title">Property Details</h4>
                     <div class="specs-grid">
-                        @foreach($property->detailValues as $dv)
+                        {{-- Sorted ascending by PropertyDetail.sort_order (admin-controlled),
+                             then alphabetically by name as a stable tiebreaker. --}}
+                        @foreach($property->detailValues->sortBy(fn ($dv) => [optional($dv->detail)->sort_order ?? PHP_INT_MAX, optional($dv->detail)->name ?? '']) as $dv)
                             @if($dv->detail && $dv->value)
                                 <div class="spec-item">
                                     <i class="{{ $dv->detail->icon ?? 'fas fa-info-circle' }} spec-icon"></i>
@@ -224,7 +218,8 @@
                         <div class="features-container">
                             <h4 class="detail-section-title">Features & Amenities</h4>
                             <div class="features-grid">
-                                @foreach($property->amenities as $amenity)
+                                {{-- Sorted ascending alphabetically by name. --}}
+                                @foreach($property->amenities->sortBy('name') as $amenity)
                                     <div class="feature-check">
                                         <i class="{{ $amenity->icon ?? 'fas fa-check-square' }}"></i> {{ $amenity->name }}
                                     </div>
@@ -300,6 +295,18 @@
                     ? ($sellerCompany->address ?? null)
                     : 'Agent ID: ' . ($property->user->agent_id ?? 'N/A');
                 $phoneMasked = $sellerPhone ? substr($sellerPhone, 0, 5) . 'XXXXXX' : '01XXXXXXXXX';
+
+                // WhatsApp prefers the user's dedicated whatsapp_number when
+                // present, then falls back to phone. wa.me requires a digits-
+                // only international number — strip every non-digit and turn
+                // a local "01XXXXXXXXX" Bangladesh format into "8801XXXXXXXXX".
+                $sellerWaRaw = $useCompany
+                    ? ($sellerCompany->phone ?? $property->user->whatsapp_number ?? $property->user->phone ?? '')
+                    : ($property->user->whatsapp_number ?? $property->user->phone ?? '');
+                $sellerWa = preg_replace('/\D+/', '', (string) $sellerWaRaw);
+                if ($sellerWa !== '' && str_starts_with($sellerWa, '0')) {
+                    $sellerWa = '880' . ltrim($sellerWa, '0');
+                }
             @endphp
             <div class="col-lg-4">
                 <div class="details-sidebar">
@@ -329,9 +336,11 @@
                         <a href="mailto:{{ $sellerEmail ?: '#' }}" class="contact-btn btn-chat">
                             <i class="fas fa-envelope"></i> Email {{ $useCompany ? 'Company' : 'Seller' }}
                         </a>
-                        <a href="https://wa.me/{{ $sellerPhone }}" target="_blank" class="contact-btn btn-whatsapp">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </a>
+                        @if($sellerWa)
+                            <a href="https://wa.me/{{ $sellerWa }}" target="_blank" rel="noopener" class="contact-btn btn-whatsapp">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </a>
+                        @endif
                     </div>
 
                     <div class="mt-4 pt-3 border-top">
@@ -415,7 +424,7 @@
                                 <div class="detail-item"><span class="info-label">ID:</span> {{ $rp->project_id }}</div>
                                 
                                 <div class="location-text">
-                                    <i class="fas fa-map-marker-alt"></i> {{ $rp->sub_route ?: $rp->route }}
+                                    <i class="fas fa-map-marker-alt"></i> {{ $rp->displayLocation() }}
                                 </div>
                                 <div class="detail-item"><span class="info-label">Type:</span> {{ $rp->is_furnished }}</div>
                             </div>
@@ -444,7 +453,9 @@
     </div>
     <div class="mobile-agent-actions">
         <a href="mailto:{{ $sellerEmail ?: '#' }}" class="mobile-action-btn btn-email-m"><i class="fas fa-envelope"></i></a>
-        <a href="https://wa.me/{{ $sellerPhone }}" target="_blank" class="mobile-action-btn btn-wa-m"><i class="fab fa-whatsapp"></i></a>
+        @if($sellerWa)
+            <a href="https://wa.me/{{ $sellerWa }}" target="_blank" rel="noopener" class="mobile-action-btn btn-wa-m"><i class="fab fa-whatsapp"></i></a>
+        @endif
         <a href="tel:{{ $sellerPhone }}" class="mobile-action-btn btn-phone-m"><i class="fas fa-phone-alt"></i></a>
     </div>
 </div>

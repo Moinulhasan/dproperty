@@ -20,13 +20,19 @@ return new class extends Migration
         }
 
         // Backfill existing properties from the creator's company so historical
-        // rows remain consistent with the new direct relation.
+        // rows remain consistent with the new direct relation. Uses a portable
+        // subquery so MySQL, MariaDB, PostgreSQL, and SQLite (3.33+) all
+        // accept it — the MySQL "UPDATE … INNER JOIN" syntax is not portable
+        // and breaks SQLite-backed test runs.
         DB::statement('
-            UPDATE properties p
-            INNER JOIN users u ON u.id = p.created_by
-            SET p.company_id = u.company_id
-            WHERE p.company_id IS NULL
-              AND u.company_id IS NOT NULL
+            UPDATE properties
+            SET company_id = (
+                SELECT users.company_id
+                FROM users
+                WHERE users.id = properties.created_by
+            )
+            WHERE company_id IS NULL
+              AND created_by IS NOT NULL
         ');
     }
 

@@ -55,6 +55,16 @@
                           </span>
                                 </button>
                             </div>
+                            <div class="line"></div>
+                            <div class="step" data-target="#why-us-vertical">
+                                <button type="button" class="step-trigger">
+                                    <span class="bs-stepper-circle"><i class="ti ti-award"></i></span>
+                                    <span class="bs-stepper-label">
+                            <span class="bs-stepper-title">Why Choose Us</span>
+                            <span class="bs-stepper-subtitle">Manage benefit items</span>
+                          </span>
+                                </button>
+                            </div>
                         </div>
                         <div class="bs-stepper-content">
                             <form action="{{route('admin.app.settings.update')}}"
@@ -93,21 +103,6 @@
                                             <div class="mt-2">
                                                 @if(isset($settings->favicon))
                                                     <img src="{{$settings->favicon}}" alt="dproperty" srcset=""
-                                                         style="height: 50px;width: 100px;">
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 form-password-toggle">
-                                            <label class="form-label" for="confirm-password61">Contact Us</label>
-                                            <input
-                                                type="file"
-                                                id="email1"
-                                                class="form-control"
-                                                name="contact_image"
-                                                aria-label="john.doe"/>
-                                            <div class="mt-2">
-                                                @if(isset($settings->contact_image))
-                                                    <img src="{{$settings->contact_image}}" alt="dproperty" srcset=""
                                                          style="height: 50px;width: 100px;">
                                                 @endif
                                             </div>
@@ -254,7 +249,90 @@
                                                 <i class="ti ti-arrow-left me-sm-1"></i>
                                                 <span class="align-middle d-sm-inline-block d-none">Previous</span>
                                             </a>
-                                            <button class="btn btn-success " type="submit">Submit</button>
+                                            <a class="btn btn-primary btn-next">
+                                                <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+                                                <i class="ti ti-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Why Choose Us -->
+                                <div id="why-us-vertical" class="content">
+                                    <div class="content-header mb-3">
+                                        <h6 class="mb-0">Why Choose Us</h6>
+                                        <small>Section image, title, tagline, and the list of benefit items shown on the home page.</small>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="why-us-image">Section Image</label>
+                                            <input
+                                                type="file"
+                                                id="why-us-image"
+                                                class="form-control"
+                                                name="contact_image"
+                                                aria-label="Why Choose Us image"/>
+                                            <div class="mt-2">
+                                                @if(isset($settings->contact_image))
+                                                    <img src="{{ $settings->contact_image }}" alt="Why Choose Us preview" style="height: 60px;width: auto;">
+                                                @endif
+                                            </div>
+                                            <div class="form-text">Shown next to the benefit items on the home page.</div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="why-us-title">Section Title</label>
+                                            <input type="text" id="why-us-title" name="why_us_title" class="form-control" placeholder="Why Choose Us?" value="{{ $settings?->why_us_title }}">
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <label class="form-label" for="why-us-tagline">Tagline</label>
+                                            <textarea id="why-us-tagline" name="why_us_tagline" class="form-control" rows="2" placeholder="We are committed to delivering exceptional results...">{{ $settings?->why_us_tagline }}</textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <label class="form-label mb-0">Benefit Items</label>
+                                                <button type="button" id="why-us-add" class="btn btn-sm btn-primary">
+                                                    <i class="ti ti-plus me-1"></i> Add Item
+                                                </button>
+                                            </div>
+                                            <small class="text-muted d-block mb-2">Each item shows as a check-mark row beside the contact image on the home page.</small>
+                                            @php
+                                                $existingItems = $settings?->why_us_items ?? [];
+                                                if (empty($existingItems)) {
+                                                    // Seed the editor with the legacy hardcoded list so the
+                                                    // admin doesn't see an empty page on first visit. These
+                                                    // are pre-fill values only — they aren't persisted until
+                                                    // the admin clicks Submit.
+                                                    $existingItems = [
+                                                        ['title' => 'Expert Team', 'description' => 'Our experienced professionals bring years of industry expertise to every project.'],
+                                                        ['title' => 'Quality Assurance', 'description' => 'We maintain the highest standards of quality in all our deliverables.'],
+                                                        ['title' => '24/7 Support', 'description' => 'Round-the-clock support to ensure your business never stops running.'],
+                                                        ['title' => 'Competitive Pricing', 'description' => 'Affordable solutions without compromising on quality or service.'],
+                                                    ];
+                                                }
+                                            @endphp
+                                            <div id="why-us-items">
+                                                @foreach($existingItems as $idx => $item)
+                                                    <div class="row g-2 align-items-start mb-2 why-us-row">
+                                                        <div class="col-md-4">
+                                                            <input type="text" name="why_us_items[{{ $idx }}][title]" class="form-control" placeholder="Item title" value="{{ $item['title'] ?? '' }}">
+                                                        </div>
+                                                        <div class="col-md-7">
+                                                            <input type="text" name="why_us_items[{{ $idx }}][description]" class="form-control" placeholder="Short description" value="{{ $item['description'] ?? '' }}">
+                                                        </div>
+                                                        <div class="col-md-1 d-grid">
+                                                            <button type="button" class="btn btn-outline-danger why-us-remove" title="Remove">
+                                                                <i class="ti ti-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        <div class="col-12 d-flex justify-content-between">
+                                            <a class="btn btn-label-secondary btn-prev">
+                                                <i class="ti ti-arrow-left me-sm-1"></i>
+                                                <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                            </a>
+                                            <button class="btn btn-success" type="submit">Submit</button>
                                         </div>
                                     </div>
                                 </div>
@@ -272,4 +350,55 @@
     <script src="{{asset("assets/vendor/libs/bootstrap-select/bootstrap-select.js")}}"></script>
     <script src="{{asset("assets/vendor/libs/select2/select2.js")}}"></script>
     <script src="{{asset('assets/js/form-wizard-icons.js')}}"></script>
+    <script>
+        // Why Choose Us — dynamic item rows. Add appends a new row; Remove
+        // deletes a row. We reindex name="why_us_items[N][...]" after every
+        // mutation so the controller sees a clean 0-based array.
+        document.addEventListener('DOMContentLoaded', function () {
+            const list = document.getElementById('why-us-items');
+            const addBtn = document.getElementById('why-us-add');
+            if (!list || !addBtn) return;
+
+            const reindex = () => {
+                list.querySelectorAll('.why-us-row').forEach((row, idx) => {
+                    row.querySelectorAll('input').forEach((input) => {
+                        input.name = input.name.replace(/why_us_items\[\d+\]/, `why_us_items[${idx}]`);
+                    });
+                });
+            };
+
+            const buildRow = (idx) => {
+                const row = document.createElement('div');
+                row.className = 'row g-2 align-items-start mb-2 why-us-row';
+                row.innerHTML = `
+                    <div class="col-md-4">
+                        <input type="text" name="why_us_items[${idx}][title]" class="form-control" placeholder="Item title">
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" name="why_us_items[${idx}][description]" class="form-control" placeholder="Short description">
+                    </div>
+                    <div class="col-md-1 d-grid">
+                        <button type="button" class="btn btn-outline-danger why-us-remove" title="Remove">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </div>
+                `;
+                return row;
+            };
+
+            addBtn.addEventListener('click', () => {
+                const idx = list.querySelectorAll('.why-us-row').length;
+                list.appendChild(buildRow(idx));
+            });
+
+            list.addEventListener('click', (e) => {
+                const btn = e.target.closest('.why-us-remove');
+                if (!btn) return;
+                const row = btn.closest('.why-us-row');
+                if (!row) return;
+                row.remove();
+                reindex();
+            });
+        });
+    </script>
 @endsection

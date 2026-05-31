@@ -24,6 +24,7 @@
                     <thead class="border-top">
                     <tr>
                         <th>#</th>
+                        <th>Order</th>
                         <th>Name</th>
                         <th>Image</th>
                         <th>Status</th>
@@ -37,6 +38,7 @@
                             @foreach($locations as $key => $location)
                                 <tr>
                                     <td>{{ $locations->firstItem() + $key }}</td>
+                                    <td><span class="badge bg-label-secondary">{{ $location->order }}</span></td>
                                     <td>{{ $location->name }}</td>
                                     <td>
                                         @if($location->image)
@@ -70,7 +72,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No locations found.</td>
+                                <td colspan="8" class="text-center text-muted py-4">No locations found.</td>
                             </tr>
                         @endif
                     </tbody>

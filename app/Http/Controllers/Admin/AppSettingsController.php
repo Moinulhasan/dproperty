@@ -23,10 +23,10 @@ class AppSettingsController extends Controller
             'site_phone' => 'required|string|max:20',
             'site_address' => 'required|string|max:255',
             'site_google_map' => 'nullable|string|max:500',
-            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'og_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
-           'contact_image' => 'nullable|mimes:jpeg,png,jpg,gif,svg,svg+xml|max:2048',
+            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'og_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+           'contact_image' => 'nullable|mimes:jpeg,png,jpg,gif,svg,svg+xml|max:10240',
             'site_description' => 'nullable|string|max:500',
             'facebook_link' => 'nullable|url|max:255',
             'youtube_link' => 'nullable|url|max:255',
@@ -34,6 +34,11 @@ class AppSettingsController extends Controller
             'twitter_link' => 'nullable|url|max:255',
             'linkedin_link' => 'nullable|url|max:255',
             'pinterest_link' => 'nullable|url|max:255',
+            'why_us_title' => 'nullable|string|max:255',
+            'why_us_tagline' => 'nullable|string|max:1000',
+            'why_us_items' => 'nullable|array',
+            'why_us_items.*.title' => 'nullable|string|max:255',
+            'why_us_items.*.description' => 'nullable|string|max:1000',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -69,6 +74,20 @@ class AppSettingsController extends Controller
                 $contactPath = $current ? ltrim(preg_replace('/^.*?contact_image/', 'contact_image', $current->contact_image), '/') : null;
             }
 
+            // Why-Choose-Us items arrive as an array of {title, description}
+            // rows from the dynamic admin form. Drop any row whose title AND
+            // description are both empty (those are placeholders the admin
+            // added then didn't fill in). Re-index so the JSON list stays a
+            // 0-based array, not an associative map.
+            $whyUsItems = collect($request->input('why_us_items', []))
+                ->map(fn ($row) => [
+                    'title'       => trim((string) ($row['title']       ?? '')),
+                    'description' => trim((string) ($row['description'] ?? '')),
+                ])
+                ->filter(fn ($row) => $row['title'] !== '' || $row['description'] !== '')
+                ->values()
+                ->all();
+
             $settings = [
                 'email' => $request->input('site_email'),
                 'phone' => $request->input('site_phone'),
@@ -85,6 +104,9 @@ class AppSettingsController extends Controller
                 'favicon' => $faviconPath,
                 'og_image' => $ogImagePath,
                 'contact_image' => $contactPath,
+                'why_us_title' => $request->input('why_us_title'),
+                'why_us_tagline' => $request->input('why_us_tagline'),
+                'why_us_items' => $whyUsItems,
             ];
 
             AppSettings::updateOrCreate(['site_name' => 'dproperty'], $settings);

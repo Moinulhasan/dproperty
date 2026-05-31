@@ -576,12 +576,68 @@ select.select2-location {
 
 /* Mobile Responsiveness for Premium Search */
 @media (max-width: 991px) {
+    /* MOBILE LAYOUT REWRITE.
+       Previously the search box was absolutely-positioned over the hero and
+       we kept growing the hero's min-height to "contain" it. That approach
+       broke on every device because the search box height depends on the
+       viewport width (2-col vs 1-col grid), so it never reliably fit any
+       given hero height. The fix: on mobile we put the search box into
+       NORMAL document flow. Hero becomes a short banner, search box flows
+       below it, Featured Properties flows below the search box. Nothing
+       overlaps anything because nothing is absolutely positioned. */
+
+    .hero-carousel-section {
+        overflow: visible;
+        padding-bottom: 0;
+    }
+
+    .hero-slide {
+        /* Hero fills the viewport on every phone so the carousel image is
+           the dominant top-of-page visual. Combined with the search wrapper's
+           -402px pull below, this lands the search tabs partway down the
+           hero — same proportional effect on a 568px iPhone SE as on a
+           932px iPhone 14 Pro Max. svh ducks iOS Safari's URL-bar resize
+           jank; vh is the fallback for older Safari. */
+        min-height: 100vh;
+        min-height: 100svh;
+    }
+
+    /* Drop the hero's dark overlay z-index on mobile so the hero image
+       reads cleanly under the search content. The overlay still paints but
+       no longer creates its own stacking context. */
+    .hero-overlay {
+        z-index: auto !important;
+    }
+
+    /* Bootstrap's carousel dots (.carousel-indicators) sit absolute-bottom
+       of the carousel and were colliding with the Search button on phones.
+       They're not useful on a mobile-touch slider anyway. */
+    .carousel-indicators {
+        display: none !important;
+    }
+
+    .search-box {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+    }
+
     .search-section-wrapper {
-        padding: 0 10px;
-        top: 10px;
+        position: static !important;
+        top: auto;
         bottom: auto;
+        left: auto;
+        right: auto;
         transform: none;
-        /* Anchor to the very top of the hero, ~10px below the fixed nav. */
+        padding: 0 12px;
+        /* The search content lives ON TOP of the hero — the wrapper is
+           pulled up 402px from its natural position (right after the hero)
+           so the FOR RENT / FOR SELL tabs land partway down the hero image.
+           Same value cascades to the 850px and 576px breakpoints below, so
+           "search overlaps hero" looks identical on every phone size while
+           still being in normal document flow (no Featured-Properties
+           collisions possible). */
+        margin-top: -402px;
+        margin-bottom: 24px;
+        z-index: 5;
     }
 
     .search-container {
@@ -598,7 +654,7 @@ select.select2-location {
     }
 
     .search-card {
-        padding: 12px 18px !important;
+        padding: 10px 14px !important;
         border-right: none !important;
         border-bottom: 1px solid #eee !important;
         width: 100% !important;
@@ -609,8 +665,18 @@ select.select2-location {
         border-bottom: none !important;
     }
 
+    .search-card .card-label {
+        font-size: 0.62rem !important;
+        margin-bottom: 2px;
+    }
+
+    .search-card .card-sub-label {
+        font-size: 0.65rem !important;
+        margin-top: 2px;
+    }
+
     .search-action-box {
-        padding: 20px !important;
+        padding: 12px !important;
         width: 100% !important;
         background: white !important;
         border-radius: 0 0 24px 24px !important;
@@ -619,9 +685,10 @@ select.select2-location {
 
     .btn-search-compact {
         width: 100% !important;
-        height: 56px !important;
+        height: 44px !important;
         margin: 0 !important;
-        border-radius: 12px !important;
+        border-radius: 10px !important;
+        font-size: 0.95rem !important;
     }
 
     .search-tabs-outer {
@@ -632,8 +699,8 @@ select.select2-location {
     .search-tabs {
         display: flex !important;
         background: rgba(255, 255, 255, 0.98) !important;
-        margin-top: 20px !important;
-        border-radius: 12px 12px 0 0 !important;
+        margin-top: 8px !important;
+        border-radius: 10px 10px 0 0 !important;
         box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05) !important;
         z-index: 10 !important;
         position: relative !important;
@@ -641,10 +708,11 @@ select.select2-location {
     }
 
     .search-tab {
-        padding: 10px 20px !important;
-        font-size: 0.85rem !important;
+        padding: 7px 16px !important;
+        font-size: 0.75rem !important;
         text-align: center !important;
         font-weight: 700 !important;
+        letter-spacing: 0.3px !important;
     }
 
     .premium-search-dropdown {
@@ -674,11 +742,16 @@ select.select2-location {
     }
 
     .dropdown-toggle-custom {
-        font-size: 1.1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .dropdown-toggle-custom.picker-toggle {
+        height: 42px !important;
+        padding: 8px 12px !important;
     }
 
     .card-value {
-        font-size: 1.1rem !important;
+        font-size: 0.9rem !important;
     }
 }
 
@@ -980,19 +1053,9 @@ select.select2-location {
 }
 
 @media (max-width: 850px) {
-    .search-section-wrapper {
-        position: absolute;
-        top: 10px;
-        left: 0;
-        right: 0;
-        transform: none;
-        z-index: 100 !important;
-        padding: 0 15px;
-        margin-top: 0;
-        margin-bottom: 0;
-        overflow: visible !important;
-    }
-
+    /* Search box now flows in document order on mobile (set in the 991px
+       block above), so we only need overflow guards for dropdowns to escape
+       the search box visually — no positioning or min-height hacks. */
     .hero-carousel-section,
     #heroCarousel,
     .carousel-inner,
@@ -1002,18 +1065,14 @@ select.select2-location {
         overflow: visible !important;
     }
 
-    .hero-slide {
-        min-height: 55vh;
-    }
-
     .compact-search-grid {
         grid-template-columns: 1fr 1fr;
     }
 
     .search-card {
         border-right: 1px solid #f2f2f2;
-        min-height: 90px;
-        padding: 15px 20px;
+        min-height: 64px;
+        padding: 8px 14px;
     }
 
     .search-card:nth-child(even) {
@@ -1026,68 +1085,75 @@ select.select2-location {
 }
 
 @media (max-width: 576px) {
-    .search-section-wrapper {
-        margin-top: 0;
-        top: 10px;
-        /* Sits ~10px below the fixed nav, anchored to top of the hero. */
-    }
+    /* No positioning/height hacks here — the search box is in normal flow
+       (see the 991px block). Only fine-tunes for very small phones live below. */
 
     .compact-search-grid {
         grid-template-columns: 1fr !important;
     }
+}
+
+/* Short / narrow phones (iPhone 6/7/8/SE2/SE3 territory at 375×667).
+   The -402px pull from the 991px block lands the search wrapper too close
+   to the navbar on these compact viewports, so dial it back to -328px.
+   Matched by viewport size (not user-agent), so any phone in this region
+   gets the same treatment. */
+@media (max-width: 414px) and (max-height: 700px) {
+    .search-section-wrapper {
+        margin-top: -328px;
+    }
+}
+
+@media (max-width: 576px) {
 
     .search-tabs-outer {
-        margin-left: 15px;
+        margin-left: 12px;
     }
 
     .search-tab {
-        padding: 6px 18px;
-        font-size: 0.8rem;
+        padding: 6px 14px;
+        font-size: 0.72rem;
     }
 
     .search-card {
-        padding: 10px 12px;
-        min-height: 75px;
-        border-right: 1px solid #f2f2f2;
-    }
-
-    .search-card:nth-child(even) {
+        padding: 8px 12px;
+        min-height: 56px;
         border-right: none;
     }
 
     .search-card .card-value,
     .search-card .select2-container--default .select2-selection--single .select2-selection__rendered,
     .dropdown-toggle-custom {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
     }
 
     .search-card .card-label {
-        font-size: 0.6rem;
-        margin-bottom: 2px;
+        font-size: 0.58rem !important;
+        margin-bottom: 1px;
     }
 
     .search-card .card-sub-label {
-        font-size: 0.7rem;
-        margin-top: 2px;
+        font-size: 0.62rem !important;
+        margin-top: 1px;
     }
 
     .search-action-box {
-        grid-column: span 2;
-        padding: 15px;
+        grid-column: span 1;
+        padding: 10px 12px;
     }
 
     .btn-search-compact {
         width: 100%;
-        height: 55px;
-        font-size: 1.1rem;
-        border-radius: 12px;
+        height: 42px;
+        font-size: 0.9rem;
+        border-radius: 10px;
     }
 
     .btn-search-compact::after {
         content: ' SEARCH';
-        margin-left: 8px;
+        margin-left: 6px;
         font-weight: 700;
-        font-size: 0.9rem;
+        font-size: 0.82rem;
     }
 
     /* Prevent dropdown overflow on mobile */
