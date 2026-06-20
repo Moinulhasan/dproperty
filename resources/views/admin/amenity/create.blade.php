@@ -30,6 +30,12 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="order">Display Order</label>
+                            <input type="number" min="0" id="order" name="order" class="form-control @error('order') is-invalid @enderror" placeholder="0" value="{{ old('order', 0) }}" />
+                            <div class="form-text">Lower number = shown first on the public site.</div>
+                            @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
                         <button type="submit" class="btn btn-primary">Create Amenity</button>
                         <a href="{{ route('admin.amenity.list') }}" class="btn btn-outline-secondary">Back</a>
                     </form>

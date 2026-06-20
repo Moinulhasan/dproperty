@@ -11,6 +11,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <th width="8%">Order</th>
                         <th width="10%">Icon</th>
                         <th>Name</th>
                         <th width="20%">Actions</th>
@@ -19,6 +20,7 @@
                 <tbody class="table-border-bottom-0">
                     @forelse($amenities as $amenity)
                         <tr>
+                            <td><span class="badge bg-label-secondary">{{ $amenity->order }}</span></td>
                             <td>
                                 @if($amenity->icon)
                                     <i class="{{ $amenity->icon }} fa-2x text-primary"></i>
@@ -34,7 +36,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="text-center">No amenities found.</td>
+                            <td colspan="4" class="text-center">No amenities found.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -6,31 +6,32 @@
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Add New Property</h5>
+                    <small class="text-muted">Fields marked with <span class="text-danger">*</span> are required.</small>
                 </div>
                 <div class="card-body">
                     @include('admin.include.alert')
                     <form action="{{ route('admin.property.add.post') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        
+
                         <!-- Basic Info -->
                         <div class="divider divider-primary">
                             <div class="divider-text">Basic Information</div>
                         </div>
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label" for="property-title">Property Title</label>
+                                <label class="form-label" for="property-title">Property Title <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="property-title" name="title" placeholder="Enter property title" value="{{ old('title') }}" required>
                                 @error('title')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label" for="property-price">Price</label>
+                                <label class="form-label" for="property-price">Price <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="property-price" name="price" placeholder="Enter price" value="{{ old('price') }}" required>
                                 @error('price')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-8 mb-3">
-                                <label class="form-label" for="property-category">Property Category & Type</label>
+                                <label class="form-label" for="property-category">Property Category &amp; Type <span class="text-danger">*</span></label>
                                 <select class="form-select select2-categories" id="property-category" name="property_category_id" required>
                                     <option value="">Select Category/Type</option>
                                     @foreach($categories as $parent)
@@ -45,10 +46,9 @@
                                 @error('property_category_id')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label" for="property-status">Property Status</label>
+                                <label class="form-label" for="property-status">Property Status <span class="text-danger">*</span></label>
                                 <select class="form-select" id="property-status" name="property_status" required>
                                     <option value="">Select Status</option>
-                                    <option value="Buy" {{ old('property_status') == 'Buy' ? 'selected' : '' }}>Buy</option>
                                     <option value="Rent" {{ old('property_status') == 'Rent' ? 'selected' : '' }}>Rent</option>
                                     <option value="Sell" {{ old('property_status') == 'Sell' ? 'selected' : '' }}>Sell</option>
                                 </select>
@@ -76,8 +76,8 @@
                             <div class="divider-text">Property Description</div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="property-description">Description</label>
-                            <textarea class="form-control" id="property-description" name="description" placeholder="Enter detailed property description">{{ old('description') }}</textarea>
+                            <label class="form-label" for="property-description">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="property-description" name="description" placeholder="Enter detailed property description" required>{{ old('description') }}</textarea>
                             @error('description')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                         </div>
 
@@ -139,18 +139,20 @@
                                 </div>
                             @endforeach
                             <div class="col-md-3 mb-3">
-                                <label class="form-label" for="project-id">Project ID</label>
-                                <input type="text" class="form-control" id="project-id" name="project_id" placeholder="e.g. PR-001" value="{{ old('project_id') }}">
+                                <label class="form-label" for="project-id">Project ID <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="project-id" name="project_id" placeholder="e.g. PR-001" value="{{ old('project_id') }}" required>
+                                @error('project_id')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label" for="is-furnished">Furnishing Status</label>
+                                <label class="form-label" for="is-furnished">Furnishing Status <span class="text-danger">*</span></label>
                                 <select class="form-select" id="is-furnished" name="is_furnished" required>
                                     <option value="Unfurnished" {{ old('is_furnished') == 'Unfurnished' ? 'selected' : '' }}>Unfurnished</option>
                                     <option value="Semi-Furnished" {{ old('is_furnished') == 'Semi-Furnished' ? 'selected' : '' }}>Semi-Furnished</option>
                                     <option value="Furnished" {{ old('is_furnished') == 'Furnished' ? 'selected' : '' }}>Furnished</option>
                                 </select>
+                                @error('is_furnished')<div class="text-danger mt-1">{{ $message }}</div>@enderror
                             </div>
                             @php
                                 // When admin clicks "Add New Feature" from the Featured Properties
@@ -172,7 +174,7 @@
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="apply-watermark" name="apply_watermark" value="1" {{ old('apply_watermark', '1') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="apply-watermark" title="Stamps the company logo over uploaded images. Skipped if the property has no company or the company has no logo.">Apply Watermark</label>
+                                    <label class="form-check-label" for="apply-watermark" title="Stamps the company logo over the feature image and gallery images. Floor plans are never watermarked. Skipped if the property has no company or the company has no logo.">Apply Watermark <small class="text-muted">(feature &amp; gallery only)</small></label>
                                 </div>
                             </div>
                         </div>
@@ -270,6 +272,7 @@
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/sortablejs/sortable.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Summernote
@@ -325,6 +328,11 @@
                     var dz = this;
                     this.on("addedfile", function(file) {
                         updateGalleryInput(dz);
+                        // Hint to the admin that previews can be reordered.
+                        if (file.previewElement) {
+                            file.previewElement.style.cursor = 'move';
+                            file.previewElement.title = 'Drag to reorder';
+                        }
                     });
                     this.on("removedfile", function(file) {
                         updateGalleryInput(dz);
@@ -338,6 +346,37 @@
                     dataTransfer.items.add(file);
                 });
                 document.getElementById('gallery-images-input').files = dataTransfer.files;
+            }
+
+            // Drag-and-drop reorder for gallery previews. After each drag we
+            // (a) rebuild Dropzone's internal files array to match the new
+            // DOM order, then (b) rewrite the file input's FileList so the
+            // server receives images in that order. Without (b) the order
+            // change would be visual only and would not survive submit.
+            if (typeof Sortable !== 'undefined') {
+                const previewsContainer = galleryDropzone.previewsContainer || document.getElementById('gallery-images-dropzone');
+                Sortable.create(previewsContainer, {
+                    animation: 150,
+                    draggable: '.dz-preview',
+                    filter: '.dz-message, .dz-remove',
+                    preventOnFilter: false,
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    onEnd: function () {
+                        const reordered = [];
+                        previewsContainer.querySelectorAll('.dz-preview').forEach((preview) => {
+                            const file = galleryDropzone.files.find((f) => f.previewElement === preview);
+                            if (file) reordered.push(file);
+                        });
+                        // Append any file that somehow lacked a preview node
+                        // (shouldn't happen, but guards against silent loss).
+                        galleryDropzone.files.forEach((f) => {
+                            if (!reordered.includes(f)) reordered.push(f);
+                        });
+                        galleryDropzone.files = reordered;
+                        updateGalleryInput(galleryDropzone);
+                    }
+                });
             }
 
             // Floor Plan Dropzone

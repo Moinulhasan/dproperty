@@ -22,10 +22,12 @@ class HomePageController extends Controller
         $sliders = HomeSlider::orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
-        $services = Services::orderBy('created_at', 'desc')
+        $services = Services::orderBy('order')
+            ->orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
-        $testimonials = Testimonial::orderBy('created_at', 'desc')
+        $testimonials = Testimonial::orderBy('order')
+            ->orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
         $settings = AppSettings::where('site_name', 'dproperty')->first();
@@ -98,7 +100,20 @@ class HomePageController extends Controller
             ->take(4)
             ->get();
 
-        return view('pages.property_details', compact('settings', 'property', 'recommended_properties'));
+        // Buy / Sell properties get a "View Terms & Conditions" button that
+        // opens a modal with the relevant block of admin-managed copy. Rent
+        // properties don't have terms configured, so the button is hidden.
+        $termsKey = strtolower($property->property_status); // 'buy' | 'sell' | 'rent'
+        $termsContent = null;
+        if (in_array($termsKey, ['buy', 'sell'], true)) {
+            $termsContent = optional(
+                \App\Models\TermsCondition::where('key', $termsKey)->first()
+            )->content;
+        }
+
+        return view('pages.property_details', compact(
+            'settings', 'property', 'recommended_properties', 'termsContent', 'termsKey'
+        ));
     }
 
     public function buy(Request $request)
@@ -375,7 +390,8 @@ class HomePageController extends Controller
     public function service()
     {
         $settings = AppSettings::where('site_name', 'dproperty')->first();
-        $services = Services::orderBy('created_at', 'desc')
+        $services = Services::orderBy('order')
+            ->orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
         $tags = Tags::where('status', 1)->get();
@@ -389,7 +405,8 @@ class HomePageController extends Controller
             ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
-        $testimonials = Testimonial::orderBy('created_at', 'desc')
+        $testimonials = Testimonial::orderBy('order')
+            ->orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
         return view('pages.about_us', compact('settings', 'abouts', 'testimonials'));

@@ -27,7 +27,6 @@
                     <label class="form-label">Status</label>
                     <select name="property_status" class="form-select">
                         <option value="">All Status</option>
-                        <option value="Buy" {{ request('property_status') == 'Buy' ? 'selected' : '' }}>Buy</option>
                         <option value="Rent" {{ request('property_status') == 'Rent' ? 'selected' : '' }}>Rent</option>
                         <option value="Sell" {{ request('property_status') == 'Sell' ? 'selected' : '' }}>Sell</option>
                     </select>

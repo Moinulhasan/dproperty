@@ -96,6 +96,13 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="testimonial-order">Display Order</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" min="0" id="testimonial-order" name="order" class="form-control" placeholder="0" value="{{ old('order', $testimonial->order) }}" />
+                                            <small class="text-muted">Lower number = shown first in the testimonials carousel.</small>
+                                        </div>
+                                    </div>
                                     <div class="w-100 text-center">
                                         <button type="submit" class="btn btn-primary w-100">Save</button>
                                     </div>

@@ -218,8 +218,8 @@
                         <div class="features-container">
                             <h4 class="detail-section-title">Features & Amenities</h4>
                             <div class="features-grid">
-                                {{-- Sorted ascending alphabetically by name. --}}
-                                @foreach($property->amenities->sortBy('name') as $amenity)
+                                {{-- Sorted by admin-set `order` (lower first), then alphabetically. --}}
+                                @foreach($property->amenities->sortBy(['order', 'name']) as $amenity)
                                     <div class="feature-check">
                                         <i class="{{ $amenity->icon ?? 'fas fa-check-square' }}"></i> {{ $amenity->name }}
                                     </div>
@@ -341,6 +341,11 @@
                                 <i class="fab fa-whatsapp"></i> WhatsApp
                             </a>
                         @endif
+                        @if(!empty($termsContent))
+                            <button type="button" class="contact-btn btn-terms" data-bs-toggle="modal" data-bs-target="#termsConditionModal">
+                                <i class="fas fa-file-contract"></i> {{ ucfirst($termsKey) }} Terms &amp; Conditions
+                            </button>
+                        @endif
                     </div>
 
                     <div class="mt-4 pt-3 border-top">
@@ -438,6 +443,29 @@
         @endif
     </div>
 </div>
+
+@if(!empty($termsContent))
+<!-- Terms & Conditions Modal -->
+<div class="modal fade" id="termsConditionModal" tabindex="-1" aria-labelledby="termsConditionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsConditionModalLabel">
+                    <i class="fas fa-file-contract me-2 text-primary"></i>
+                    {{ ucfirst($termsKey) }} Terms &amp; Conditions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body terms-modal-body">
+                {!! $termsContent !!}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- Mobile Fixed Bottom Agent Bar -->
 <div class="mobile-agent-bar d-lg-none">

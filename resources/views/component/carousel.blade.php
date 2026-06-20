@@ -26,11 +26,15 @@
         <div class="search-section-wrapper">
             <div class="container">
                 <div class="search-container content-align-left animate-slide-up">
-                    <!-- Tabs -->
+                    <!-- Tabs (radio-card style, matches the "I Want to" buttons on the Post Property page) -->
                     <div class="search-tabs-outer">
                         <div class="search-tabs">
-                            <button class="search-tab active" data-type="rent">FOR RENT</button>
-                            <button class="search-tab" data-type="buy">FOR SELL</button>
+                            <button class="search-tab active" data-type="rent">
+                                <i class="fas fa-key"></i><span>For Rent</span>
+                            </button>
+                            <button class="search-tab" data-type="buy">
+                                <i class="fas fa-tag"></i><span>For Sell</span>
+                            </button>
                         </div>
                     </div>
                     

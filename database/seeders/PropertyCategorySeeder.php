@@ -2,20 +2,21 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PropertyCategory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PropertyCategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // Two top-level groups, each with its own list of types. `firstOrCreate`
+        // keyed by name keeps the seeder safe to re-run — no duplicates.
         $categories = [
             'Residential' => [
                 'Apartment',
                 'House',
+                'Villa',
                 'Duplex',
                 'Studio',
                 'Penthouse',
@@ -28,23 +29,26 @@ class PropertyCategorySeeder extends Seeder
                 'Factory',
                 'Showroom',
                 'Commercial Land',
-            ]
+            ],
         ];
 
+        $total = 0;
         foreach ($categories as $parentName => $children) {
-            $parent = \App\Models\PropertyCategory::create([
-                'name' => $parentName,
-                'slug' => \Str::slug($parentName),
-                'parent_id' => null,
-            ]);
+            $parent = PropertyCategory::firstOrCreate(
+                ['name' => $parentName, 'parent_id' => null],
+                ['slug' => Str::slug($parentName), 'status' => 1]
+            );
+            $total++;
 
             foreach ($children as $childName) {
-                \App\Models\PropertyCategory::create([
-                    'name' => $childName,
-                    'slug' => \Str::slug($childName),
-                    'parent_id' => $parent->id,
-                ]);
+                PropertyCategory::firstOrCreate(
+                    ['name' => $childName, 'parent_id' => $parent->id],
+                    ['slug' => Str::slug($childName), 'status' => 1]
+                );
+                $total++;
             }
         }
+
+        $this->command?->info("Seeded {$total} property categories (parents + children).");
     }
 }

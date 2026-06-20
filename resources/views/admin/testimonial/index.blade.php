@@ -23,6 +23,7 @@
                 <table class="datatables-sliders table" id="sliderList">
                     <thead class="border-top">
                     <tr>
+                        <th width="6%">Order</th>
                         <th>Client Name</th>
                         <th class="text-center">Designation</th>
                         <th class="text-center">Avatar</th>
@@ -36,6 +37,7 @@
                     @if(count($testimonials))
                         @foreach($testimonials as $testimonial)
                             <tr>
+                                <td><span class="badge bg-label-secondary">{{ $testimonial->order }}</span></td>
                                 <td>{{$testimonial->name}}</td>
                                 <td>{{$testimonial->designation}}</td>
                                 <td>

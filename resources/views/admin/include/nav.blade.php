@@ -1,8 +1,20 @@
+@php
+    // Resolve the brand once per page render. `getRawOriginal('logo')` reads
+    // the underlying column value before the model's getLogoAttribute()
+    // accessor wraps it in asset() — that way an empty/null DB value falls
+    // through cleanly to the text fallback below.
+    $adminBrandSettings = \App\Models\AppSettings::where('site_name', 'dproperty')->first();
+    $adminBrandLogoPath = $adminBrandSettings?->getRawOriginal('logo');
+@endphp
 <!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="#" class="app-brand-link">
-            <span class="app-brand-text demo menu-text fw-bold">DProperty</span>
+        <a href="{{ url('/') }}" class="app-brand-link" target="_blank" rel="noopener" title="Open public site">
+            @if($adminBrandLogoPath)
+                <img src="{{ $adminBrandSettings->logo }}" alt="DProperty" style="max-height: 34px; max-width: 140px; object-fit: contain;">
+            @else
+                <span class="app-brand-text demo menu-text fw-bold">DProperty</span>
+            @endif
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -30,10 +42,16 @@
                 <span class="menu-header-text">Multi-Tenancy</span>
             </li>
             @can('manage-company')
-                <li class="menu-item {{request()->routeIs('admin.company*')? 'active' : ''}}">
+                <li class="menu-item {{ request()->routeIs('admin.company.*') ? 'active' : '' }}">
                     <a href="{{route('admin.company.list')}}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-building"></i>
                         <div data-i18n="Companies">Companies</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.company-request.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.company-request.list') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-clipboard-list"></i>
+                        <div data-i18n="Company Requests">Company Requests</div>
                     </a>
                 </li>
             @endcan
@@ -94,6 +112,12 @@
                     <a href="{{route('admin.property-request.list')}}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-inbox"></i>
                         <div data-i18n="Property Requests">Property Requests</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.terms-conditions*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.terms-conditions.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-file-text"></i>
+                        <div data-i18n="Terms &amp; Conditions">Terms &amp; Conditions</div>
                     </a>
                 </li>
                 <li class="menu-item {{request()->routeIs('admin.contact-inquiry*')? 'active' : ''}}">

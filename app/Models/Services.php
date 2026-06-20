@@ -16,6 +16,14 @@ class Services extends Model
 
     public function getImageAttribute($value)
     {
+        if (!$value) {
+            return null;
+        }
+        // Pass full URLs through untouched (e.g., seeded Unsplash images).
+        // Otherwise treat the value as a relative path inside public/storage.
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
         return asset('storage/' . $value);
     }
 }

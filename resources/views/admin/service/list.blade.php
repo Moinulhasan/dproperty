@@ -23,6 +23,7 @@
                 <table class="datatables-sliders table" id="sliderList">
                     <thead class="border-top">
                     <tr>
+                        <th width="6%">Order</th>
                         <th>Title</th>
                         <th class="text-center">Short Description</th>
                         <th class="text-center">Image</th>
@@ -35,6 +36,7 @@
                     @if(count($services))
                         @foreach($services as $service)
                             <tr>
+                                <td><span class="badge bg-label-secondary">{{ $service->order }}</span></td>
                                 <td>{{$service->title}}</td>
                                 <td>{{$service->description}}</td>
                                 <td>

@@ -65,6 +65,13 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label" for="service-order">Display Order</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" min="0" id="service-order" name="order" class="form-control" placeholder="0" value="{{ old('order', $service->order) }}" />
+                                            <small class="text-muted">Lower number = shown first on the public site.</small>
+                                        </div>
+                                    </div>
                                     <div class="w-100 text-center">
                                         <button type="submit" class="btn btn-primary w-100">Save</button>
                                     </div>

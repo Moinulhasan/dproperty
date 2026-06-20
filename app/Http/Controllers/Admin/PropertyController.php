@@ -87,7 +87,7 @@ class PropertyController extends Controller
 
     public function add()
     {
-        $amenities = \App\Models\Amenity::all();
+        $amenities = \App\Models\Amenity::orderBy('order')->orderBy('name')->get();
         $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
         $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
@@ -99,27 +99,34 @@ class PropertyController extends Controller
 
     public function addPost(Request $request)
     {
+        // Validation matches the DB schema's NOT NULL contract: every field
+        // the user is expected to fill in for a valid property is required.
+        // Legacy columns (area, bedrooms, bathrooms, link) were migrated to
+        // nullable separately since they're now handled via the dynamic
+        // property_detail_values system.
         $validator = \Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'property_category_id' => 'required|exists:property_categories,id',
-            'property_status' => 'required|string|in:Buy,Rent,Sell',
-            'company_id' => 'nullable|exists:companies,id',
-            'location_id' => 'required|exists:locations,id',
-            'route' => 'nullable|string',
-            'sub_route' => 'nullable|string',
-            'road' => 'nullable|string',
-            'lane' => 'nullable|string',
-            'bedrooms' => 'nullable|integer',
-            'bathrooms' => 'nullable|integer',
-            'area' => 'nullable|numeric',
-            'is_furnished' => 'required|string',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'feature_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'floor_plan' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'video_link' => 'nullable|url',
-            'map_link' => 'nullable|url',
-            'amenities' => 'nullable|array',
+            'title'                 => 'required|string|max:255',
+            'price'                 => 'required|numeric|min:0',
+            'property_category_id'  => 'required|exists:property_categories,id',
+            'property_status'       => 'required|string|in:Rent,Sell',
+            'company_id'            => 'nullable|exists:companies,id',
+            'location_id'           => 'required|exists:locations,id',
+            'project_id'            => 'required|string|max:100',
+            'is_furnished'          => 'required|string',
+            'description'           => 'required|string',
+            'route'                 => 'nullable|string',
+            'sub_route'             => 'nullable|string',
+            'road'                  => 'nullable|string',
+            'lane'                  => 'nullable|string',
+            'bedrooms'              => 'nullable|integer|min:0',
+            'bathrooms'             => 'nullable|integer|min:0',
+            'area'                  => 'nullable|numeric|min:0',
+            'images.*'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'feature_image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'floor_plan'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'video_link'            => 'nullable|url',
+            'map_link'              => 'nullable|string',
+            'amenities'             => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
@@ -165,22 +172,18 @@ class PropertyController extends Controller
                 $data['category'] = $categoryModel->parent ? $categoryModel->parent->name : $categoryModel->name;
             }
 
-            // Resolve the watermark logo path once. The watermark uses the
-            // selected company's logo only — no static fallback — so when
-            // the property has no company or the company has no logo, the
-            // service receives null and silently skips the stamp.
+            // Resolve the watermark logo path once. Tries the property's
+            // selected company logo first; if not available, falls back to
+            // the App Settings site logo. If neither yields a file on disk,
+            // the service receives null and silently skips the stamp.
+            // The checkbox only governs the FEATURE IMAGE and GALLERY IMAGES;
+            // floor plans are never watermarked.
             $logoPath = null;
-            if ($data['apply_watermark'] && $data['company_id']) {
-                $company = Company::find($data['company_id']);
-                if ($company && $company->logo) {
-                    $candidate = public_path($company->logo);
-                    if (file_exists($candidate)) {
-                        $logoPath = $candidate;
-                    }
-                }
+            if ($data['apply_watermark']) {
+                $logoPath = $this->resolveWatermarkLogoPath($data['company_id'] ?? null);
             }
 
-            // Handle Gallery Images
+            // Handle Gallery Images — watermarked when the checkbox is on.
             if ($request->hasFile('images')) {
                 $images = [];
                 foreach ($request->file('images') as $image) {
@@ -192,7 +195,7 @@ class PropertyController extends Controller
                 $data['images'] = $images;
             }
 
-            // Handle Feature Image
+            // Handle Feature Image — watermarked when the checkbox is on.
             if ($request->hasFile('feature_image')) {
                 $name = time() . '_feature.webp';
                 $targetPath = public_path('uploads/property/') . $name;
@@ -200,11 +203,12 @@ class PropertyController extends Controller
                 $data['feature_image'] = 'uploads/property/' . $name;
             }
 
-            // Handle Floor Plan
+            // Handle Floor Plan — explicit null so floor plans are NEVER
+            // watermarked, regardless of the Apply Watermark checkbox state.
             if ($request->hasFile('floor_plan')) {
                 $name = time() . '_floor.webp';
                 $targetPath = public_path('uploads/property/') . $name;
-                $this->imageService->process($request->floor_plan->getRealPath(), $targetPath, 75, $logoPath);
+                $this->imageService->process($request->floor_plan->getRealPath(), $targetPath, 75, null);
                 $data['floor_plan'] = 'uploads/property/' . $name;
             }
 
@@ -228,7 +232,15 @@ class PropertyController extends Controller
 
             return redirect()->route('admin.property.list')->with('success', 'Property added successfully.');
         } catch (\Exception $exception) {
-            return redirect()->back()->withErrors(['error' => $exception->getMessage()])->withInput();
+            // Log the real error for the dev/ops team; keep the user-facing
+            // message generic so we don't leak SQL/stack details.
+            \Log::error('Property add failed: ' . $exception->getMessage(), [
+                'user_id' => auth()->id(),
+                'trace'   => $exception->getTraceAsString(),
+            ]);
+            return redirect()->back()
+                ->withErrors(['error' => 'Something went wrong. Please try again.'])
+                ->withInput();
         }
     }
 
@@ -246,7 +258,7 @@ class PropertyController extends Controller
         }
 
 
-        $amenities = Amenity::all();
+        $amenities = Amenity::orderBy('order')->orderBy('name')->get();
         $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
         $propertyDetails = PropertyDetail::where('status', 1)->orderBy('sort_order')->get();
         $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
@@ -271,27 +283,30 @@ class PropertyController extends Controller
             }
         }
 
+        // Same required-field contract as addPost.
         $validator = \Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'property_category_id' => 'required|exists:property_categories,id',
-            'property_status' => 'required|string',
-            'company_id' => 'nullable|exists:companies,id',
-            'location_id' => 'required|exists:locations,id',
-            'route' => 'nullable|string',
-            'sub_route' => 'nullable|string',
-            'road' => 'nullable|string',
-            'lane' => 'nullable|string',
-            'bedrooms' => 'nullable|integer',
-            'bathrooms' => 'nullable|integer',
-            'area' => 'nullable|numeric',
-            'is_furnished' => 'required|string',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'feature_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'floor_plan' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'video_link' => 'nullable|url',
-            'map_link' => 'nullable|url',
-            'amenities' => 'nullable|array',
+            'title'                 => 'required|string|max:255',
+            'price'                 => 'required|numeric|min:0',
+            'property_category_id'  => 'required|exists:property_categories,id',
+            'property_status'       => 'required|string|in:Rent,Sell',
+            'company_id'            => 'nullable|exists:companies,id',
+            'location_id'           => 'required|exists:locations,id',
+            'project_id'            => 'required|string|max:100',
+            'is_furnished'          => 'required|string',
+            'description'           => 'required|string',
+            'route'                 => 'nullable|string',
+            'sub_route'             => 'nullable|string',
+            'road'                  => 'nullable|string',
+            'lane'                  => 'nullable|string',
+            'bedrooms'              => 'nullable|integer|min:0',
+            'bathrooms'             => 'nullable|integer|min:0',
+            'area'                  => 'nullable|numeric|min:0',
+            'images.*'              => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'feature_image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'floor_plan'            => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'video_link'            => 'nullable|url',
+            'map_link'              => 'nullable|string',
+            'amenities'             => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
@@ -340,17 +355,11 @@ class PropertyController extends Controller
             // $property->company_id when Super Admin re-assigned it).
             $effectiveCompanyId = $data['company_id'] ?? $property->company_id;
             $logoPath = null;
-            if ($data['apply_watermark'] && $effectiveCompanyId) {
-                $company = Company::find($effectiveCompanyId);
-                if ($company && $company->logo) {
-                    $candidate = public_path($company->logo);
-                    if (file_exists($candidate)) {
-                        $logoPath = $candidate;
-                    }
-                }
+            if ($data['apply_watermark']) {
+                $logoPath = $this->resolveWatermarkLogoPath($effectiveCompanyId);
             }
 
-            // Handle Gallery Images
+            // Handle Gallery Images — watermarked when the checkbox is on.
             if ($request->hasFile('images')) {
                 $images = $property->images ?? [];
                 foreach ($request->file('images') as $image) {
@@ -362,7 +371,7 @@ class PropertyController extends Controller
                 $data['images'] = $images;
             }
 
-            // Handle Feature Image
+            // Handle Feature Image — watermarked when the checkbox is on.
             if ($request->hasFile('feature_image')) {
                 if ($property->feature_image && file_exists(public_path($property->feature_image))) {
                     unlink(public_path($property->feature_image));
@@ -373,14 +382,15 @@ class PropertyController extends Controller
                 $data['feature_image'] = 'uploads/property/' . $name;
             }
 
-            // Handle Floor Plan
+            // Handle Floor Plan — explicit null so floor plans are NEVER
+            // watermarked, regardless of the Apply Watermark checkbox state.
             if ($request->hasFile('floor_plan')) {
                 if ($property->floor_plan && file_exists(public_path($property->floor_plan))) {
                     unlink(public_path($property->floor_plan));
                 }
                 $name = time() . '_floor.webp';
                 $targetPath = public_path('uploads/property/') . $name;
-                $this->imageService->process($request->floor_plan->getRealPath(), $targetPath, 75, $logoPath);
+                $this->imageService->process($request->floor_plan->getRealPath(), $targetPath, 75, null);
                 $data['floor_plan'] = 'uploads/property/' . $name;
             }
 
@@ -404,7 +414,14 @@ class PropertyController extends Controller
 
             return redirect()->route('admin.property.list')->with('success', 'Property updated successfully.');
         } catch (\Exception $exception) {
-            return redirect()->back()->withErrors(['error' => $exception->getMessage()])->withInput();
+            \Log::error('Property update failed: ' . $exception->getMessage(), [
+                'property_id' => $property->id,
+                'user_id'     => auth()->id(),
+                'trace'       => $exception->getTraceAsString(),
+            ]);
+            return redirect()->back()
+                ->withErrors(['error' => 'Something went wrong. Please try again.'])
+                ->withInput();
         }
     }
 
@@ -515,6 +532,53 @@ class PropertyController extends Controller
 
         $label = $property->status ? 'activated' : 'deactivated';
         return redirect()->back()->with('success', "Property {$label} successfully.");
+    }
+
+    /**
+     * Resolve the absolute filesystem path of the logo to stamp on uploaded
+     * images. Preference order:
+     *   1. The given company's logo file (stored under public/uploads/company/).
+     *   2. The App Settings site logo (stored under public/storage/logos/ via
+     *      Laravel's storage:link symlink).
+     * Returns null when nothing usable is on disk, in which case the image
+     * service skips the watermark silently.
+     *
+     * URL-only values (e.g., seeded Unsplash placeholders) are skipped because
+     * we can't draw an HTTP URL onto a GD canvas — only local files work.
+     */
+    protected function resolveWatermarkLogoPath(?int $companyId): ?string
+    {
+        // 1) Company logo
+        if ($companyId) {
+            $company = Company::find($companyId);
+            if ($company && $company->logo && !$this->isUrl($company->logo)) {
+                $candidate = public_path($company->logo);
+                if (file_exists($candidate)) {
+                    return $candidate;
+                }
+            }
+        }
+
+        // 2) App Settings site logo. getRawOriginal('logo') is the raw column
+        //    value before the model's getLogoAttribute() accessor wraps it in
+        //    asset() — that's what maps cleanly to a filesystem path.
+        $settings = \App\Models\AppSettings::where('site_name', 'dproperty')->first();
+        $rawSiteLogo = $settings?->getRawOriginal('logo');
+        if ($rawSiteLogo && !$this->isUrl($rawSiteLogo)) {
+            // App Settings stores via Storage::put on the public disk, so
+            // the on-disk location is public/storage/{rawSiteLogo}.
+            $candidate = public_path('storage/' . ltrim($rawSiteLogo, '/'));
+            if (file_exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    protected function isUrl(string $value): bool
+    {
+        return str_starts_with($value, 'http://') || str_starts_with($value, 'https://');
     }
 
     protected function authorizeMutation(Property $property): void

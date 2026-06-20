@@ -42,7 +42,9 @@
                             <label class="form-label" for="company-logo">Logo</label>
                             @if($company->logo)
                                 <div class="mb-2">
-                                    <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" width="100">
+                                    <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}"
+                                         style="width: 140px; height: 90px; object-fit: contain; background:#f8f9fa;"
+                                         class="rounded border">
                                 </div>
                             @endif
                             <input type="file" class="form-control" id="company-logo" name="logo">

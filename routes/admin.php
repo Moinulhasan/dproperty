@@ -130,6 +130,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('update', [AppSettingsController::class, 'updateAppSettings'])->name('app.settings.update');
     });
 
+    Route::group(['prefix' => 'terms-conditions'], function () {
+        Route::get('/',       [\App\Http\Controllers\Admin\TermsConditionController::class, 'index'])->name('terms-conditions.index');
+        Route::post('update', [\App\Http\Controllers\Admin\TermsConditionController::class, 'update'])->name('terms-conditions.update');
+    });
+
+    Route::group(['prefix' => 'company-requests'], function () {
+        Route::get('list',                  [\App\Http\Controllers\Admin\CompanyRequestController::class, 'index'])->name('company-request.list');
+        Route::get('show/{companyRequest}', [\App\Http\Controllers\Admin\CompanyRequestController::class, 'show'])->name('company-request.show');
+        Route::post('approve/{companyRequest}', [\App\Http\Controllers\Admin\CompanyRequestController::class, 'approve'])->name('company-request.approve');
+        Route::post('reject/{companyRequest}',  [\App\Http\Controllers\Admin\CompanyRequestController::class, 'reject'])->name('company-request.reject');
+        Route::get('delete/{companyRequest}',   [\App\Http\Controllers\Admin\CompanyRequestController::class, 'destroy'])->name('company-request.delete');
+    });
+
     Route::group(['prefix'=>'tags'],function (){
         Route::get('list',[ServiceController::class,'tagList'])->name('tag.list');
         Route::get('add',[ServiceController::class,'tagAdd'])->name('tag.add');

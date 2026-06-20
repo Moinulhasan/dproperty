@@ -345,11 +345,27 @@
                     </div>
                     
                     @php
+                        // Build the card's image list ONCE. Feature image
+                        // first, then gallery images. Dedupe so a feature
+                        // image that's also present in the images[] array
+                        // isn't rendered twice. The card slider, the popup
+                        // gallery, and any other consumer all read the same
+                        // list, so the "first image" is consistent
+                        // regardless of where it's pulled from.
                         $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
-                        $allImages = [];
-                        if ($property->feature_image) $allImages[] = asset($property->feature_image);
-                        foreach ($gallery as $img) $allImages[] = asset($img);
-                        if (empty($allImages)) $allImages[] = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80';
+                        $cardImages = [];
+                        if ($property->feature_image) {
+                            $cardImages[] = $property->feature_image;
+                        }
+                        foreach ($gallery as $img) {
+                            if (!in_array($img, $cardImages, true)) {
+                                $cardImages[] = $img;
+                            }
+                        }
+                        $allImages = array_map(fn ($p) => asset($p), $cardImages);
+                        if (empty($allImages)) {
+                            $allImages[] = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80';
+                        }
                     @endphp
                     <div class="card-image-hover-actions">
                         <button class="action-btn share-btn" title="Share" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('property-details', $property->id) }}'); alert('Link copied to clipboard!');">
@@ -360,21 +376,14 @@
                         </button>
                     </div>
 
-                    <!-- Inner Card Slider -->
+                    <!-- Inner Card Slider — renders the same deduplicated
+                         $allImages list built above so the feature image is
+                         GUARANTEED to be slide 0, with no double-render. -->
                     <div class="swiper card-inner-slider">
                         <div class="swiper-wrapper">
-                            @if($property->feature_image)
-                                <div class="swiper-slide"><img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->displayLocation() }}" title="{{ $property->title }}"></div>
-                            @endif
-                            @php
-                                $gallery = $property->images ?? [];
-                            @endphp
-                            @foreach($gallery as $img)
-                                <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} - Gallery Image" title="{{ $property->title }}"></div>
+                            @foreach($allImages as $sliderImg)
+                                <div class="swiper-slide"><img loading="lazy" src="{{ $sliderImg }}" alt="{{ $property->title }} - {{ $property->category }} in {{ $property->displayLocation() }}" title="{{ $property->title }}"></div>
                             @endforeach
-                            @if(!$property->feature_image && count($gallery) == 0)
-                                <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
-                            @endif
                         </div>
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
@@ -497,13 +506,16 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
-        // Initialize all inner card sliders
+        // Initialize all inner card sliders. loop disabled: with loop on,
+        // Swiper clones slides and can land on a clone first, so the
+        // feature image (slide 0) wasn't always the visible starting slide.
         const innerSliders = document.querySelectorAll('.card-inner-slider');
         innerSliders.forEach(slider => {
             new Swiper(slider, {
                 slidesPerView: 1,
                 spaceBetween: 0,
-                loop: true,
+                loop: false,
+                watchOverflow: true,
                 navigation: {
                     nextEl: slider.querySelector('.swiper-button-next'),
                     prevEl: slider.querySelector('.swiper-button-prev'),

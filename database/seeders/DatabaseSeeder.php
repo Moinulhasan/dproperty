@@ -20,10 +20,18 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
+        // Order matters: reference data first (locations, categories,
+        // companies, amenities, roles), then properties which look those
+        // FKs up at runtime and assign them randomly.
         $this->call([
-            AmenitySeeder::class,
-            PropertySeeder::class,
             RolePermissionSeeder::class,
+            LocationSeeder::class,
+            PropertyCategorySeeder::class,
+            CompanySeeder::class,
+            AmenitySeeder::class,
+            PropertyDetailSeeder::class,
+            ServiceSeeder::class,
+            PropertySeeder::class,
         ]);
     }
 }

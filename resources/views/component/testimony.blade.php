@@ -17,12 +17,17 @@
                                     <div class="testimonial-card text-center p-5">
                                         <p class="testimonial-text fst-italic text-muted mb-4">{{$testimonial->review}}</p>
                                         <div class="testimonial-author">
-                                            <a href="" class="text-decoration-none">
-                                                <img src="{{$testimonial->image}}" class="rounded-circle mb-3"
-                                                     alt="{{$testimonial->name}}">
+                                            @if($testimonial->s_link)
+                                                <a href="{{ $testimonial->s_link }}" target="_blank" rel="noopener" class="text-decoration-none">
+                                                    <img src="{{$testimonial->image}}" class="rounded-circle mb-3" alt="{{$testimonial->name}}">
+                                                    <h6 class="fw-bold mb-1">{{$testimonial->name}}</h6>
+                                                    <p class="text-primary mb-0">{{$testimonial->designation}}</p>
+                                                </a>
+                                            @else
+                                                <img src="{{$testimonial->image}}" class="rounded-circle mb-3" alt="{{$testimonial->name}}">
                                                 <h6 class="fw-bold mb-1">{{$testimonial->name}}</h6>
                                                 <p class="text-primary mb-0">{{$testimonial->designation}}</p>
-                                            </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

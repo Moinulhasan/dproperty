@@ -10,7 +10,9 @@ class AmenityController extends Controller
 {
     public function index()
     {
-        $amenities = Amenity::latest()->get();
+        // Lower `order` first; ties broken by name so identical orders stay
+        // alphabetical instead of jittering between requests.
+        $amenities = Amenity::orderBy('order')->orderBy('name')->get();
         return view('admin.amenity.index', compact('amenities'));
     }
 
@@ -22,11 +24,12 @@ class AmenityController extends Controller
     public function addPost(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
+            'name'  => 'required|string|max:255',
+            'icon'  => 'nullable|string|max:255',
+            'order' => 'nullable|integer|min:0',
         ]);
 
-        Amenity::create($request->all());
+        Amenity::create($request->only(['name', 'icon', 'order']));
 
         return redirect()->route('admin.amenity.list')->with('success', 'Amenity created successfully.');
     }
@@ -39,11 +42,12 @@ class AmenityController extends Controller
     public function editPost(Request $request, Amenity $amenity)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:255',
+            'name'  => 'required|string|max:255',
+            'icon'  => 'nullable|string|max:255',
+            'order' => 'nullable|integer|min:0',
         ]);
 
-        $amenity->update($request->all());
+        $amenity->update($request->only(['name', 'icon', 'order']));
 
         return redirect()->route('admin.amenity.list')->with('success', 'Amenity updated successfully.');
     }

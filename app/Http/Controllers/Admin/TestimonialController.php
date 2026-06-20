@@ -12,7 +12,7 @@ class TestimonialController extends Controller
     //
     public function index()
     {
-        $testimonials = Testimonial::orderBy('created_at', 'desc')->paginate(10);
+        $testimonials = Testimonial::orderBy('order')->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.testimonial.index', compact('testimonials'));
     }
 
@@ -30,6 +30,7 @@ class TestimonialController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             's_link' => 'nullable|url|max:255',
             'status' => 'required|in:active,inactive',
+            'order' => 'nullable|integer|min:0',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -49,6 +50,7 @@ class TestimonialController extends Controller
                 'image' => $file,
                 's_link' => $request->s_link,
                 'status' => $request->status == 'active' ? 1 : 0,
+                'order' => (int) $request->input('order', 0),
             ]);
             return redirect()->route('admin.testimonial.list')->with('success', 'Testimonial added successfully.');
         } catch (\Exception $exception) {
@@ -70,6 +72,7 @@ class TestimonialController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             's_link' => 'nullable|url|max:255',
             'status' => 'required|in:active,inactive',
+            'order' => 'nullable|integer|min:0',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -88,7 +91,9 @@ class TestimonialController extends Controller
             $testimonial->name = $request->name;
             $testimonial->designation = $request->designation;
             $testimonial->review = $request->review;
+            $testimonial->s_link = $request->s_link;
             $testimonial->status = $request->status == 'active' ? 1 : 0;
+            $testimonial->order = (int) $request->input('order', $testimonial->order ?? 0);
             $testimonial->save();
             return redirect()->route('admin.testimonial.list')->with('success', 'Testimonial updated successfully.');
         } catch (\Exception $exception) {

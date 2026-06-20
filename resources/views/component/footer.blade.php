@@ -1,3 +1,22 @@
+@php
+    // Resolve every $settings value once, with null-safe access so the
+    // footer renders cleanly on a brand-new install (where no app_settings
+    // row exists yet). Each value falls back to a sensible default.
+    $footerLogo        = $settings?->logo ?: asset('images/logo_main.png');
+    $footerDescription = $settings?->site_description ?: '';
+    $footerAddress     = $settings?->address ?: '123 Business Street, Suite 100, Dhaka, Bangladesh';
+    $footerPhone       = $settings?->phone   ?: '+8801234567890';
+    $footerAltPhone    = $settings?->alt_phone ?? null;
+    $footerEmail       = $settings?->email   ?: '';
+    $footerSocial      = [
+        'facebook'  => $settings?->facebook,
+        'instagram' => $settings?->instagram,
+        'youtube'   => $settings?->youtube,
+        'twitter'   => $settings?->twitter,
+        'linkedin'  => $settings?->linkedin,
+        'pinterest' => $settings?->pinterest,
+    ];
+@endphp
 <footer class="footerBackground text-white py-5">
     <div class="container">
         <div class="row g-4">
@@ -5,42 +24,42 @@
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold mb-3">
                     <a href="{{url('/')}}">
-                        <img src="{{$settings->logo??asset('images/logo_main.png')}}" alt="DProperty — Real Estate in Bangladesh" class="mb-2"
+                        <img src="{{ $footerLogo }}" alt="DProperty — Real Estate in Bangladesh" class="mb-2"
                              style="height: 40px;">
                     </a>
                 </h5>
-                <p class="text-light mb-3" style="text-align: justify;">{{$settings->site_description}}</p>
+                <p class="text-light mb-3" style="text-align: justify;">{{ $footerDescription }}</p>
                 <!-- Social Media Icons -->
                 <div class="d-flex gap-2 mt-3 footer-social-icons">
-                    @if($settings->facebook)
-                        <a href="{{$settings->facebook}}" class="btn btn-outline-light btn-sm" target="_blank">
+                    @if($footerSocial['facebook'])
+                        <a href="{{ $footerSocial['facebook'] }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener">
                             <i class="bi bi-facebook"></i>
                         </a>
                     @endif
-                    @if($settings->instagram)
-                        <a href="{{$settings->instagram}}" class="btn btn-outline-light btn-sm" target="_blank">
+                    @if($footerSocial['instagram'])
+                        <a href="{{ $footerSocial['instagram'] }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener">
                             <i class="bi bi-instagram"></i>
                         </a>
                     @endif
-                    @if($settings->youtube)
-                        <a href="{{$settings->youtube}}" class="btn btn-outline-light btn-sm" target="_blank">
+                    @if($footerSocial['youtube'])
+                        <a href="{{ $footerSocial['youtube'] }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener">
                             <i class="bi bi-youtube"></i>
                         </a>
                     @endif
-                    @if($settings->twitter)
-                        <a href="{{$settings->twitter}}" class="btn btn-outline-light btn-sm" target="_blank">
+                    @if($footerSocial['twitter'])
+                        <a href="{{ $footerSocial['twitter'] }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
                                 <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
                             </svg>
                         </a>
                     @endif
-                    @if($settings->linkedin)
-                        <a href="{{$settings->linkedin}}" class="btn btn-outline-light btn-sm" target="_blank">
+                    @if($footerSocial['linkedin'])
+                        <a href="{{ $footerSocial['linkedin'] }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener">
                             <i class="bi bi-linkedin"></i>
                         </a>
                     @endif
-                    @if($settings->pinterest)
-                        <a href="{{$settings->pinterest}}" class="btn btn-outline-light btn-sm" target="_blank">
+                    @if($footerSocial['pinterest'])
+                        <a href="{{ $footerSocial['pinterest'] }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener">
                             <i class="bi bi-pinterest"></i>
                         </a>
                     @endif
@@ -84,21 +103,21 @@
                 <ul class="list-unstyled footer-contact-list">
                     <li class="mb-3 d-flex align-items-start">
                         <i class="bi bi-geo-alt-fill me-2 mt-1 footer-contact-icon"></i>
-                        <span class="text-light">{{$settings->address ?? '123 Business Street, Suite 100, Dhaka, Bangladesh'}}</span>
+                        <span class="text-light">{{ $footerAddress }}</span>
                     </li>
                     <li class="mb-3 d-flex align-items-start">
                         <i class="bi bi-telephone-fill me-2 mt-1 footer-contact-icon"></i>
-                        <span class="text-light">{{$settings->phone ?? '+8801234567890'}}</span>
+                        <span class="text-light">{{ $footerPhone }}</span>
                     </li>
-                    @if($settings->alt_phone ?? false)
+                    @if($footerAltPhone)
                     <li class="mb-3 d-flex align-items-start">
                         <i class="bi bi-phone-fill me-2 mt-1 footer-contact-icon"></i>
-                        <span class="text-light">{{$settings->alt_phone}}</span>
+                        <span class="text-light">{{ $footerAltPhone }}</span>
                     </li>
                     @endif
                     <li class="mb-3 d-flex align-items-start">
                         <i class="bi bi-envelope-fill me-2 mt-1 footer-contact-icon"></i>
-                        <span class="text-light">{{$settings->email ?? ''}}</span>
+                        <span class="text-light">{{ $footerEmail }}</span>
                     </li>
                 </ul>
             </div>

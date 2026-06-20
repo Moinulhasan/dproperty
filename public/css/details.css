@@ -234,6 +234,30 @@
     border: none;
 }
 
+.btn-terms {
+    background: #fff;
+    color: #006A50;
+    border: 1px solid #006A50;
+}
+
+.btn-terms:hover {
+    background: #006A50;
+    color: #fff;
+}
+
+.terms-modal-body {
+    max-height: 65vh;
+    overflow-y: auto;
+    line-height: 1.6;
+}
+
+.terms-modal-body :is(h1, h2, h3, h4, h5, h6) {
+    margin-top: 1.1rem;
+}
+
+.terms-modal-body p { margin-bottom: 0.6rem; }
+.terms-modal-body ul, .terms-modal-body ol { padding-left: 1.25rem; }
+
 /* Lower Section Content */
 .detail-content-box {
     background: #fff;

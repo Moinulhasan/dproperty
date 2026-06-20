@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyRegistrationController;
 use App\Http\Controllers\HomePageController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,7 @@ Route::get('about-us', [HomePageController::class, 'aboutUs'])->name('about-us')
 Route::get('blog', [HomePageController::class, 'blog'])->name('blog');
 Route::get('post-property', [HomePageController::class, 'postProperty'])->name('post-property');
 Route::post('post-property', [HomePageController::class, 'postPropertySubmit'])->name('post-property.submit');
+
+Route::get('company-register',  [CompanyRegistrationController::class, 'show'])->name('company.register');
+Route::post('company-register', [CompanyRegistrationController::class, 'submit'])->name('company.register.submit');
 

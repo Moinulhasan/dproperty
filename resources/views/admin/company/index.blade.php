@@ -23,9 +23,14 @@
                         <tr>
                             <td>
                                 @if($company->logo)
-                                    <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}" width="50">
+                                    <img src="{{ asset($company->logo) }}" alt="{{ $company->name }}"
+                                         style="width: 70px; height: 45px; object-fit: contain; background:#f8f9fa;"
+                                         class="rounded border">
                                 @else
-                                    No Logo
+                                    <div class="bg-label-secondary rounded d-flex align-items-center justify-content-center"
+                                         style="width: 70px; height: 45px;">
+                                        <i class="ti ti-photo"></i>
+                                    </div>
                                 @endif
                             </td>
                             <td>{{ $company->name }}</td>

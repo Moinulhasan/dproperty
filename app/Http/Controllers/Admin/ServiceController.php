@@ -15,7 +15,7 @@ class ServiceController extends Controller
     //
     public function index()
     {
-        $services = Services::orderBy('created_at', 'desc')->paginate(10);
+        $services = Services::orderBy('order')->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.service.list', compact('services'));
     }
 
@@ -31,6 +31,7 @@ class ServiceController extends Controller
             'description' => 'required|string',
             'status' => 'required|in:active,inactive',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'order' => 'nullable|integer|min:0',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -45,6 +46,7 @@ class ServiceController extends Controller
                 'description' => $request->description,
                 'image' => $file,
                 'status' => $request->status == 'active' ? 1 : 0,
+                'order' => (int) $request->input('order', 0),
                 'user_id' => auth()->id(),
             ]);
             return redirect()->route('admin.service.list')->with('success', 'Service added successfully.');
@@ -67,6 +69,7 @@ class ServiceController extends Controller
             'description' => 'required|string',
             'status' => 'required|in:active,inactive',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'order' => 'nullable|integer|min:0',
         ]);
         if ($validator->fails()) {
             return redirect()->back()
@@ -77,6 +80,7 @@ class ServiceController extends Controller
             $service->title = $request->title;
             $service->description = $request->description;
             $service->status = $request->status == 'active' ? 1 : 0;
+            $service->order = (int) $request->input('order', $service->order ?? 0);
 
             if ($request->hasFile('image')) {
                 // delete old image
