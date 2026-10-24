@@ -1,0 +1,6 @@
+# User uploads are data, never code: refuse to serve or run any script file
+# from this folder or below, whatever the PHP handler (mod_php, FPM, LiteSpeed).
+<FilesMatch "(?i)\.(php\d?|phtml|phar|pht|pl|py|cgi|sh|shtml)$">
+    Require all denied
+</FilesMatch>
+Options -ExecCGI -Indexes

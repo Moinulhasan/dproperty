@@ -375,10 +375,11 @@ class PropertyController extends Controller
             }
 
             // Handle Feature Image — watermarked when the checkbox is on.
+            // Old files are deleted only after the new ones are saved and the DB is
+            // updated: a failed upload (memory/time limit) must not lose the old image.
+            $replacedFiles = [];
             if ($request->hasFile('feature_image')) {
-                if ($property->feature_image && file_exists(public_path($property->feature_image))) {
-                    unlink(public_path($property->feature_image));
-                }
+                $replacedFiles[] = $property->feature_image;
                 $name = time() . '_feature.webp';
                 $targetPath = public_path('uploads/property/') . $name;
                 $this->imageService->process($request->feature_image->getRealPath(), $targetPath, 75, $logoPath);
@@ -389,9 +390,7 @@ class PropertyController extends Controller
             // Handle Floor Plan — explicit null so floor plans are NEVER
             // watermarked, regardless of the Apply Watermark checkbox state.
             if ($request->hasFile('floor_plan')) {
-                if ($property->floor_plan && file_exists(public_path($property->floor_plan))) {
-                    unlink(public_path($property->floor_plan));
-                }
+                $replacedFiles[] = $property->floor_plan;
                 $name = time() . '_floor.webp';
                 $targetPath = public_path('uploads/property/') . $name;
                 $this->imageService->process($request->floor_plan->getRealPath(), $targetPath, 75, null);
@@ -399,6 +398,13 @@ class PropertyController extends Controller
             }
 
             $property->update($data);
+
+            foreach (array_filter($replacedFiles) as $old) {
+                // Same-second re-upload gets the same name: that file is the new one now.
+                if (!in_array($old, [$property->feature_image, $property->floor_plan], true) && file_exists(public_path($old))) {
+                    unlink(public_path($old));
+                }
+            }
 
             if ($request->has('amenities')) {
                 $property->amenities()->sync($request->amenities);

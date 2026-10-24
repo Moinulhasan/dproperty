@@ -84,6 +84,27 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    // Delete and logout routes no longer accept GET (a link or <img> on any
+    // other site could trigger them with the admin's cookie). Turn those links
+    // into a CSRF-protected form submit — after the link's own confirm() passed.
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('a[href]');
+        if (!link || e.defaultPrevented) return;
+        const path = new URL(link.href, location.href).pathname;
+        const method = /\/admin\/.*\/(user-)?delete\/[^/]+$/.test(path) ? 'DELETE'
+            : path === '/admin/logout' ? 'POST' : null;
+        if (!method) return;
+        e.preventDefault();
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = link.href;
+        form.innerHTML = '<input type="hidden" name="_token"><input type="hidden" name="_method">';
+        form.elements._token.value = document.querySelector('meta[name="csrf-token"]').content;
+        form.elements._method.value = method;
+        document.body.appendChild(form);
+        form.submit();
+    });
 </script>
 @yield('script')
 <script src="{{asset('assets/js/main.js')}}"></script>

@@ -84,7 +84,9 @@ class CompanyRegistrationController extends Controller
             foreach ($fileFields as $field) {
                 if ($request->hasFile($field)) {
                     $file = $request->file($field);
-                    $name = time() . '_' . $field . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    // hashName(): extension from the file's real content, never the visitor's
+                    // file name — "x.php" with PNG bytes must not be saved as .php.
+                    $name = time() . '_' . $field . '_' . $file->hashName();
                     $file->move(public_path('uploads/company_requests'), $name);
                     $data[$field] = 'uploads/company_requests/' . $name;
                 }

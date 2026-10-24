@@ -24,13 +24,14 @@ Route::get('article/{slug}', [HomePageController::class, 'article_details'])->na
 
 Route::get('location/{id}', [HomePageController::class, 'locationProperties'])->name('location.properties');
 Route::get('contact-us', [HomePageController::class, 'contact'])->name('contact');
-Route::post('contact-us', [HomePageController::class, 'contactInquirySubmit'])->name('contact.submit');
+// Public forms: 5 submissions per minute per visitor (spam / disk-filling uploads).
+Route::post('contact-us', [HomePageController::class, 'contactInquirySubmit'])->name('contact.submit')->middleware('throttle:5,1');
 Route::get('service', [HomePageController::class, 'service'])->name('service');
 Route::get('about-us', [HomePageController::class, 'aboutUs'])->name('about-us');
 Route::get('blog', [HomePageController::class, 'blog'])->name('blog');
 Route::get('post-property', [HomePageController::class, 'postProperty'])->name('post-property');
-Route::post('post-property', [HomePageController::class, 'postPropertySubmit'])->name('post-property.submit');
+Route::post('post-property', [HomePageController::class, 'postPropertySubmit'])->name('post-property.submit')->middleware('throttle:5,1');
 
 Route::get('company-register',  [CompanyRegistrationController::class, 'show'])->name('company.register');
-Route::post('company-register', [CompanyRegistrationController::class, 'submit'])->name('company.register.submit');
+Route::post('company-register', [CompanyRegistrationController::class, 'submit'])->name('company.register.submit')->middleware('throttle:5,1');
 

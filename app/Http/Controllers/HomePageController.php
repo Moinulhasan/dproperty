@@ -413,6 +413,7 @@ class HomePageController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:500',
+            'message' => 'nullable|string|max:5000',
         ]);
 
         PropertyRequest::create([
@@ -439,7 +440,7 @@ class HomePageController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'message' => 'required|string',
+            'message' => 'required|string|max:5000',
         ]);
 
         ContactInquiry::create([

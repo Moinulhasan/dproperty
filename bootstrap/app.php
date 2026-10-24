@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Behind Cloudflare: take the visitor's IP from X-Forwarded-For (as appended by
+        // the proxy that connected to us), so per-IP rate limits apply per visitor.
+        $middleware->trustProxies(at: '*');
         $middleware->redirectGuestsTo('/admin/login');
         $middleware->redirectUsersTo('/admin');
     })
