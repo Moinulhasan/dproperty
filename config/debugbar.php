@@ -16,7 +16,8 @@ return [
      |
      */
 
-    'enabled' => env('DEBUGBAR_ENABLED'),
+    // Never on outside local, even if APP_DEBUG is accidentally true in production.
+    'enabled' => env('DEBUGBAR_ENABLED', env('APP_ENV') === 'local' ? null : false),
     'collect_jobs' => env('DEBUGBAR_COLLECT_JOBS', false),
     'except' => [
         'telescope*',

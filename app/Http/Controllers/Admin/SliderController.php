@@ -38,6 +38,7 @@ class SliderController extends Controller
         try {
             // Handle file upload and save slider data
             $file = $request->file('image')->store('slider','public');
+            \App\Services\ThumbnailService::forUpload('storage/' . $file, \App\Services\ThumbnailService::HERO_SIZES);
             HomeSlider::create([
                 'title' => $request->title,
                 'image' => $file,
@@ -76,6 +77,7 @@ class SliderController extends Controller
                     Storage::disk('public')->delete($slider->image);
                 }
                 $file = $request->file('image')->store('slider', 'public');
+                \App\Services\ThumbnailService::forUpload('storage/' . $file, \App\Services\ThumbnailService::HERO_SIZES);
                 $slider->image = $file;
             }
             $slider->title = $request->title;

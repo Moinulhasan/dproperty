@@ -31,7 +31,7 @@
                     <div class="row align-items-center g-5">
                         @if($about->image)
                         <div class="col-lg-6 text-center order-lg-{{ $key % 2 == 0 ? 2 : 1 }}">
-                            <img loading="lazy" src="{{ asset($about->image) }}" class="img-fluid" alt="{{ $about->title }}" style="max-height: 450px; object-fit: contain;">
+                            <img loading="lazy" src="{{ asset($about->image) }}" @if($size = $about->imageSize()) width="{{ $size[0] }}" height="{{ $size[1] }}" @endif class="img-fluid" alt="{{ $about->title }}" style="max-height: 450px; object-fit: contain;">
                         </div>
                         @endif
                         <div class="{{ $about->image ? 'col-lg-6' : 'col-lg-12' }} order-lg-{{ $key % 2 == 0 ? 1 : 2 }}">

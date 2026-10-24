@@ -1,0 +1,3 @@
+/* Only on pages with a select2 search form (home, listings, location).
+   Linked right after site.css, where the CDN copy used to sit. */
+@import 'select2/dist/css/select2.min.css';

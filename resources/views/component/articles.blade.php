@@ -21,7 +21,7 @@
                         <div class="article-image">
                             <span class="article-badge">{{ $article->meta_title ?? 'Real Estate' }}</span>
                             @if($article->image)
-                                <img loading="lazy" src="{{ asset($article->image) }}" alt="{{ $article->title }}">
+                                <img loading="lazy" decoding="async" src="{{ thumb($article->image) }}" srcset="{{ thumb($article->image, 480) }} 480w, {{ thumb($article->image, 960) }} 960w" sizes="(max-width:768px) 100vw, 480px" alt="{{ $article->title }}">
                             @else
                                 <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="{{ $article->title }}">
                             @endif
@@ -47,34 +47,3 @@
         </div>
     </div>
 </section>
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const el = document.getElementById('articlesSlider');
-        if (!el) return;
-
-        new Swiper(el, {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            watchOverflow: true,
-            // Faster autoplay on mobile since the nav buttons are hidden.
-            autoplay: {
-                delay: window.innerWidth <= 991 ? 4000 : 7000,
-                disableOnInteraction: false,
-            },
-            // Scope nav to THIS slider; otherwise Swiper picks up the first
-            // .swiper-button-next in the DOM (which may be inside a card).
-            navigation: {
-                nextEl: el.querySelector('.articles-slider-next'),
-                prevEl: el.querySelector('.articles-slider-prev'),
-            },
-            breakpoints: {
-                640:  { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
-            }
-        });
-    });
-</script>
-@endpush

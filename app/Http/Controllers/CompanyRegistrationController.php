@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppSettings;
 use App\Models\CompanyRequest;
+use App\Services\SiteData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +11,7 @@ class CompanyRegistrationController extends Controller
 {
     public function show()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         return view('pages.company_register', compact('settings'));
     }
 

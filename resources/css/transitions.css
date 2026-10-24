@@ -1,0 +1,13 @@
+/* Cross-document view transition: a short cross-fade between same-tab page
+   loads (menu links). Property cards open a new tab, where no transition can
+   run, so there is no shared card-image → detail-image element. */
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 200ms;
+    }
+}

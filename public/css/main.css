@@ -94,6 +94,18 @@ body {
     overflow: hidden;
 }
 
+/* Replaces the old inline background-image: same cover/center crop, but a
+   real <img> can use srcset + fetchpriority for a faster LCP. */
+.hero-slide-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
 .hero-overlay {
     position: absolute;
     top: 0;
@@ -2398,5 +2410,20 @@ html {
         padding: 6px 14px;
         font-size: 0.75rem;
         flex-shrink: 0;
+    }
+}
+/* was an inline style repeated per why-us item */
+.why-us-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+}
+
+/* Reserve the select2 field height (54px) before select2 initialises, so the
+   hero search bar does not grow after first paint (layout shift). */
+@media (min-width: 992px) {
+    #locationCard .search-field > .d-lg-block,
+    #propertyTypeCard .search-field > .d-lg-block {
+        min-height: 54px;
     }
 }

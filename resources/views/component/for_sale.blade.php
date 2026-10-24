@@ -52,13 +52,13 @@
                                         <div class="swiper card-inner-slider">
                                             <div class="swiper-wrapper">
                                                 @if($property->feature_image)
-                                                    <div class="swiper-slide"><img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }}"></div>
+                                                    <div class="swiper-slide">@include('component._card_img', ['src' => $property->feature_image, 'alt' => $property->title])</div>
                                                 @endif
                                                 @php
                                                     $gallery = is_array($property->images) ? $property->images : (json_decode($property->images) ?? []);
                                                 @endphp
                                                 @foreach($gallery as $img)
-                                                    <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }}"></div>
+                                                    <div class="swiper-slide">@include('component._card_img', ['src' => $img, 'alt' => $property->title, 'deferred' => $property->feature_image || !$loop->first])</div>
                                                 @endforeach
                                             </div>
                                             <div class="swiper-button-next"></div>

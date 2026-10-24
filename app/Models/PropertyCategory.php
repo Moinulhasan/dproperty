@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FlushesSiteCache;
 use Illuminate\Database\Eloquent\Model;
 
 class PropertyCategory extends Model
 {
+    use FlushesSiteCache;
+
     protected $guarded = [];
     protected $table = 'property_categories';
 

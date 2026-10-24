@@ -98,7 +98,7 @@
                                     <div class="card-inner-slider swiper">
                                         <div class="swiper-wrapper">
                                             @foreach($allImages as $sliderImg)
-                                                <div class="swiper-slide"><img src="{{ $sliderImg }}" alt="" class="w-100 h-100" style="object-fit: cover;"></div>
+                                                <div class="swiper-slide">@include('component._card_img', ['src' => $sliderImg, 'alt' => '', 'class' => 'w-100 h-100 object-fit-cover', 'deferred' => !$loop->first])</div>
                                             @endforeach
                                         </div>
                                         <div class="swiper-button-next"></div>
@@ -134,76 +134,3 @@
         </div>
     </div>
 </section>
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const featuredEl = document.getElementById('featuredPropertiesSlider');
-        if (!featuredEl) return;
-
-        // 1) Initialize the inner per-card image sliders FIRST. Their nav
-        //    buttons must be wired up before the outer Swiper looks at the
-        //    DOM, otherwise loop mode clones unwired buttons and the layout
-        //    breaks after the first set.
-        featuredEl.querySelectorAll('.card-inner-slider').forEach(function (slider) {
-            new Swiper(slider, {
-                slidesPerView: 1,
-                spaceBetween: 0,
-                loop: false,
-                watchOverflow: true,
-                navigation: {
-                    nextEl: slider.querySelector('.swiper-button-next'),
-                    prevEl: slider.querySelector('.swiper-button-prev'),
-                },
-            });
-        });
-
-        // 2) Outer carousel. Loop disabled when there isn't enough content to
-        //    fill the visible area (Swiper's clone logic mis-renders below
-        //    that threshold on mobile and can crash on scroll-back).
-        const slideCount = featuredEl.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length;
-        const enableLoop = slideCount >= 5;
-
-        // observer/observeParents were removed. On Safari they fed into a
-        // feedback loop with the per-card inner Swipers' DOM mutations and
-        // exhausted the tab's memory ceiling, killing the page.
-        const featuredSwiper = new Swiper(featuredEl, {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: enableLoop,
-            loopAdditionalSlides: enableLoop ? 2 : 0,
-            watchOverflow: true,
-            autoplay: slideCount > 1 ? {
-                delay: 6000,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-            } : false,
-            navigation: {
-                nextEl: featuredEl.querySelector('.featured-next'),
-                prevEl: featuredEl.querySelector('.featured-prev'),
-            },
-            breakpoints: {
-                640:  { slidesPerView: 2, loop: enableLoop && slideCount >= 5 },
-                1024: { slidesPerView: 4, loop: enableLoop && slideCount >= 8 },
-            },
-        });
-
-        // Pause autoplay when this section scrolls off-screen — keeps Safari
-        // from burning cycles on a background animation and stops autoplay
-        // from "catching up" in a burst when the user scrolls back.
-        if (featuredSwiper && featuredSwiper.autoplay && 'IntersectionObserver' in window) {
-            const obs = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (!featuredSwiper.autoplay) return;
-                    if (entry.isIntersecting) {
-                        featuredSwiper.autoplay.start();
-                    } else {
-                        featuredSwiper.autoplay.stop();
-                    }
-                });
-            }, { threshold: 0.1 });
-            obs.observe(featuredEl);
-        }
-    });
-</script>
-@endpush

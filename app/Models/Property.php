@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FlushesSiteCache;
+use App\Services\SiteData;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
 {
+    use FlushesSiteCache;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -52,6 +58,41 @@ class Property extends Model
      * the admin dropdown. Falls back to the legacy free-text sub_route /
      * route columns for historic rows that never picked a location.
      */
+    /**
+     * Only the columns a property card renders (title, badges, price, images,
+     * location, cardSummary) instead of select *. Then loadCardRelations().
+     */
+    public function scopeForCard(Builder $query): Builder
+    {
+        return $query->select(['id', 'title', 'property_status', 'category', 'feature_image', 'images', 'price',
+            'location_id', 'sub_route', 'route', 'is_furnished', 'project_id', 'bedrooms', 'bathrooms', 'area']);
+    }
+
+    /**
+     * Load what a card needs onto one section's properties.
+     *
+     * detailValues keeps the original query exactly (per section, unfiltered,
+     * no ORDER BY): cardSummary() takes the first "bath"/"bed" match, and the
+     * row order MySQL returns depends on that query's plan. Changing its shape
+     * changes which value ("Servant Bath" vs "Bathroom") a card shows.
+     * location and detail are attached from the cache instead of queried.
+     */
+    public static function loadCardRelations(EloquentCollection $properties): EloquentCollection
+    {
+        $properties->load('detailValues');
+        $locations = SiteData::locationsById();
+        $details = SiteData::detailsById();
+
+        foreach ($properties as $property) {
+            $property->setRelation('location', $locations[$property->location_id] ?? null);
+            foreach ($property->detailValues as $value) {
+                $value->setRelation('detail', $details[$value->property_detail_id] ?? null);
+            }
+        }
+
+        return $properties;
+    }
+
     public function displayLocation(): ?string
     {
         if ($this->location_id && $this->location) {

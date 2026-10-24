@@ -24,7 +24,7 @@
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold mb-3">
                     <a href="{{url('/')}}">
-                        <img src="{{ $footerLogo }}" alt="DProperty — Real Estate in Bangladesh" class="mb-2"
+                        <img src="{{ thumb($footerLogo, 240) }}" width="120" height="40" loading="lazy" decoding="async" alt="DProperty — Real Estate in Bangladesh" class="mb-2"
                              style="height: 40px;">
                     </a>
                 </h5>

@@ -61,6 +61,7 @@ class ArticleController extends Controller
                 }
                 
                 $data['image'] = 'uploads/articles/' . $name;
+                \App\Services\ThumbnailService::forUpload($data['image']);
             }
 
             Article::create($data);
@@ -120,6 +121,7 @@ class ArticleController extends Controller
                 }
                 
                 $data['image'] = 'uploads/articles/' . $name;
+                \App\Services\ThumbnailService::forUpload($data['image']);
             }
 
             $article->update($data);

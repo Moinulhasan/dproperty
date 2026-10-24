@@ -37,7 +37,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <img src="{{ $whyUsImage }}" class="img-fluid rounded shadow mb-2" alt="{{ $whyUsTitle }}"
+                <img src="{{ thumb($whyUsImage, 960) }}" loading="lazy" decoding="async" class="img-fluid rounded shadow mb-2" alt="{{ $whyUsTitle }}"
                      onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80';">
             </div>
             <div class="col-lg-6">
@@ -54,7 +54,7 @@
                             @if($itemTitle !== '' || $itemDesc !== '')
                                 <div class="col-12">
                                     <div class="d-flex align-items-start">
-                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; min-width: 40px;">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3 why-us-icon">
                                             <i class="bi bi-check text-white"></i>
                                         </div>
                                         <div>

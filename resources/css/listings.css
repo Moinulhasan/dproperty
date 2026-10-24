@@ -1,0 +1,15 @@
+/* Listing + location pages: the three stylesheets these pages linked, in the
+   same order, as one render-blocking file instead of three. */
+@import 'select2/dist/css/select2.min.css';
+@import '../../public/css/listings.css';
+@import '../../public/css/property_cards.css';
+
+/* Reserve the select2 field height (54px) before select2 initialises, so the
+   results grid is not pushed down after first paint (layout shift). */
+@media (min-width: 992px) {
+    #listingsLocationCard .search-field,
+    #listingsStatusCard .search-field,
+    #listingsTypeCard .search-field {
+        min-height: 54px;
+    }
+}

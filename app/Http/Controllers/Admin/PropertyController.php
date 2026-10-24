@@ -190,6 +190,7 @@ class PropertyController extends Controller
                     $name = time() . '_' . uniqid() . '.webp'; // Set to webp for better compression
                     $targetPath = public_path('uploads/property/') . $name;
                     $this->imageService->process($image->getRealPath(), $targetPath, 75, $logoPath);
+                    \App\Services\ThumbnailService::forUpload('uploads/property/' . $name);
                     $images[] = 'uploads/property/' . $name;
                 }
                 $data['images'] = $images;
@@ -200,6 +201,7 @@ class PropertyController extends Controller
                 $name = time() . '_feature.webp';
                 $targetPath = public_path('uploads/property/') . $name;
                 $this->imageService->process($request->feature_image->getRealPath(), $targetPath, 75, $logoPath);
+                \App\Services\ThumbnailService::forUpload('uploads/property/' . $name);
                 $data['feature_image'] = 'uploads/property/' . $name;
             }
 
@@ -366,6 +368,7 @@ class PropertyController extends Controller
                     $name = time() . '_' . uniqid() . '.webp';
                     $targetPath = public_path('uploads/property/') . $name;
                     $this->imageService->process($image->getRealPath(), $targetPath, 75, $logoPath);
+                    \App\Services\ThumbnailService::forUpload('uploads/property/' . $name);
                     $images[] = 'uploads/property/' . $name;
                 }
                 $data['images'] = $images;
@@ -379,6 +382,7 @@ class PropertyController extends Controller
                 $name = time() . '_feature.webp';
                 $targetPath = public_path('uploads/property/') . $name;
                 $this->imageService->process($request->feature_image->getRealPath(), $targetPath, 75, $logoPath);
+                \App\Services\ThumbnailService::forUpload('uploads/property/' . $name);
                 $data['feature_image'] = 'uploads/property/' . $name;
             }
 

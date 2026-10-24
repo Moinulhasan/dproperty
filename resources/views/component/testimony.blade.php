@@ -19,12 +19,12 @@
                                         <div class="testimonial-author">
                                             @if($testimonial->s_link)
                                                 <a href="{{ $testimonial->s_link }}" target="_blank" rel="noopener" class="text-decoration-none">
-                                                    <img src="{{$testimonial->image}}" class="rounded-circle mb-3" alt="{{$testimonial->name}}">
+                                                    <img src="{{ thumb($testimonial->image) }}" width="60" height="60" loading="lazy" decoding="async" class="rounded-circle mb-3" alt="{{$testimonial->name}}">
                                                     <h6 class="fw-bold mb-1">{{$testimonial->name}}</h6>
                                                     <p class="text-primary mb-0">{{$testimonial->designation}}</p>
                                                 </a>
                                             @else
-                                                <img src="{{$testimonial->image}}" class="rounded-circle mb-3" alt="{{$testimonial->name}}">
+                                                <img src="{{ thumb($testimonial->image) }}" width="60" height="60" loading="lazy" decoding="async" class="rounded-circle mb-3" alt="{{$testimonial->name}}">
                                                 <h6 class="fw-bold mb-1">{{$testimonial->name}}</h6>
                                                 <p class="text-primary mb-0">{{$testimonial->designation}}</p>
                                             @endif

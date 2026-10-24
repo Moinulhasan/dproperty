@@ -42,6 +42,7 @@ class LocationController extends Controller
                 $name = time() . '_location.' . $request->image->extension();
                 $request->image->move(public_path('uploads/locations'), $name);
                 $imagePath = 'uploads/locations/' . $name;
+                \App\Services\ThumbnailService::forUpload($imagePath);
             }
 
             Location::create([
@@ -84,6 +85,7 @@ class LocationController extends Controller
                 $name = time() . '_location.' . $request->image->extension();
                 $request->image->move(public_path('uploads/locations'), $name);
                 $location->image = 'uploads/locations/' . $name;
+                \App\Services\ThumbnailService::forUpload($location->image);
             }
 
             $location->name = $request->name;

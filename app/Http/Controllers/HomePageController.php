@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppSettings;
 use App\Models\ContactInquiry;
-use App\Models\HomeSlider;
 use App\Models\Location;
 use App\Models\Property;
 use App\Models\PropertyRequest;
 use App\Models\Services;
-use App\Models\Tags;
 use App\Models\Article;
 use App\Models\Testimonial;
+use App\Services\SiteData;
 use Illuminate\Http\Request;
 
 class HomePageController extends Controller
@@ -19,60 +17,49 @@ class HomePageController extends Controller
     //
     public function index()
     {
-        $sliders = HomeSlider::orderBy('created_at', 'desc')
-            ->where('status', 1)
-            ->get();
-        $services = Services::orderBy('order')
-            ->orderBy('created_at', 'desc')
-            ->where('status', 1)
-            ->get();
-        $testimonials = Testimonial::orderBy('order')
-            ->orderBy('created_at', 'desc')
-            ->where('status', 1)
-            ->get();
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        // Shared site data is cached (SiteData); the guest page itself is
+        // cached for 10 min by the CacheResponse middleware on this route.
+        $sliders = SiteData::sliders();
+        $testimonials = SiteData::testimonials();
+        $settings = SiteData::settings();
 
         // Homepage rent / sell sections — scrollable carousels showing all
         // active items in each status. Soft-cap at 20 so the homepage stays
         // performant even when the catalogue has hundreds of properties; the
         // "View All" link on each section still routes to the full listing.
-        $rent_properties = Property::with(['detailValues.detail', 'location'])
+        $rent_properties = Property::forCard()
             ->where('status', 1)
             ->where('property_status', 'Rent')
             ->orderBy('created_at', 'desc')
             ->take(20)
             ->get();
 
-        $sale_properties = Property::with(['detailValues.detail', 'location'])
+        $sale_properties = Property::forCard()
             ->where('status', 1)
             ->where('property_status', 'Sell')
             ->orderBy('created_at', 'desc')
             ->take(20)
             ->get();
 
-        $featured_properties = Property::with(['detailValues.detail', 'location'])
+        $featured_properties = Property::forCard()
             ->where('status', 1)
             ->where('is_home_featured', 1)
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
 
-        // Neighborhoods from Location table
-        $neighborhoods = Location::where('status', 1)
-            ->orderBy('order')
-            ->orderBy('name')
-            ->get()
-            ->map(function ($location) {
-                return (object) [
-                    'id' => $location->id,
-                    'name' => $location->name,
-                    'image' => $location->image,
-                    'properties_count' => Property::where('status', 1)->where('location_id', $location->id)->count(),
-                ];
-            });
-        $tags = Tags::where('status', 1)->get();
-        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
-        $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
+        // Per section on purpose: see Property::loadCardRelations().
+        foreach ([$rent_properties, $sale_properties, $featured_properties] as $section) {
+            Property::loadCardRelations($section);
+        }
+
+        // Neighborhoods = the active locations. (The per-location property
+        // count the old N+1 loop computed is not rendered — see the
+        // commented-out line in component/neighborhoods.)
+        $locations = SiteData::locations();
+        $neighborhoods = $locations;
+        $tags = SiteData::tags();
+        $categories = SiteData::categories();
         
         $articles = Article::where('status', 1)
             ->orderBy('order', 'asc')
@@ -81,7 +68,7 @@ class HomePageController extends Controller
             ->get();
 
         return view('homepage', compact(
-            'sliders', 'services', 'testimonials', 'settings',
+            'sliders', 'testimonials', 'settings',
             'rent_properties', 'sale_properties', 'featured_properties',
             'neighborhoods', 'tags', 'locations', 'categories', 'articles'
         ));
@@ -89,7 +76,7 @@ class HomePageController extends Controller
 
     public function property_details($id)
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         $property = Property::with(['amenities', 'user.company', 'detailValues.detail', 'location'])->findOrFail($id);
 
         $recommended_properties = Property::where('status', 1)
@@ -135,7 +122,7 @@ class HomePageController extends Controller
 
     private function handle_property_listing(Request $request, $property_status, $title)
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
 
         $query = Property::with(['detailValues.detail', 'location'])
             ->where('status', 1)
@@ -185,8 +172,8 @@ class HomePageController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
-        $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
+        $locations = SiteData::locations();
+        $categories = SiteData::categories();
 
         $properties = $query->paginate(12)->withQueryString();
 
@@ -195,7 +182,7 @@ class HomePageController extends Controller
 
     public function locationProperties($id, Request $request)
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         $location = Location::findOrFail($id);
 
         $query = Property::with(['detailValues.detail', 'location'])
@@ -239,8 +226,8 @@ class HomePageController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
-        $categories = \App\Models\PropertyCategory::with('children')->whereNull('parent_id')->get();
+        $locations = SiteData::locations();
+        $categories = SiteData::categories();
 
         $properties = $query->paginate(12)->withQueryString();
         $title = 'Properties in ' . $location->name;
@@ -250,7 +237,7 @@ class HomePageController extends Controller
 
     public function blog()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         $articles = Article::where('status', 1)
             ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
@@ -261,20 +248,20 @@ class HomePageController extends Controller
 
     public function privacy()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         return view('pages.privacy_policy', compact('settings'));
     }
 
     public function terms()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         return view('pages.tc', compact('settings'));
     }
 
     public function sitemap()
     {
-        $settings  = AppSettings::where('site_name', 'dproperty')->first();
-        $locations = Location::where('status', 1)->orderBy('order')->orderBy('name')->get();
+        $settings  = SiteData::settings();
+        $locations = SiteData::locations();
         $articles  = Article::where('status', 1)
             ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
@@ -365,7 +352,7 @@ class HomePageController extends Controller
 
     public function article_details($slug)
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         $article = Article::where('slug', $slug)->where('status', 1)->firstOrFail();
         
         // Increment views
@@ -382,25 +369,25 @@ class HomePageController extends Controller
 
     public function contact()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
-        $tags = Tags::where('status', 1)->get();
+        $settings = SiteData::settings();
+        $tags = SiteData::tags();
         return view('pages.contact', compact('settings', 'tags'));
     }
 
     public function service()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         $services = Services::orderBy('order')
             ->orderBy('created_at', 'desc')
             ->where('status', 1)
             ->get();
-        $tags = Tags::where('status', 1)->get();
+        $tags = SiteData::tags();
         return view('pages.service', compact('settings', 'services', 'tags'));
     }
 
     public function aboutUs()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
+        $settings = SiteData::settings();
         $abouts = \App\Models\AboutUs::where('status', 1)
             ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
@@ -414,8 +401,8 @@ class HomePageController extends Controller
 
     public function postProperty()
     {
-        $settings = AppSettings::where('site_name', 'dproperty')->first();
-        $tags = Tags::where('status', 1)->get();
+        $settings = SiteData::settings();
+        $tags = SiteData::tags();
         return view('pages.post_property', compact('settings', 'tags'));
     }
 

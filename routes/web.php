@@ -3,8 +3,10 @@
 use App\Http\Controllers\CompanyRegistrationController;
 use App\Http\Controllers\HomePageController;
 use Illuminate\Support\Facades\Route;
+use Spatie\ResponseCache\Middlewares\CacheResponse;
 
-Route::get('/', [HomePageController::class, 'index'])->name('home');
+// Guest full-page cache (10 min, config/responsecache.php); cleared by FlushesSiteCache.
+Route::get('/', [HomePageController::class, 'index'])->name('home')->middleware(CacheResponse::class);
 
 Route::get('privacy-policy', [HomePageController::class, 'privacy'])->name('privacy-policy');
 Route::get('terms-of-use', [HomePageController::class, 'terms'])->name('terms-of-use');

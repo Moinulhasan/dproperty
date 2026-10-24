@@ -42,6 +42,7 @@ class TestimonialController extends Controller
             // file upload logic
 
             $file = $request->file('image')->store('testimonials', 'public');
+            \App\Services\ThumbnailService::forUpload('storage/' . $file);
             // Save testimonial data to the database
             Testimonial::create([
                 'name' => $request->name,
@@ -86,6 +87,7 @@ class TestimonialController extends Controller
                     \Storage::disk('public')->delete($testimonial->image);
                 }
                 $file = $request->file('image')->store('testimonials', 'public');
+                \App\Services\ThumbnailService::forUpload('storage/' . $file);
                 $testimonial->image = $file;
             }
             $testimonial->name = $request->name;

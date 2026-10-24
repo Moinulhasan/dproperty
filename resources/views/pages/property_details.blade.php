@@ -133,12 +133,12 @@
                         <div class="swiper-wrapper">
                             @if($property->feature_image)
                             <div class="swiper-slide">
-                                <img loading="lazy" src="{{ asset($property->feature_image) }}" alt="{{ $property->title }} thumbnail">
+                                <img loading="lazy" decoding="async" src="{{ thumb($property->feature_image) }}" alt="{{ $property->title }} thumbnail">
                             </div>
                             @endif
                             @foreach($gallery as $img)
                             <div class="swiper-slide">
-                                <img loading="lazy" src="{{ asset($img) }}" alt="{{ $property->title }} thumbnail">
+                                <img loading="lazy" decoding="async" src="{{ thumb($img) }}" alt="{{ $property->title }} thumbnail">
                             </div>
                             @endforeach
                         </div>
@@ -407,10 +407,10 @@
                             <div class="swiper card-inner-slider">
                                 <div class="swiper-wrapper">
                                     @if($rp->feature_image)
-                                        <div class="swiper-slide"><img loading="lazy" src="{{ asset($rp->feature_image) }}" alt="{{ $rp->title }}"></div>
+                                        <div class="swiper-slide">@include('component._card_img', ['src' => $rp->feature_image, 'alt' => $rp->title])</div>
                                     @endif
                                     @foreach($gallery as $img)
-                                        <div class="swiper-slide"><img loading="lazy" src="{{ asset($img) }}" alt="{{ $rp->title }}"></div>
+                                        <div class="swiper-slide">@include('component._card_img', ['src' => $img, 'alt' => $rp->title, 'deferred' => $rp->feature_image || !$loop->first])</div>
                                     @endforeach
                                     @if(!$rp->feature_image && count($gallery) == 0)
                                         <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" alt="Default Image"></div>
@@ -490,50 +490,5 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Gallery Swipers
-        var thumbsSwiper = new Swiper(".thumb-image-swiper", {
-            spaceBetween: 10,
-            slidesPerView: 4,
-            freeMode: true,
-            watchSlidesProgress: true,
-        });
-
-        var mainSwiper = new Swiper(".main-image-swiper", {
-            spaceBetween: 10,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            thumbs: {
-                swiper: thumbsSwiper,
-            },
-        });
-
-        // Initialize all inner card sliders for recommended properties
-        const innerSliders = document.querySelectorAll('.card-inner-slider');
-        innerSliders.forEach(slider => {
-            new Swiper(slider, {
-                slidesPerView: 1,
-                spaceBetween: 0,
-                loop: true,
-                navigation: {
-                    nextEl: slider.querySelector('.swiper-button-next'),
-                    prevEl: slider.querySelector('.swiper-button-prev'),
-                },
-            });
-        });
-
-        // Phone Reveal Logic
-        const phoneBtn = document.getElementById('showPhoneBtn');
-        if (phoneBtn) {
-            phoneBtn.addEventListener('click', function() {
-                const phone = this.dataset.fullPhone || 'Private Number';
-                this.innerHTML = '<i class="fas fa-phone-alt"></i> ' + phone;
-                this.classList.add('bg-light');
-            });
-        }
-    });
-</script>
+@vite('resources/js/pages/property_details.js')
 @endpush

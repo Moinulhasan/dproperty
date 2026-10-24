@@ -1,0 +1,15 @@
+/* Site stylesheet bundle. Order = the order the <link> tags had in
+   include/header.blade.php, so the cascade is unchanged. The local files stay
+   in public/css because some pages still link them individually. */
+@import './fonts.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import '../../public/css/main.css';
+@import 'swiper/css/bundle'; /* = swiper-bundle.min.css */
+@import '../../public/css/custom_slider.css';
+@import '../../public/css/neighborhoods.css';
+@import '../../public/css/articles.css';
+@import '../../public/css/property_cards.css';
+@import '../../public/css/property_slider.css';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@import './transitions.css';

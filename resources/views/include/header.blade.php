@@ -28,24 +28,8 @@
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="{{$settings->favicon??asset('images/logo_main.png')}}">
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-<!-- Custom CSS -->
-<link href="{{asset('css/main.css')}}" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/swiper-bundle.min.css">
-<link rel="stylesheet" href="{{asset('css/custom_slider.css')}}">
-<link rel="stylesheet" href="{{asset('css/neighborhoods.css')}}">
-<link rel="stylesheet" href="{{asset('css/articles.css')}}">
-<link rel="stylesheet" href="{{asset('css/property_cards.css')}}">
-<link rel="stylesheet" href="{{asset('css/property_slider.css')}}">
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<!-- Fancybox CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+<!-- Site CSS bundle (Inter, Bootstrap, icons, Swiper, site styles): resources/css/site.css -->
+@vite('resources/css/site.css')
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",

@@ -21,12 +21,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{$settings->favicon ?? asset('images/logo_main.png')}}"/>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet"/>
+    <!-- Fonts: Inter is self-hosted in the site CSS bundle (resources/css/fonts.css) -->
 
     <!-- Icons -->
     @include('include.header')
@@ -40,5 +35,19 @@
 @include('include.script')
 @yield('scripts')
 @stack('scripts')
+{{-- Prerender property and listing pages when a link is hovered (~200ms).
+     Property links open in a new tab, hence the target_hint copy of the rule. --}}
+<script type="speculationrules">
+{
+    "prerender": [
+        {"where": {"href_matches": "/property-details/*"}, "eagerness": "moderate", "target_hint": "_blank"},
+        {"where": {"href_matches": "/property-details/*"}, "eagerness": "moderate"},
+        {"where": {"or": [
+            {"href_matches": "/rent"}, {"href_matches": "/buy"}, {"href_matches": "/sell"},
+            {"href_matches": "/location/*"}
+        ]}, "eagerness": "moderate"}
+    ]
+}
+</script>
 </body>
 <!-- endbuild -->

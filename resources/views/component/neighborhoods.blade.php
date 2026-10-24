@@ -4,14 +4,14 @@
             <h2 class="text-primary">Explore The Neighborhoods</h2>
         </div>
 
-        <div class="neighborhood-slider swiper">
+        <div class="neighborhood-slider swiper" data-count="{{ count($neighborhoods) }}">
             <div class="swiper-wrapper">
                 @forelse($neighborhoods as $neighborhood)
                 <div class="swiper-slide">
                     <a href="{{ route('location.properties', $neighborhood->id) }}" class="neighborhood-card-link text-decoration-none">
                         <div class="neighborhood-card">
                             @if($neighborhood->image)
-                                <img loading="lazy" src="{{ asset($neighborhood->image) }}" alt="Explore properties in {{ $neighborhood->name }} - DProperty Neighborhoods" title="Properties in {{ $neighborhood->name }}">
+                                <img loading="lazy" decoding="async" src="{{ thumb($neighborhood->image) }}" srcset="{{ thumb($neighborhood->image, 480) }} 480w, {{ thumb($neighborhood->image, 960) }} 960w" sizes="(max-width:768px) 100vw, 480px" alt="Explore properties in {{ $neighborhood->name }} - DProperty Neighborhoods" title="Properties in {{ $neighborhood->name }}">
                             @else
                                 <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="{{ $neighborhood->name }} Neighborhood - DProperty" title="{{ $neighborhood->name }}">
                             @endif
@@ -36,33 +36,3 @@
         </div>
     </div>
 </section>
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.innerWidth <= 768) return;
-
-        const swiper = new Swiper('.neighborhood-slider', {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: {{ count($neighborhoods) > 4 ? 'true' : 'false' }},
-            autoplay: {{ count($neighborhoods) > 4 ? '{ delay: 5000, disableOnInteraction: false }' : 'false' }},
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 4,
-                },
-                1440: {
-                    slidesPerView: 5,
-                }
-            }
-        });
-    });
-</script>
-@endpush

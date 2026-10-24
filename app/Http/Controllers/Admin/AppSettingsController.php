@@ -52,6 +52,7 @@ class AppSettingsController extends Controller
 
             if ($request->hasFile('site_logo')) {
                 $logoPath = $request->file('site_logo')->store('logos', 'public');
+                \App\Services\ThumbnailService::forUpload('storage/' . $logoPath, \App\Services\ThumbnailService::LOGO_SIZES);
             } else {
                 $logoPath = $current ? ltrim(preg_replace('/^.*?logos/', 'logos', $current->logo), '/') : null;
             }
@@ -70,6 +71,7 @@ class AppSettingsController extends Controller
 
             if ($request->hasFile('contact_image')) {
                 $contactPath = $request->file('contact_image')->store('contact_image', 'public');
+                \App\Services\ThumbnailService::forUpload('storage/' . $contactPath);
             } else {
                 $contactPath = $current ? ltrim(preg_replace('/^.*?contact_image/', 'contact_image', $current->contact_image), '/') : null;
             }
