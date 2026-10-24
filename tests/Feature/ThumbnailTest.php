@@ -30,6 +30,8 @@ class ThumbnailTest extends TestCase
         $this->assertSame(asset("{$this->dir}/thumbs/480/photo.webp"), thumb($original));
         $this->assertSame(asset("{$this->dir}/thumbs/960/photo.webp"), thumb(asset($original), 960));
         $this->assertSame(480, getimagesize(public_path("{$this->dir}/thumbs/480/photo.webp"))[0]);
+        // 960 must come from the full original, not from the already-shrunk 480 copy
+        $this->assertSame(960, getimagesize(public_path("{$this->dir}/thumbs/960/photo.webp"))[0]);
         $this->assertFileExists(public_path($original), 'original must never be touched');
     }
 

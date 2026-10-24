@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CompanyRequest;
 use App\Services\SiteData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyRegistrationController extends Controller
@@ -99,8 +100,10 @@ class CompanyRegistrationController extends Controller
             return redirect()->route('company.register')
                 ->with('success', 'Your registration has been submitted. Our team will review it and contact you within 24–48 hours.');
         } catch (\Exception $e) {
+            // Full details go to the log only; visitors must not see SQL, paths or columns.
+            Log::error('Company registration failed: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()
-                ->withErrors(['error' => 'Submission failed: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Submission failed. Please try again, or contact us if it keeps happening.'])
                 ->withInput();
         }
     }

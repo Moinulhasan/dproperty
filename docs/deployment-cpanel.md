@@ -118,7 +118,38 @@ APP_DEBUG=false
 SESSION_DRIVER=file      # was database. Logs everyone out once. Skip this line to keep database.
 CACHE_STORE=file         # was database
 RESPONSE_CACHE_LIFETIME=600
+
+# Logs: one file per day, kept 14 days, warnings and errors only
+# (the old single debug-level file grows forever).
+LOG_STACK=daily
+LOG_DAILY_DAYS=14
+LOG_LEVEL=warning
 ```
+
+**Sessions and bots.** With `SESSION_DRIVER=file`, every visitor without a cookie (every
+bot request) creates one small file, kept for 2 hours. The number of files is roughly
+requests per second × 7,200. Shared hosting usually caps the number of files (inodes)
+at 250k–500k. Check it now and then:
+
+```bash
+ls <PROJECT_DIR>/storage/framework/sessions | wc -l
+```
+
+Up to about 100,000 is fine. If it stays above that, switch back to
+`SESSION_DRIVER=database`. That costs 2–3 queries per request but no files, and logs
+everyone out once.
+
+### 4a-2. Cron job (cPanel → Cron Jobs)
+
+The page cache (10 min) uses files, and the file cache doesn't delete expired entries on
+its own. One cached copy per page URL (about 200–450 KB each) stays until the next admin
+save clears everything. Add a daily cleanup:
+
+```
+15 4 * * *  cd <PROJECT_DIR> && /opt/cpanel/ea-php82/root/usr/bin/php artisan responsecache:clear >/dev/null 2>&1
+```
+
+Use your PHP path from step 1.
 
 ### 4b. Database (indexes only)
 
@@ -208,6 +239,25 @@ curl -sI https://dproperty.com.bd/build/manifest.json | grep -i cache-control
 
 If Cloudflare is in front, turn on Brotli there and add a cache rule for `/build/*`,
 `/uploads/*` and `/storage/*`. Don't cache HTML at the edge.
+
+### Cloudflare rate limit for search pages (protects the server's capacity)
+
+Plain listing and property URLs are served from the page cache. Filtered searches
+(`/rent?location=…&bedrooms=…`) and later pages (`?page=2`) always run database
+queries, and a crawler can request endless combinations. In Cloudflare →
+**Security → WAF → Rate limiting rules → Create rule**:
+
+| Field | Value |
+|---|---|
+| If incoming requests match | `(http.request.uri.path in {"/rent" "/buy" "/sell"} or starts_with(http.request.uri.path, "/location/")) and http.request.uri.query ne ""` |
+| With the same characteristics | IP |
+| When rate exceeds | 30 requests per 10 seconds |
+| Then | Managed Challenge (or Block) for 1 minute |
+
+If your Cloudflare plan doesn't offer the query field in rate limiting rules, drop the
+`and http.request.uri.query ne ""` part and raise the limit to 60 per 10 seconds.
+A real visitor clicking through filters stays far below that. Also consider
+**Security → Bots → Bot Fight Mode: On**.
 
 ---
 
